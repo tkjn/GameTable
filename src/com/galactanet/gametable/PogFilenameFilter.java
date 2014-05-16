@@ -1,0 +1,27 @@
+/*
+ * PogFile.java: GameTable is in the Public Domain.
+ */
+
+
+package com.galactanet.gametable;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
+/**
+ * TODO: comment
+ * 
+ * @author tkjn
+ */
+public class PogFilenameFilter implements FilenameFilter
+{
+
+    /*
+     * @see java.io.FileFilter#accept(java.io.File)
+     */
+    public boolean accept(File dir, String name)
+    {
+        return (name.endsWith(".pog"));
+    }
+
+}
