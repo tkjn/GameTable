@@ -76,6 +76,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
+
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;
 import com.galactanet.gametable.net.NetworkThread;
@@ -3015,6 +3017,9 @@ public class GametableFrame extends JFrame implements ActionListener
         
         m_pogsTabbedPane.add(m_macroPanel, lang.DICE_MACROS);
         m_pogsTabbedPane.setFocusable(false);
+        
+        CharacterSheetPanel charsheetpanel = new CharacterSheetPanel();
+        m_pogsTabbedPane.add(charsheetpanel, "Character Sheet");
 
         m_canvasPane.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(1, 1, 1, 1)));
         m_canvasPane.add(getGametableCanvas(), BorderLayout.CENTER);
