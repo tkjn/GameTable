@@ -65,8 +65,8 @@
                debug="true"
                listfiles="true"
                fork="true"
-               source="1.4"
-               target="1.4">
+               source="1.6"
+               target="1.6">
             <compilerarg value="-Xlint:deprecation" />
             <compilerarg value="-Xlint:unchecked" />
             <classpath>
