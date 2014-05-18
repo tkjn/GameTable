@@ -407,6 +407,8 @@ public class GametableFrame extends JFrame implements ActionListener
     // The status goes at the bottom of the pane
     private final JLabel            m_status                 = new JLabel(" "); // Status Bar
 
+	private CharacterSheetPanel charsheetpanel;
+
     /**
      * Construct the frame
      */
@@ -3018,7 +3020,7 @@ public class GametableFrame extends JFrame implements ActionListener
         m_pogsTabbedPane.add(m_macroPanel, lang.DICE_MACROS);
         m_pogsTabbedPane.setFocusable(false);
         
-        CharacterSheetPanel charsheetpanel = new CharacterSheetPanel();
+        charsheetpanel = new CharacterSheetPanel();
         m_pogsTabbedPane.add(charsheetpanel, "Character Sheet");
 
         m_canvasPane.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(1, 1, 1, 1)));
@@ -4560,6 +4562,7 @@ public class GametableFrame extends JFrame implements ActionListener
         saveState(getGametableCanvas().getPublicMap(), new File("autosave.grm"));
         saveState(getGametableCanvas().getPrivateMap(), new File("autosavepvt.grm"));
         savePrefs();
+        charsheetpanel.getStorage().autoSave();
     }
 
     public void saveMacros()

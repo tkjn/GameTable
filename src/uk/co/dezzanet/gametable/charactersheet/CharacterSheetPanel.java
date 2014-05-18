@@ -417,4 +417,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         });
         return item;
     }
+    
+    public CharacterDataStorage getStorage() {
+    	return storage;
+    }
 }
