@@ -76,6 +76,8 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import co.tkjn.gametable.PogLibraryDialog;
+
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;
 import com.galactanet.gametable.net.NetworkThread;

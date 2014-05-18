@@ -2,7 +2,7 @@
  * PointerTool.java: GameTable is in the Public Domain.
  */
 
-package com.galactanet.gametable.tools;
+package co.tkjn.gametable.tools;
 
 import java.awt.Graphics;
 import java.awt.Point;
@@ -23,6 +23,7 @@ import com.galactanet.gametable.GametableMap;
 import com.galactanet.gametable.GridMode;
 import com.galactanet.gametable.Pog;
 import com.galactanet.gametable.SetPogAttributeDialog;
+import com.galactanet.gametable.tools.NullTool;
 import com.galactanet.gametable.util.UtilityFunctions;
 import com.galactanet.gametable.prefs.PreferenceDescriptor;
 

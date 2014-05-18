@@ -28,6 +28,12 @@ local.properties
 # PDT-specific
 .buildpath
 
+# Jar gen dir
+gen/
+
+# Export dir
+_export/
+
 
 #################
 ## Visual Studio
@@ -213,3 +219,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.class
+*.class

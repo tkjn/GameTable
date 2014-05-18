@@ -3,7 +3,7 @@
  */
 
 
-package com.galactanet.gametable;
+package co.tkjn.gametable;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -17,6 +17,9 @@ import java.awt.event.FocusListener;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import com.galactanet.gametable.Log;
+import com.galactanet.gametable.Pog;
 
 
 
