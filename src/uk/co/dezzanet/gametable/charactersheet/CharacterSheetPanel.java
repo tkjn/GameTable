@@ -350,5 +350,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 			notes.setText(characterData.getNotes());
 		}
 		doing_update = false;
+		CharacterDataStorage temp = new CharacterDataStorage();
+		temp.saveData(characterData);
 	}
 }
