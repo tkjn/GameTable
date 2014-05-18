@@ -23,6 +23,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private boolean doing_update = false;
 	private boolean updating_wounds = false;
 	private boolean updating_max_wounds = false;
+	private boolean updating_notes;
+
+	private JTextArea notes;
 	
 	/**
 	 * This is the default constructor
@@ -81,9 +84,10 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		final JLabel note_label = new JLabel("Notes");
 		add(note_label);
 		
-		final JTextArea notes = new JTextArea(10, 30);
+		notes = new JTextArea(10, 30);
 		notes.setLineWrap(true);
 		notes.setWrapStyleWord(true);
+		notes.getDocument().addDocumentListener(new NotesDocumentListener());
 		
 		JScrollPane notes_scroller = new JScrollPane(notes, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
@@ -207,6 +211,27 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 			checkValue();
 		}
 	}
+	
+	private class NotesDocumentListener implements DocumentListener {
+		public void checkValue() {
+			String text_value = notes.getText();
+			if (doing_update) {
+				return;
+			}
+			updating_notes = true;
+			characterData.setNotes(text_value);
+			updating_notes = false;
+		}
+		public void changedUpdate(DocumentEvent arg0) {
+			checkValue();
+		}
+		public void insertUpdate(DocumentEvent arg0) {
+			checkValue();
+		}
+		public void removeUpdate(DocumentEvent arg0) {
+			checkValue();
+		}
+	}
 
 	public void dataChanged() {
 		doing_update = true;
@@ -215,6 +240,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		}
 		if ( ! updating_max_wounds) {
 			max_wounds.setText(String.valueOf(characterData.getMaxWounds()));
+		}
+		if ( ! updating_notes) {
+			notes.setText(characterData.getNotes());
 		}
 		doing_update = false;
 	}
