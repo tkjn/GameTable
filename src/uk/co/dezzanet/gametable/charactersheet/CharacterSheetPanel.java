@@ -372,6 +372,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         final JMenu menu = new JMenu("Character Sheet");
         menu.add(getSaveMenuItem());
         menu.add(getSaveAsMenuItem());
+        menu.add(getOpenMenuItem());
         return menu;
     }
     
@@ -398,6 +399,20 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         item.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 storage.userSaveAs();
+            }
+        });
+        return item;
+    }
+    
+    /**
+     * creates the "Open" menu item
+     * @return the menu item
+     */
+    private JMenuItem getOpenMenuItem() {
+        final JMenuItem item = new JMenuItem("Open...");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                storage.open();
             }
         });
         return item;

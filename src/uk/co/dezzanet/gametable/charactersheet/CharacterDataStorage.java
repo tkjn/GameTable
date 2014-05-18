@@ -17,6 +17,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.galactanet.gametable.util.UtilityFunctions;
 
@@ -131,10 +133,71 @@ public class CharacterDataStorage {
 			return writer.toString();
 			
 		} catch (ParserConfigurationException e) {
-			JOptionPane.showMessageDialog(null, e.toString(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
 		} catch (TransformerException e) {
-			JOptionPane.showMessageDialog(null, e.toString(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
 		}
 		return "";
+	}
+	
+	public void open() {
+		File savefile = UtilityFunctions.doFileOpenDialog("Open Character Data", "xml", true);
+		if (savefile == null) {
+			return;
+		}
+		savePath = savefile.getAbsolutePath();
+		Document dom;
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		CharacterData characterData = CharacterSheetPanel.getCharacterData();
+		characterData.resetData();
+		try {
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			dom = db.parse(savePath);
+			
+			Element doc = dom.getDocumentElement();
+			
+			String maxWounds = getTextValue(doc, "max_wounds");
+			if (maxWounds != null && ! maxWounds.isEmpty()) {
+				characterData.setMaxWounds(Integer.parseInt(maxWounds));
+			}
+			
+			String wounds = getTextValue(doc, "wounds");
+			if (wounds != null && ! wounds.isEmpty()) {
+				characterData.setWounds(Integer.parseInt(wounds));
+			}
+			
+			String gold = getTextValue(doc, "gold");
+			if (gold != null && ! gold.isEmpty()) {
+				characterData.setGold(Integer.parseInt(gold));
+			}
+			
+			String notes = getTextValue(doc, "notes");
+			if (notes != null && ! notes.isEmpty()) {
+				characterData.setNotes(notes);
+			}
+			
+		}
+		catch (ParserConfigurationException pce) {
+			savePath = null;
+			JOptionPane.showMessageDialog(null, pce.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+		}
+		catch (SAXException se) {
+			savePath = null;
+			JOptionPane.showMessageDialog(null, se.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+		}
+		catch (IOException ioe) {
+			savePath = null;
+			JOptionPane.showMessageDialog(null, ioe.getMessage(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+		}
+	}
+	
+	private String getTextValue(Element doc, String tag) {
+		String value = null;
+	    NodeList nl;
+	    nl = doc.getElementsByTagName(tag);
+	    if (nl.getLength() > 0 && nl.item(0).hasChildNodes()) {
+	        value = nl.item(0).getFirstChild().getNodeValue();
+	    }
+	    return value;
 	}
 }
