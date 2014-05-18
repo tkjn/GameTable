@@ -146,7 +146,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	
 	private class WoundsDocumentListener implements DocumentListener {
 		public void checkValue() {
-			if (doing_update || wounds.getText() == "") {
+			String text_value = wounds.getText();
+			if (doing_update || text_value.equals("")) {
 				return;
 			}
 			updating_wounds = true;
@@ -177,12 +178,13 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	
 	private class MaxWoundsDocumentListener implements DocumentListener {
 		public void checkValue() {
-			if (doing_update || max_wounds.getText() == "") {
+			String text_value = max_wounds.getText();
+			if (doing_update || text_value.equals("")) {
 				return;
 			}
 			updating_max_wounds = true;
 			try {
-				int value = Integer.parseInt(max_wounds.getText());
+				int value = Integer.parseInt(text_value);
 				if (value < 0) {
 					throw new NumberFormatException();
 				}
