@@ -218,3 +218,7 @@ pip-log.txt
 # Gametable saves
 #################
 *.grm
+logs/*
+gen/jar/*
+macros.xml
+prefs.prf
