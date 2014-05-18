@@ -9,6 +9,11 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
 
 public class CharacterSheetPanel extends JPanel implements ICharacterDataChangedListener {
 
@@ -55,7 +60,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		add(wounds_label);
 		
 		wounds = new JTextField("0", 2);
-		wounds.getDocument().addDocumentListener(new WoundsDocumentListener());
+		PlainDocument doc = (PlainDocument) wounds.getDocument();
+		doc.setDocumentFilter(new WoundsDocumentFilter());
 		add(wounds);
 		
 		Dimension wounds_size = wounds.getPreferredSize();
@@ -70,15 +76,16 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		final JButton plus_wounds = new JButton("+");
 		plus_wounds.setPreferredSize(wounds_size);
 		plus_wounds.setFont(new Font("Ariel", Font.PLAIN, 8));
-		plus_wounds.setMargin(new Insets(1,1,1,1));
 		plus_wounds.addActionListener(new PlusWoundsActionListener());
+		plus_wounds.setMargin(new Insets(1,1,1,1));
 		add(plus_wounds);
 		
 		final JLabel max_wounds_label = new JLabel("Max");
 		add(max_wounds_label);
 		
 		max_wounds = new JTextField("0", 2);
-		max_wounds.getDocument().addDocumentListener(new MaxWoundsDocumentListener());
+		doc = (PlainDocument) max_wounds.getDocument();
+		doc.setDocumentFilter(new MaxWoundsDocumentFilter());
 		add(max_wounds);
 		
 		final JLabel note_label = new JLabel("Notes");
@@ -148,67 +155,165 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		}
 	}
 	
-	private class WoundsDocumentListener implements DocumentListener {
-		public void checkValue() {
-			String text_value = wounds.getText();
-			if (doing_update || text_value.equals("")) {
-				return;
-			}
-			updating_wounds = true;
+	private class WoundsDocumentFilter extends DocumentFilter {
+		@Override
+	 	public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+			Document doc = fb.getDocument();
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(doc.getText(0, doc.getLength()));
+		    sb.insert(offset, string);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_wounds = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getWounds() != value) {
+		    	characterData.setWounds(value);
+		    }
+		    if (characterData.getWounds() != value) {
+		    	return;
+		    }
+		    super.insertString(fb, offset, string, attr);
+		    updating_wounds = false;
+		}
+		
+		@Override
+	 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+			Document doc = fb.getDocument();
+			StringBuilder sb = new StringBuilder();
+			sb.append(doc.getText(0, doc.getLength()));
+			sb.replace(offset, offset + length, text);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_wounds = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getWounds() != value) {
+		    	characterData.setWounds(value);
+		    }
+		    if (characterData.getWounds() != value) {
+		    	return;
+		    }
+		    super.replace(fb, offset, length, text, attrs);
+		    updating_wounds = false;
+		}
+		
+		@Override
+		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+			Document doc = fb.getDocument();
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(doc.getText(0, doc.getLength()));
+		    sb.delete(offset, offset + length);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_wounds = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getWounds() != value) {
+		    	characterData.setWounds(value);
+		    }
+		    if (characterData.getWounds() != value) {
+		    	return;
+		    }
+		    super.remove(fb, offset, length);
+		    updating_wounds = false;
+		}
+		
+		private boolean testInt(String text) {
 			try {
-				int value = Integer.parseInt(wounds.getText());
+				int value = Integer.parseInt(text);
 				if (value < 0) {
 					throw new NumberFormatException();
 				}
-				if (value != characterData.getWounds()) {
-					characterData.setWounds(value);
-				}
+				return true;
 			}
 			catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+				return false;
 			}
-			updating_wounds = false;
-		}
-		public void changedUpdate(DocumentEvent arg0) {
-			checkValue();
-		}
-		public void insertUpdate(DocumentEvent arg0) {
-			checkValue();
-		}
-		public void removeUpdate(DocumentEvent arg0) {
-			checkValue();
 		}
 	}
 	
-	private class MaxWoundsDocumentListener implements DocumentListener {
-		public void checkValue() {
-			String text_value = max_wounds.getText();
-			if (doing_update || text_value.equals("")) {
-				return;
-			}
-			updating_max_wounds = true;
+	private class MaxWoundsDocumentFilter extends DocumentFilter {
+		@Override
+	 	public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+			Document doc = fb.getDocument();
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(doc.getText(0, doc.getLength()));
+		    sb.insert(offset, string);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_max_wounds = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getMaxWounds() != value) {
+		    	characterData.setMaxWounds(value);
+		    }
+		    if (characterData.getMaxWounds() != value) {
+		    	return;
+		    }
+		    super.insertString(fb, offset, string, attr);
+		    updating_max_wounds = false;
+		}
+		
+		@Override
+	 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+			Document doc = fb.getDocument();
+			StringBuilder sb = new StringBuilder();
+			sb.append(doc.getText(0, doc.getLength()));
+			sb.replace(offset, offset + length, text);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_max_wounds = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getMaxWounds() != value) {
+		    	characterData.setMaxWounds(value);
+		    }
+		    if (characterData.getMaxWounds() != value) {
+		    	return;
+		    }
+		    super.replace(fb, offset, length, text, attrs);
+		    updating_max_wounds = false;
+		}
+		
+		@Override
+		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+			Document doc = fb.getDocument();
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(doc.getText(0, doc.getLength()));
+		    sb.delete(offset, offset + length);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_max_wounds = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getMaxWounds() != value) {
+		    	characterData.setMaxWounds(value);
+		    }
+		    if (characterData.getMaxWounds() != value) {
+		    	return;
+		    }
+		    super.remove(fb, offset, length);
+		    updating_max_wounds = false;
+		}
+		
+		private boolean testInt(String text) {
 			try {
-				int value = Integer.parseInt(text_value);
+				int value = Integer.parseInt(text);
 				if (value < 0) {
 					throw new NumberFormatException();
 				}
-				if (value != characterData.getMaxWounds()) {
-					characterData.setMaxWounds(value);
-				}
+				return true;
 			}
 			catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
+				return false;
 			}
-			updating_max_wounds = false;
-		}
-		public void changedUpdate(DocumentEvent arg0) {
-			checkValue();
-		}
-		public void insertUpdate(DocumentEvent arg0) {
-			checkValue();
-		}
-		public void removeUpdate(DocumentEvent arg0) {
-			checkValue();
 		}
 	}
 	
