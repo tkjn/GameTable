@@ -3,7 +3,7 @@
  */
 
 
-package com.galactanet.gametable;
+package co.tkjn.gametable;
 
 import java.io.File;
 import java.io.FilenameFilter;

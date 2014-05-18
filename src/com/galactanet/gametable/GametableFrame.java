@@ -77,6 +77,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
+import co.tkjn.gametable.PogLibraryDialog;
 
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;

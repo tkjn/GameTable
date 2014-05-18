@@ -3,7 +3,7 @@
  */
 
 
-package com.galactanet.gametable;
+package co.tkjn.gametable;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -11,6 +11,9 @@ import java.util.Iterator;
 import java.util.Set;
 
 import javax.swing.*;
+
+import com.galactanet.gametable.Log;
+import com.galactanet.gametable.Pog;
 
 
 /**

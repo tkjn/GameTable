@@ -3,7 +3,7 @@
  */
 
 
-package com.galactanet.gametable;
+package co.tkjn.gametable;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -13,6 +13,8 @@ import java.util.Vector;
 
 import javax.swing.AbstractListModel;
 
+import com.galactanet.gametable.Log;
+import com.galactanet.gametable.Pog;
 import com.galactanet.gametable.net.PacketManager;
 import com.galactanet.gametable.ui.PogLibrary;
 
