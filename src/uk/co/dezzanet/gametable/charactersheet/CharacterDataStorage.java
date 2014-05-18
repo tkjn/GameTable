@@ -1,5 +1,8 @@
 package uk.co.dezzanet.gametable.charactersheet;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.swing.JOptionPane;
@@ -15,11 +18,78 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.galactanet.gametable.util.UtilityFunctions;
+
 
 
 public class CharacterDataStorage {
-	public void saveData(CharacterData character_data) {
-		System.out.print(getXMLString(character_data));
+	
+	private String savePath = null;
+	
+	public void userSave() {
+		if (savePath == null) {
+			userSaveAs();
+			return;
+		}
+		File destination = new File(savePath);
+		doSave(CharacterSheetPanel.getCharacterData(), destination);
+	}
+	
+	public void autoSave() {
+		String destination_path = savePath;
+		if (savePath == null) {
+			userSaveAs();
+			return;
+		}
+		File destination = new File(destination_path);
+		doSave(CharacterSheetPanel.getCharacterData(), destination);
+	}
+	
+	public void userSaveAs() {
+		File destination = UtilityFunctions.doFileSaveDialog("Save Character Data", "xml", true);
+		if (destination == null) {
+			return;
+		}
+		savePath = destination.getAbsolutePath();
+		doSave(CharacterSheetPanel.getCharacterData(), destination);
+	}
+	
+	private void doSave(CharacterData character_data, File destination) {
+		FileOutputStream fop = null;
+		try {
+			
+			if (destination == null) {
+				return;
+			}
+			
+			fop = new FileOutputStream(destination);
+			
+			if ( ! destination.exists()) {
+				destination.createNewFile();
+			}
+			
+			String data = getXMLString(character_data);
+			byte[] contentInBytes = data.getBytes();
+			
+			fop.write(contentInBytes);
+			fop.flush();
+			fop.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, e.toString(), "Error Massage", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		finally {
+			try {
+				if (fop != null) {
+					fop.close();
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public String getXMLString(CharacterData character_data) {

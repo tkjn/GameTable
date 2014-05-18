@@ -15,11 +15,16 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
+import com.galactanet.gametable.GametableFrame;
+import com.galactanet.gametable.ui.chat.ChatPanel;
+
 public class CharacterSheetPanel extends JPanel implements ICharacterDataChangedListener {
 
 	private static final long serialVersionUID = -8857859513490491696L;
 	
-	private CharacterData characterData = new CharacterData();
+	private static CharacterData characterData = new CharacterData();
+	
+	private CharacterDataStorage storage = new CharacterDataStorage();
 
 	private JTextField wounds;
 
@@ -37,6 +42,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	 */
 	public CharacterSheetPanel() {
 		initialise();
+		GametableFrame frame = GametableFrame.getGametableFrame();
+		JMenuBar menubar = frame.getJMenuBar();
+		menubar.add(getMenu());
 	}
 	
 	/**
@@ -98,7 +106,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		
 		JScrollPane notes_scroller = new JScrollPane(notes, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		add(notes_scroller, BorderLayout.CENTER);
+		add(notes_scroller, BorderLayout.CENTER);		
 		
 		//layout.getConstraints(panel).setX(Spring.constant(2));
 		//layout.getConstraints(panel).setY(Spring.constant(2));
@@ -350,7 +358,48 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 			notes.setText(characterData.getNotes());
 		}
 		doing_update = false;
-		CharacterDataStorage temp = new CharacterDataStorage();
-		temp.saveData(characterData);
 	}
+	
+	public static CharacterData getCharacterData() {
+		return characterData;
+	}
+	
+	/** 
+     * creates the "Character Sheet" menu 
+     * @return the new menu
+     */
+    public JMenu getMenu() {
+        final JMenu menu = new JMenu("Character Sheet");
+        menu.add(getSaveMenuItem());
+        menu.add(getSaveAsMenuItem());
+        return menu;
+    }
+    
+    /**
+     * creates the "Save" menu item
+     * @return the menu item
+     */
+    private JMenuItem getSaveMenuItem() {
+        final JMenuItem item = new JMenuItem("Save");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                storage.userSave();
+            }
+        });
+        return item;
+    }
+    
+    /**
+     * creates the "Save As" menu item
+     * @return the menu item
+     */
+    private JMenuItem getSaveAsMenuItem() {
+        final JMenuItem item = new JMenuItem("Save As...");
+        item.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                storage.userSaveAs();
+            }
+        });
+        return item;
+    }
 }
