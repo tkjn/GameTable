@@ -16,6 +16,7 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
 import com.galactanet.gametable.GametableFrame;
+import com.galactanet.gametable.SetPogAttributeDialog;
 import com.galactanet.gametable.ui.chat.ChatPanel;
 
 public class CharacterSheetPanel extends JPanel implements ICharacterDataChangedListener {
@@ -41,13 +42,15 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private PogAdapter pog_adapter;
 
 	private JTextField gold;
+
+	private GametableFrame frame;
 	
 	/**
 	 * This is the default constructor
 	 */
 	public CharacterSheetPanel() {
 		initialise();
-		GametableFrame frame = GametableFrame.getGametableFrame();
+		frame = GametableFrame.getGametableFrame();
 		JMenuBar menubar = frame.getJMenuBar();
 		menubar.add(getMenu());
 	}
@@ -215,13 +218,19 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	
 	private class PlusGoldActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			characterData.setGold(characterData.getGold() + 1);
+			GoldDialogue dialogue = new GoldDialogue("Add to total");
+			dialogue.setLocationRelativeTo(frame.getGametableCanvas());
+			dialogue.setVisible(true);
+			characterData.setGold(characterData.getGold() + dialogue.getValue());
 		}
 	}
 	
 	private class SubGoldActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			characterData.setGold(characterData.getGold() - 1);
+			GoldDialogue dialogue = new GoldDialogue("Remove from total");
+			dialogue.setLocationRelativeTo(frame.getGametableCanvas());
+			dialogue.setVisible(true);
+			characterData.setGold(characterData.getGold() - dialogue.getValue());
 		}
 	}
 	
