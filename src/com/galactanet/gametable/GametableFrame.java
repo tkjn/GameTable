@@ -5107,4 +5107,8 @@ public class GametableFrame extends JFrame implements ActionListener
             m_windowPos = getLocation();
         }
     }
+    
+    public CharacterSheetPanel getCharacterSheetPanel() {
+    	return charsheetpanel;
+    }
 }

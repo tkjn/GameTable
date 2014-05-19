@@ -36,6 +36,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private boolean updating_notes;
 
 	private JTextArea notes;
+
+	private PogAdapter pog_adapter;
 	
 	/**
 	 * This is the default constructor
@@ -53,6 +55,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	 * @return void
 	 */
 	private void initialise() {
+		
+		pog_adapter = new PogAdapter(characterData);
+		
 		setMaximumSize(new Dimension(32768, 31));
 		setMinimumSize(new Dimension(100, 31));
 
@@ -420,5 +425,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     
     public CharacterDataStorage getStorage() {
     	return storage;
+    }
+    
+    public PogAdapter getPogAdapter() {
+    	return pog_adapter;
     }
 }

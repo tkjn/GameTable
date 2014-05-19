@@ -818,6 +818,15 @@ public class PointerTool extends NullTool
               });
               menu.add(item);
               
+              // --- Mark as my pog (Character sheet)
+              item = new JMenuItem("Set as my character");
+              item.addActionListener(new ActionListener() {
+            	 public void actionPerformed(final ActionEvent e) {
+            		 GametableFrame.getGametableFrame().getCharacterSheetPanel().getPogAdapter().setCurrentPog(m_menuPog);
+            	 }
+              });
+              menu.add(item);
+              
               // --------------------------------
               if(layer == Pog.LAYER_UNDERLAY) {
                   menu.addSeparator();
