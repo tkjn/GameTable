@@ -1,5 +1,8 @@
 package uk.co.dezzanet.gametable.charactersheet;
 
+import java.util.HashMap;
+
+import com.galactanet.gametable.GametableFrame;
 import com.galactanet.gametable.Pog;
 
 public class PogAdapter implements ICharacterDataChangedListener {
@@ -24,8 +27,16 @@ public class PogAdapter implements ICharacterDataChangedListener {
 		String wounds = String.valueOf(character_data.getWounds()) + " / " + String.valueOf(character_data.getMaxWounds());
 		String gold = String.valueOf(character_data.getGold());
 		
-		current_pog.setAttribute("Wounds", wounds);
-		current_pog.setAttribute("Gold", gold);
+		HashMap<String, String> map = new HashMap();
+		if ( ! wounds.equals(current_pog.getAttribute("Wounds"))) {
+			map.put("Wounds", wounds);
+		}
+		if ( ! gold.equals(current_pog.getAttribute("Gold"))) {
+			map.put("Gold", gold);
+		}
+		
+		GametableFrame.getGametableFrame().getGametableCanvas().setPogData(current_pog.getId(), null, map, null);
+		
 	}
 
 	public void dataChanged() {
