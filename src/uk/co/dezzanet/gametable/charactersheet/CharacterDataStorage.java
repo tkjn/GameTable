@@ -40,6 +40,7 @@ public class CharacterDataStorage {
 	public void autoSave() {
 		String destination_path = savePath;
 		if (savePath == null) {
+			// Should we annoy the user with a save as? is there a better way?
 			userSaveAs();
 			return;
 		}

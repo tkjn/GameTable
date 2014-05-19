@@ -33,11 +33,14 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private boolean doing_update = false;
 	private boolean updating_wounds = false;
 	private boolean updating_max_wounds = false;
-	private boolean updating_notes;
+	private boolean updating_notes = false;
+	private boolean updating_gold = false;
 
 	private JTextArea notes;
 
 	private PogAdapter pog_adapter;
+
+	private JTextField gold;
 	
 	/**
 	 * This is the default constructor
@@ -101,6 +104,30 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		doc.setDocumentFilter(new MaxWoundsDocumentFilter());
 		add(max_wounds);
 		
+		// Gold
+		final JLabel gold_label = new JLabel("Gold");
+		add(gold_label);
+		
+		gold = new JTextField("0", 5);
+		PlainDocument gold_doc = (PlainDocument) gold.getDocument();
+		gold_doc.setDocumentFilter(new GoldDocumentFilter());
+		add(gold);
+		
+		final JButton sub_gold = new JButton("-");
+		sub_gold.setPreferredSize(wounds_size);
+		sub_gold.setFont(new Font("Ariel", Font.PLAIN, 8));
+		sub_gold.setMargin(new Insets(1,1,1,1));
+		sub_gold.addActionListener(new SubGoldActionListener());
+		add(sub_gold);
+		
+		final JButton plus_gold = new JButton("+");
+		plus_gold.setPreferredSize(wounds_size);
+		plus_gold.setFont(new Font("Ariel", Font.PLAIN, 8));
+		plus_gold.addActionListener(new PlusGoldActionListener());
+		plus_gold.setMargin(new Insets(1,1,1,1));
+		add(plus_gold);
+		
+		// Notes
 		final JLabel note_label = new JLabel("Notes");
 		add(note_label);
 		
@@ -140,6 +167,24 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		layout.putConstraint(SpringLayout.WEST, max_wounds, 5, SpringLayout.EAST, plus_wounds);
 		layout.putConstraint(SpringLayout.NORTH, max_wounds, 5, SpringLayout.SOUTH, max_wounds_label);
 		
+		// Gold line
+		// Gold label should be below wounds
+		layout.putConstraint(SpringLayout.WEST, gold_label, 5, SpringLayout.WEST, this);
+		layout.putConstraint(SpringLayout.NORTH, gold_label, 5, SpringLayout.SOUTH, sub_wounds);
+		
+		// Gold - should be just below the gold label and 5px from the box edge
+		layout.putConstraint(SpringLayout.NORTH, sub_gold, 5, SpringLayout.SOUTH, gold_label);
+		layout.putConstraint(SpringLayout.WEST, sub_gold, 5, SpringLayout.WEST, this);
+		
+		// Gold field should be just below the gold label and 5px from Gold-
+		layout.putConstraint(SpringLayout.NORTH, gold, 5, SpringLayout.SOUTH, gold_label);
+		layout.putConstraint(SpringLayout.WEST, gold, 5, SpringLayout.EAST, sub_gold);
+		
+		// Gold + should be just below the gold label and 5px from Gold field
+		layout.putConstraint(SpringLayout.NORTH, plus_gold, 5, SpringLayout.SOUTH, gold_label);
+		layout.putConstraint(SpringLayout.WEST, plus_gold, 5, SpringLayout.EAST, gold);
+		
+		
 		// bottom of the notes should be 5px from the bottom and left/right
 		layout.putConstraint(SpringLayout.SOUTH, notes, 0, SpringLayout.SOUTH, notes_scroller);
 		layout.putConstraint(SpringLayout.SOUTH, notes_scroller, 5, SpringLayout.SOUTH, this);
@@ -165,6 +210,18 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private class SubWoundsActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 			characterData.setWounds(characterData.getWounds() - 1);
+		}
+	}
+	
+	private class PlusGoldActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			characterData.setGold(characterData.getGold() + 1);
+		}
+	}
+	
+	private class SubGoldActionListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			characterData.setGold(characterData.getGold() - 1);
 		}
 	}
 	
@@ -330,6 +387,84 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		}
 	}
 	
+	private class GoldDocumentFilter extends DocumentFilter {
+		@Override
+	 	public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+			Document doc = fb.getDocument();
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(doc.getText(0, doc.getLength()));
+		    sb.insert(offset, string);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_gold = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getGold() != value) {
+		    	characterData.setGold(value);
+		    }
+		    if (characterData.getGold() != value) {
+		    	return;
+		    }
+		    super.insertString(fb, offset, string, attr);
+		    updating_gold = false;
+		}
+		
+		@Override
+	 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+			Document doc = fb.getDocument();
+			StringBuilder sb = new StringBuilder();
+			sb.append(doc.getText(0, doc.getLength()));
+			sb.replace(offset, offset + length, text);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_gold = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getGold() != value) {
+		    	characterData.setGold(value);
+		    }
+		    if (characterData.getGold() != value) {
+		    	return;
+		    }
+		    super.replace(fb, offset, length, text, attrs);
+		    updating_gold = false;
+		}
+		
+		@Override
+		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
+			Document doc = fb.getDocument();
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(doc.getText(0, doc.getLength()));
+		    sb.delete(offset, offset + length);
+		    if ( ! testInt(sb.toString())) {
+		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
+		    	return;
+		    }
+		    updating_gold = true;
+		    int value = Integer.parseInt(sb.toString());
+		    if (characterData.getGold() != value) {
+		    	characterData.setGold(value);
+		    }
+		    if (characterData.getGold() != value) {
+		    	return;
+		    }
+		    super.remove(fb, offset, length);
+		    updating_gold = false;
+		}
+		
+		private boolean testInt(String text) {
+			try {
+				int value = Integer.parseInt(text);
+				return true;
+			}
+			catch (NumberFormatException e) {
+				return false;
+			}
+		}
+	}
+	
 	private class NotesDocumentListener implements DocumentListener {
 		public void checkValue() {
 			String text_value = notes.getText();
@@ -358,6 +493,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		}
 		if ( ! updating_max_wounds) {
 			max_wounds.setText(String.valueOf(characterData.getMaxWounds()));
+		}
+		if ( ! updating_gold) {
+			gold.setText(String.valueOf(characterData.getGold()));
 		}
 		if ( ! updating_notes) {
 			notes.setText(characterData.getNotes());
