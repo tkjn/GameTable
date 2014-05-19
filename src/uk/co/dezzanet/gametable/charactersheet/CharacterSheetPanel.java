@@ -187,16 +187,23 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		layout.putConstraint(SpringLayout.NORTH, plus_gold, 5, SpringLayout.SOUTH, gold_label);
 		layout.putConstraint(SpringLayout.WEST, plus_gold, 5, SpringLayout.EAST, gold);
 		
+		// NOTES
+		
+		// top of the notes label should be just below gold
+		layout.putConstraint(SpringLayout.NORTH, note_label, 5, SpringLayout.SOUTH, sub_gold);
+		layout.putConstraint(SpringLayout.WEST, note_label, 5, SpringLayout.WEST, this);
+		
+		// top of the notes should be just below the label
+		layout.putConstraint(SpringLayout.NORTH, notes_scroller, 5, SpringLayout.SOUTH, note_label);
+		layout.putConstraint(SpringLayout.NORTH, notes, 0, SpringLayout.NORTH, notes_scroller);		
 		
 		// bottom of the notes should be 5px from the bottom and left/right
 		layout.putConstraint(SpringLayout.SOUTH, notes, 0, SpringLayout.SOUTH, notes_scroller);
-		layout.putConstraint(SpringLayout.SOUTH, notes_scroller, 5, SpringLayout.SOUTH, this);
+		layout.putConstraint(SpringLayout.SOUTH, notes_scroller, -5, SpringLayout.SOUTH, this);
 		layout.putConstraint(SpringLayout.WEST, notes_scroller, 5, SpringLayout.WEST, this);
-		layout.putConstraint(SpringLayout.EAST, notes_scroller, 5, SpringLayout.EAST, this);
+		layout.putConstraint(SpringLayout.EAST, notes_scroller, -5, SpringLayout.EAST, this);
 		
-		// bottom of the notes label should be just above the notes field and 5px from the left
-		layout.putConstraint(SpringLayout.SOUTH, note_label, -5, SpringLayout.NORTH, notes_scroller);
-		layout.putConstraint(SpringLayout.WEST, note_label, 5, SpringLayout.WEST, this);
+		
 		
 		
 		
