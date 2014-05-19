@@ -147,7 +147,8 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         pogListPanel.add(pogListLabel, BorderLayout.NORTH);
         
         JScrollPane listScroller = new JScrollPane(pogList);
-        listScroller.setPreferredSize(new Dimension(150, 200));
+        listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller.setPreferredSize(new Dimension(120, 200));
         pogListPanel.add(listScroller, BorderLayout.EAST);
         
         pogList.addListSelectionListener(this);
@@ -155,7 +156,10 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         
         panel.add(pogListPanel, BorderLayout.WEST);
         
-        panel.add(pogDetails, BorderLayout.EAST);
+        listScroller = new JScrollPane(pogDetails);
+        listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        listScroller.setPreferredSize(new Dimension(150, 200));
+        panel.add(listScroller, BorderLayout.EAST);
         
         outerBox.add(panel);
         outerBox.add(Box.createVerticalStrut(PADDING));
