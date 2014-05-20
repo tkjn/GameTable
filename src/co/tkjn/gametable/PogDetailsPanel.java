@@ -43,7 +43,6 @@ public class PogDetailsPanel extends JPanel
     private void initialize()
     {
         nameLabel.setText("");
-        setPreferredSize(new Dimension(120,200));
         add(nameLabel, BorderLayout.CENTER);
         
     }

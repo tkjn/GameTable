@@ -41,13 +41,17 @@ public class PogListModel extends AbstractListModel
      */
     public Object getElementAt(int arg0)
     {
-        // TODO Auto-generated method stub
-        return getPogAt(arg0).getText();
+        Pog pog = getPogAt(arg0);
+        String pogText = pog.getText();
+        if (pogText.equals(""))
+        {
+            pogText = "--Unknown Pog--";
+        }
+        return pogText;
     }
     
     public Pog getPogAt(int arg0)
     {
-        // TODO Auto-generated method stub
         return pogs.get(arg0);
     }
 

@@ -498,7 +498,26 @@ public class PointerTool extends NullTool
                     public void actionPerformed(final ActionEvent e)
                     {
                         final Pog pog = m_menuPog;
-                        File spaf = new File("poginstances"+File.separator+pog.getText()+".pog");
+                        
+                        String pogText = pog.getText();
+                        // Remove special characters
+                        pogText = pogText.replace(File.separator, "");
+                        pogText = pogText.replace(".", "");
+                        
+                        // Trim whitespace and then replace spaces with _
+                        pogText = pogText.trim();
+                        pogText = pogText.replaceAll("[ ]+", "_");
+                        
+                        // Strip all other whitespace
+                        pogText = pogText.replaceAll("\\s+","");
+                        
+                        if (pogText.equals(""))
+                        {
+                            pogText = "unknown";
+                        }                        
+                        
+                        File spaf = new File("poginstances"+File.separator+pogText+".pog");
+                        
                         if (spaf.exists())
                         {
                             int overwriteResult = UtilityFunctions.yesNoCancelDialog(m_canvas, pog.getText()+".pog already exists in library. Overwrite? (No will create a new file with a different name)", "Overwrite Pog");
