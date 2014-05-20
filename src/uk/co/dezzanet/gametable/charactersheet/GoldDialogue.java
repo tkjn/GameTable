@@ -51,8 +51,13 @@ public class GoldDialogue extends JDialog {
             applyButton.setText(description);
             applyButton.addActionListener(new java.awt.event.ActionListener() {
                 public void actionPerformed(final java.awt.event.ActionEvent e) {
-                	value = Integer.parseInt(getField().getText());
-                    dispose();
+                	if (validateGold()) {
+	                	value = Integer.parseInt(getField().getText());
+	                    dispose();
+                	}
+                	else {
+                		JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
+                	}
                 }
             });
         }
@@ -62,8 +67,6 @@ public class GoldDialogue extends JDialog {
 	private JTextField getField() {
 		if (goldField == null) {
 			goldField = new JTextField("0", 5);
-			PlainDocument gold_doc = (PlainDocument) goldField.getDocument();
-			gold_doc.setDocumentFilter(new GoldDocumentFilter());
         }
         return goldField;
 	}
@@ -108,60 +111,14 @@ public class GoldDialogue extends JDialog {
     	return value;
     }
     
-    private class GoldDocumentFilter extends DocumentFilter {
-		@Override
-	 	public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-			if (string.equals("")) {
-				return;
-			}
-			Document doc = fb.getDocument();
-		    StringBuilder sb = new StringBuilder();
-		    sb.append(doc.getText(0, doc.getLength()));
-		    sb.insert(offset, string);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    super.insertString(fb, offset, string, attr);
+    private boolean validateGold() {
+    	String entered_value = getField().getText();
+		try {
+			Integer.parseInt(entered_value);
+			return true;
 		}
-		
-		@Override
-	 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-			if (text.equals("")) {
-				return;
-			}
-			Document doc = fb.getDocument();
-			StringBuilder sb = new StringBuilder();
-			sb.append(doc.getText(0, doc.getLength()));
-			sb.replace(offset, offset + length, text);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    super.replace(fb, offset, length, text, attrs);
+		catch (NumberFormatException e) {
+			return false;
 		}
-		
-		@Override
-		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-			Document doc = fb.getDocument();
-		    StringBuilder sb = new StringBuilder();
-		    sb.append(doc.getText(0, doc.getLength()));
-		    sb.delete(offset, offset + length);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    super.remove(fb, offset, length);
-		}
-		
-		private boolean testInt(String text) {
-			try {
-				int value = Integer.parseInt(text);
-				return true;
-			}
-			catch (NumberFormatException e) {
-				return false;
-			}
-		}
-	}
+	}    
 }
