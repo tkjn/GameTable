@@ -76,6 +76,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.SAXException;
 
+import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
 import co.tkjn.gametable.PogLibraryDialog;
 
 import com.galactanet.gametable.lang.Language;
@@ -406,6 +407,8 @@ public class GametableFrame extends JFrame implements ActionListener
     
     // The status goes at the bottom of the pane
     private final JLabel            m_status                 = new JLabel(" "); // Status Bar
+
+	private CharacterSheetPanel charsheetpanel;
 
     /**
      * Construct the frame
@@ -3017,6 +3020,9 @@ public class GametableFrame extends JFrame implements ActionListener
         
         m_pogsTabbedPane.add(m_macroPanel, lang.DICE_MACROS);
         m_pogsTabbedPane.setFocusable(false);
+        
+        charsheetpanel = new CharacterSheetPanel();
+        m_pogsTabbedPane.add(charsheetpanel, "Character Sheet");
 
         m_canvasPane.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(1, 1, 1, 1)));
         m_canvasPane.add(getGametableCanvas(), BorderLayout.CENTER);
@@ -4557,6 +4563,7 @@ public class GametableFrame extends JFrame implements ActionListener
         saveState(getGametableCanvas().getPublicMap(), new File("autosave.grm"));
         saveState(getGametableCanvas().getPrivateMap(), new File("autosavepvt.grm"));
         savePrefs();
+        charsheetpanel.getStorage().autoSave();
     }
 
     public void saveMacros()
@@ -5099,5 +5106,9 @@ public class GametableFrame extends JFrame implements ActionListener
             m_windowSize = getSize();
             m_windowPos = getLocation();
         }
+    }
+    
+    public CharacterSheetPanel getCharacterSheetPanel() {
+    	return charsheetpanel;
     }
 }
