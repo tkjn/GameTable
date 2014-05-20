@@ -41,7 +41,8 @@ public class CharacterDataStorage {
 		String destination_path = savePath;
 		if (savePath == null) {
 			// Should we annoy the user with a save as? is there a better way?
-			userSaveAs();
+			// No. There's probably a better way.
+			// userSaveAs();
 			return;
 		}
 		File destination = new File(destination_path);
