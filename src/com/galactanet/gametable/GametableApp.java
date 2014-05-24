@@ -32,15 +32,15 @@ public class GametableApp
     /**
      * String to describe gametable's chat version
      */
-    public static final String VERSION        = "OSU-gt (Gametable) 2.0.RC9";
-    public static final String BUILD          = "build 20100927";
-    
+    public static final String VERSION        = "tkjn-OSU-gt (Gametable) 1.0.RC2";
+    public static final String BUILD          = "build 20140524";
+
     public static final String LANGUAGE       = "En";
-    
+
     /**
      * Main method
-     * This is the entry point of the application. 
-     * 
+     * This is the entry point of the application.
+     *
      * @param args String[] Like every Java program, it receives parameters from the command line
      */
     static public void main(final String[] args)

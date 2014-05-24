@@ -7,11 +7,11 @@
     <ROW Property="ARPURLINFOABOUT" Value="https://sourceforge.net/projects/gametable/"/>
     <ROW Property="BannerBitmap" MultiBuildValue="DefaultBuild:default_banner.bmp#BuildMacOS:default_banner.bmp" Type="1"/>
     <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:default_dialog.bmp#BuildMacOS:default_dialog.bmp" Type="1"/>
-    <ROW Property="Manufacturer" Value="OSU-gt" ValueLocId="*"/>
+    <ROW Property="Manufacturer" Value="tkjn-OSU-gt" ValueLocId="*"/>
     <ROW Property="ProductCode" Value="1033:{16C426FC-B3A4-41B8-9BED-BDAB6836F54D} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
-    <ROW Property="ProductName" Value="OSU-gt RC9" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="2.0.0"/>
+    <ROW Property="ProductName" Value="tkjn-OSU-gt RC2" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="1.0.0"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{21CC62C7-F5D3-403C-9C1D-068F0D7B2615}"/>
   </COMPONENT>
@@ -26,6 +26,7 @@
     <ROW Directory="lib_DIR" Directory_Parent="APPDIR" DefaultDir="lib"/>
     <ROW Directory="logs_DIR" Directory_Parent="APPDIR" DefaultDir="logs"/>
     <ROW Directory="pogs_DIR" Directory_Parent="APPDIR" DefaultDir="pogs"/>
+    <ROW Directory="poginstances_DIR" Directory_Parent="APPDIR" DefaultDir="poginstances"/>
     <ROW Directory="underlays_DIR" Directory_Parent="APPDIR" DefaultDir="underl~1|underlays"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
@@ -331,6 +332,7 @@
     <ROW Directory_="environment_DIR" SourcePath="..\environment" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
     <ROW Directory_="language_DIR" SourcePath="..\language" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
     <ROW Directory_="pogs_DIR" SourcePath="..\pogs" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
+    <ROW Directory_="poginstances_DIR" SourcePath="..\poginstances" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
     <ROW Directory_="underlays_DIR" SourcePath="..\underlays" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6"/>
   </COMPONENT>
 </DOCUMENT>
