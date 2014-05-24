@@ -53,7 +53,7 @@ public class PointerTool extends NullTool
 
         public void actionPerformed(final ActionEvent e)
         {
-            final Set toDelete = new HashSet();
+            final Set<String> toDelete = new HashSet<String>();
             toDelete.add(key);
             m_canvas.setPogData(m_menuPog.getId(), null, null, toDelete);
         }
@@ -81,9 +81,9 @@ public class PointerTool extends NullTool
 
             final String name = dialog.getName();
             final String value = dialog.getValue();
-            final Set toDelete = new HashSet();
+            final Set<String> toDelete = new HashSet<String>();
             toDelete.add(key);
-            final Map toAdd = new HashMap();
+            final Map<String, String> toAdd = new HashMap<String, String>();
             if ((name != null) && (name.length() > 0))
             {
                 toAdd.put(name, value);
@@ -94,14 +94,14 @@ public class PointerTool extends NullTool
 
     private static final String PREF_DRAG   = "com.galactanet.gametable.tools.PointerTool.drag";
 
-    private static final List   PREFERENCES = createPreferenceList();
+    private static final List<PreferenceDescriptor> PREFERENCES = createPreferenceList();
 
     /**
      * @return The static, unmodifiable list of preferences for this tool.
      */
-    private static final List createPreferenceList()
+    private static final List<PreferenceDescriptor> createPreferenceList()
     {
-        final List retVal = new ArrayList();
+        final List<PreferenceDescriptor> retVal = new ArrayList<PreferenceDescriptor>();
         retVal.add(new PreferenceDescriptor(PREF_DRAG, "Drag map when not over Pog", PreferenceDescriptor.TYPE_FLAG,
             Boolean.TRUE));
         return Collections.unmodifiableList(retVal);

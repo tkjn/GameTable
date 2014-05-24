@@ -35,7 +35,7 @@ public class PogType
     private int             m_faceSize;
     private final String    m_filename;
     private BitSet          m_hitMap;
-    private final Hashtable m_iconcache = new Hashtable();
+    private final Hashtable<Double, Dimension> m_iconcache = new Hashtable<Double, Dimension>();
     public Image            m_image;
     /*
      * m_lastScaledImage is NOT used in current code, except in load(), where it is never read.
@@ -273,11 +273,11 @@ public class PogType
             return m_faceSize * GametableCanvas.BASE_SQUARE_SIZE;
         }
 
-        Dimension bounds = (Dimension)(m_iconcache.get(Double.valueOf(angle)));
+        Dimension bounds = m_iconcache.get(Double.valueOf(angle));
         if (bounds == null)
         {
             rotate(m_image, angle, forceGridSnap);
-            bounds = (Dimension)(m_iconcache.get(Double.valueOf(angle)));
+            bounds = m_iconcache.get(Double.valueOf(angle));
         }
         return (int)(bounds.getHeight());
     }
@@ -292,11 +292,11 @@ public class PogType
             return m_faceSize * GametableCanvas.BASE_SQUARE_SIZE;
         }
 
-        Dimension bounds = (Dimension)(m_iconcache.get(Double.valueOf(angle)));
+        Dimension bounds = m_iconcache.get(Double.valueOf(angle));
         if (bounds == null)
         {
             rotate(m_image, angle, forceGridSnap);
-            bounds = (Dimension)(m_iconcache.get(Double.valueOf(angle)));
+            bounds = m_iconcache.get(Double.valueOf(angle));
         }
         return (int)(bounds.getWidth());
     }

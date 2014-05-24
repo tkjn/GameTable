@@ -18,18 +18,18 @@ public class Deck
     // these Lists are filled with Integers. Those Integers
     // refer to indices that can be sent in to DeckData.getCard.
     // Cards in the deck:
-    List                       m_deck     = new ArrayList();
+    List<Integer>              m_deck     = new ArrayList<Integer>();
 
     /** ************************** DATA ************************* */
     private DeckData           m_deckData;
 
     // Cards in the discards:
-    List                       m_discards = new ArrayList();
+    List<Integer>              m_discards = new ArrayList<Integer>();
 
     // our id
     int                        m_id;
 
-    public String                     m_name;
+    public String              m_name;
 
     public Deck()
     {
@@ -63,7 +63,7 @@ public class Deck
         // it's not already somewhere else.
         for (int i = 0; i < m_discards.size(); i++)
         {
-            final int checkCardId = ((Integer)m_discards.get(i)).intValue();
+            final int checkCardId = m_discards.get(i).intValue();
             if (checkCardId == card.m_cardId)
             {
                 // we already have this in the discards
@@ -75,7 +75,7 @@ public class Deck
 
         for (int i = 0; i < m_deck.size(); i++)
         {
-            final int checkCardId = ((Integer)m_deck.get(i)).intValue();
+            final int checkCardId = m_deck.get(i).intValue();
             if (checkCardId == card.m_cardId)
             {
                 // we already have this in the discards
@@ -92,7 +92,7 @@ public class Deck
     public DeckData.Card drawCard()
     {
         // get the next card in the deck
-        final Integer cardNum = (Integer)m_deck.get(0);
+        final Integer cardNum = m_deck.get(0);
         m_deck.remove(0);
         // System.out.println(""+cardNum.intValue());
         final DeckData.Card card = m_deckData.getCard(cardNum.intValue());
@@ -143,7 +143,7 @@ public class Deck
         // put all the discards into the deck
         for (int i = 0; i < m_discards.size(); i++)
         {
-            final Integer cardNum = (Integer)m_discards.get(i);
+            final Integer cardNum = m_discards.get(i);
             m_deck.add(cardNum);
         }
         m_discards.clear();
@@ -163,7 +163,7 @@ public class Deck
         {
             // yes we could end up swappign a card with itself. That's ok
             final int idx = rand() % m_deck.size();
-            final Integer cardNum = (Integer)m_deck.get(idx);
+            final Integer cardNum = m_deck.get(idx);
 
             // pull it out of the deck
             m_deck.remove(idx);

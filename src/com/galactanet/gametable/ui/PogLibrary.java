@@ -59,18 +59,16 @@ public class PogLibrary
      * 
      * @param toSort List of Pogs to sort.
      */
-    private static void sortPogsByLabel(final List toSort)
+    private static void sortPogsByLabel(final List<PogType> toSort)
     {
-        Collections.sort(toSort, new Comparator()
+        Collections.sort(toSort, new Comparator<PogType>()
         {
             /*
              * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
              */
-            public int compare(final Object a, final Object b)
+            public int compare(final PogType a, final PogType b)
             {
-                final PogType pa = (PogType)a;
-                final PogType pb = (PogType)b;
-                return pa.getNormalizedLabel().compareTo(pb.getNormalizedLabel());
+                return a.getNormalizedLabel().compareTo(b.getNormalizedLabel());
             }
         });
     }
@@ -78,17 +76,17 @@ public class PogLibrary
     /**
      * Set of acquired libraries.
      */
-    private final Set  acquiredLibraries = new HashSet();
+    private final Set<File>  acquiredLibraries = new HashSet<File>();
 
     /**
      * Set of acquired pog names.
      */
-    private final Set  acquiredPogs      = new HashSet();
+    private final Set<File> acquiredPogs = new HashSet<File>();
 
     /**
      * A list of child libraries, sorted by name.
      */
-    private final List children          = new ArrayList();
+    private final List<PogLibrary> children = new ArrayList<PogLibrary>();
 
     /**
      * Whether this is a pog or underlay library.
@@ -115,7 +113,7 @@ public class PogLibrary
     /**
      * The list of pogs in this library.
      */
-    private final List pogs              = new ArrayList();
+    private final List<PogType> pogs              = new ArrayList<PogType>();
 
     // --- Methods ---------------------------------------------------------------------------------------------------
 
@@ -202,7 +200,7 @@ public class PogLibrary
         final int numPogs = pogs.size();
         for (int i = 0; i < numPogs; ++i)
         {
-            final PogType pog = (PogType)pogs.get(i);
+            final PogType pog = pogs.get(i);
             if (pog.isUnknown())
             {
                 pog.load();
@@ -212,7 +210,7 @@ public class PogLibrary
         final int size = children.size();
         for (int i = 0; i < size; ++i)
         {
-            final PogLibrary child = (PogLibrary)children.get(i);
+            final PogLibrary child = children.get(i);
             if (child.acquirePogs())
             {
                 retVal = true;
@@ -351,7 +349,7 @@ public class PogLibrary
         final int size = children.size();
         for (int i = 0; i < size; ++i)
         {
-            final PogLibrary child = (PogLibrary)children.get(i);
+            final PogLibrary child = children.get(i);
             final PogLibrary lib = child.findDeepestChild(path);
             if (lib != null)
             {
@@ -370,7 +368,7 @@ public class PogLibrary
     /**
      * @return Returns the pogs in this library.
      */
-    public List getAllPogs()
+    public List<PogType> getAllPogs()
     {
         final int size = children.size();
         if (size < 1)
@@ -378,10 +376,10 @@ public class PogLibrary
             return getPogs();
         }
 
-        final List accum = new ArrayList(pogs);
+        final List<PogType> accum = new ArrayList<PogType>(pogs);
         for (int i = 0; i < size; ++i)
         {
-            final PogLibrary child = (PogLibrary)children.get(i);
+            final PogLibrary child = children.get(i);
             accum.addAll(child.getAllPogs());
         }
 
@@ -420,7 +418,7 @@ public class PogLibrary
         final int size = children.size();
         for (int i = 0; i < size; ++i)
         {
-            final PogLibrary child = (PogLibrary)children.get(i);
+            final PogLibrary child = children.get(i);
             if (file.equals(child.getLocation()))
             {
                 return child;
@@ -433,7 +431,7 @@ public class PogLibrary
     /**
      * @return Returns the child libraries of this library.
      */
-    public List getChildren()
+    public List<PogLibrary> getChildren()
     {
         return Collections.unmodifiableList(children);
     }
@@ -492,7 +490,7 @@ public class PogLibrary
         int size = pogs.size();
         for (int i = 0; i < size; ++i)
         {
-            final PogType pogType = (PogType)pogs.get(i);
+            final PogType pogType = pogs.get(i);
             if (pogName.equals(pogType.getFilename()))
             {
                 return pogType;
@@ -502,7 +500,7 @@ public class PogLibrary
         size = children.size();
         for (int i = 0; i < size; ++i)
         {
-            final PogLibrary child = (PogLibrary)children.get(i);
+            final PogLibrary child = children.get(i);
             final PogType pog = child.getPog(pogName);
             if (pog != null)
             {
@@ -516,7 +514,7 @@ public class PogLibrary
     /**
      * @return Returns the pogs in this library.
      */
-    public List getPogs()
+    public List<PogType> getPogs()
     {
         return Collections.unmodifiableList(pogs);
     }

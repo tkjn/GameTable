@@ -45,8 +45,8 @@ public class PogPanel extends JPanel
     private class BranchTracker implements TreeExpansionListener
     {
         private boolean   allExpanded    = false;
-        private final Set collapsedNodes = new HashSet();
-        private final Set expandedNodes  = new HashSet();
+        private final Set<PogLibrary> collapsedNodes = new HashSet<PogLibrary>();
+        private final Set<PogLibrary> expandedNodes  = new HashSet<PogLibrary>();
 
         public BranchTracker()
         {
@@ -119,10 +119,10 @@ public class PogPanel extends JPanel
             tree.removeTreeExpansionListener(this);
             try
             {
-                Iterator iterator = new HashSet(expandedNodes).iterator();
+                Iterator<PogLibrary> iterator = new HashSet<PogLibrary>(expandedNodes).iterator();
                 while (iterator.hasNext())
                 {
-                    final PogLibrary lib = (PogLibrary)iterator.next();
+                    final PogLibrary lib = iterator.next();
                     final LibraryNode node = root.findNodeFor(lib);
                     if (node != null)
                     {
@@ -135,10 +135,10 @@ public class PogPanel extends JPanel
                     }
                 }
 
-                iterator = new HashSet(collapsedNodes).iterator();
+                iterator = new HashSet<PogLibrary>(collapsedNodes).iterator();
                 while (iterator.hasNext())
                 {
-                    final PogLibrary lib = (PogLibrary)iterator.next();
+                    final PogLibrary lib = iterator.next();
                     final LibraryNode node = root.findNodeFor(lib);
                     if (node != null)
                     {
@@ -188,7 +188,7 @@ public class PogPanel extends JPanel
      */
     private static class LibraryNode implements TreeNode
     {
-        private final Vector     children;
+        private final Vector<TreeNode> children;
         private final PogLibrary library;
         private LibraryNode      parent;
 
@@ -201,25 +201,25 @@ public class PogPanel extends JPanel
         public LibraryNode(final PogLibrary lib)
         {
             library = lib;
-            children = new Vector();
+            children = new Vector<TreeNode>();
 
-            final List childLibs = library.getChildren();
+            final List<PogLibrary> childLibs = library.getChildren();
             for (int i = 0; i < childLibs.size(); i++)
             {
-                children.add(new LibraryNode(this, (PogLibrary)childLibs.get(i)));
+                children.add(new LibraryNode(this, childLibs.get(i)));
             }
 
-            final List pogs = library.getPogs();
+            final List<PogType> pogs = library.getPogs();
             for (int i = 0; i < pogs.size(); i++)
             {
-                children.add(new PogNode(this, (PogType)pogs.get(i)));
+                children.add(new PogNode(this, pogs.get(i)));
             }
         }
 
         /*
          * @see javax.swing.tree.TreeNode#children()
          */
-        public Enumeration children()
+        public Enumeration<TreeNode> children()
         {
             return children.elements();
         }

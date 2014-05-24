@@ -20,7 +20,7 @@ import com.galactanet.gametable.net.PacketSourceState;
 
 public class Grouping
 {
-    private TreeMap groups = new TreeMap();
+    private TreeMap<String, Group> groups = new TreeMap<String, Group>();
     
     final static int NEW    = 0;
     final static int DELETE = 1;
@@ -31,7 +31,7 @@ public class Grouping
     /* ********************************************************************************************** */
     
     public class Group {            
-        private ArrayList pogs = new ArrayList();
+        private ArrayList<Pog> pogs = new ArrayList<Pog>();
         private String name = null;       
         
         /** ***********************************************************
@@ -69,7 +69,7 @@ public class Grouping
          * 
          * @return
          */
-        public ArrayList getPogList() {
+        public ArrayList<Pog> getPogList() {
             return pogs;
         }
         
@@ -86,8 +86,8 @@ public class Grouping
          * 
          */
         public void clear() {
-            for (final Iterator iterator = pogs.iterator(); iterator.hasNext();) {
-                final Pog p = (Pog)iterator.next();
+            for (final Iterator<Pog> iterator = pogs.iterator(); iterator.hasNext();) {
+                final Pog p = iterator.next();
                 p.setGroup(null);
             }
         }
@@ -125,7 +125,7 @@ public class Grouping
      * @param newgroup
      */
     void rename(final String group, final String newgroup) {
-        Group g = (Group)groups.get(group);
+        Group g = groups.get(group);
         g.setName(newgroup);
         groups.remove(group);
         groups.put(newgroup,g);
@@ -177,10 +177,10 @@ public class Grouping
      * @param group
      * @param pog
      */
-    public void add(final String group, final List pogs) {
+    public void add(final String group, final List<Pog> pogs) {
         //System.out.println("Add (multipogs List) pogs size = " + pogs.size());
         for(int i = 0;i < pogs.size();++i) {            
-            add(group,(Pog)pogs.get(i));            
+            add(group,pogs.get(i));            
         }
     }
     
@@ -192,7 +192,7 @@ public class Grouping
         deleteGroup(group);
     }
     public void deleteGroup(final String group) {
-        Group g = (Group)groups.get(group);
+        Group g = groups.get(group);
         g.clear();
         groups.remove(group);
         send(DELETE, group);
@@ -202,9 +202,9 @@ public class Grouping
      * 
      */
     public void deleteall() {
-        Iterator i = getGroups();
+        Iterator<Group> i = getGroups();
         while(i.hasNext()) {
-            Group g = (Group)i.next();
+            Group g = i.next();
             g.clear();
             send(DELETE, g.toString());
         }
@@ -215,9 +215,9 @@ public class Grouping
      * 
      */
     public void deleteunused() {
-        Iterator i = getGroups();
+        Iterator<Group> i = getGroups();
         while(i.hasNext()) {
-            Group g = (Group)i.next();
+            Group g = i.next();
             if(g.size() == 0) {                
                 groups.remove(g);
                 send(DELETE, g.toString());
@@ -247,7 +247,7 @@ public class Grouping
      * 
      * @return
      */
-    public Iterator getGroups() {
+    public Iterator<Group> getGroups() {
         return groups.values().iterator();
     }
     
@@ -264,8 +264,8 @@ public class Grouping
      * @param group
      * @return
      */
-    public ArrayList getGroup(final String group) {
-        Group g = (Group)groups.get(group);        
+    public ArrayList<Pog> getGroup(final String group) {
+        Group g = groups.get(group);        
         return g.getPogList();
     }
     

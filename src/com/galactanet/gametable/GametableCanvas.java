@@ -634,7 +634,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         final Point modelStart = new Point(r.x, r.y);
         final Point modelEnd = new Point(r.x + r.width, r.y + r.height);
 
-        final ArrayList survivingLines = new ArrayList();
+        final ArrayList<LineSegment> survivingLines = new ArrayList<LineSegment>();
         for (int i = 0; i < getActiveMap().getNumLines(); i++)
         {
             final LineSegment ls = getActiveMap().getLineAt(i);
@@ -760,7 +760,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
     public void doRemovePogs(final int ids[], final boolean bDiscardCards)
     {
         // make a list of all the pogs that are cards
-        final List cardsList = new ArrayList();
+        final List<DeckData.Card> cardsList = new ArrayList<DeckData.Card>();
 
         if (bDiscardCards)
         {

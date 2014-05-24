@@ -30,17 +30,17 @@ public class GametableMap
 
     /** ************************** CLASS DATA ****************************** */
     // lines on the map
-    protected List          m_lines         = new ArrayList();
+    protected List<LineSegment> m_lines         = new ArrayList<LineSegment>();
 
     /* ***************** LINES MANAGEMENT********************* */
 
-    protected SortedSet     m_orderedPogs   = new TreeSet();
+    protected SortedSet<Pog> m_orderedPogs   = new TreeSet<Pog>();
 
     // pogs on the map
-    protected List          m_pogs          = new ArrayList();
+    protected List<Pog>     m_pogs          = new ArrayList<Pog>();
 
     // pogs on the map that are currently selected #grouping
-    public List          m_selectedPogs  = new ArrayList();
+    public List<Pog>        m_selectedPogs  = new ArrayList<Pog>();
 
     private int             m_redoIndex     = -1;
 
@@ -54,7 +54,7 @@ public class GametableMap
 
     /* ***************** POGS MANAGEMENT********************* */
 
-    private List            m_undoLevels    = new ArrayList();
+    private List<MapState>  m_undoLevels    = new ArrayList<MapState>();
 
     // bIsSharedMap is true if this is the shared gametable map.
     // it is false if it's a private map (private layer).
@@ -121,7 +121,7 @@ public class GametableMap
     private void adoptState(final MapState state)
     {
         // adopt the lines from the MapState
-        m_lines = new ArrayList();
+        m_lines = new ArrayList<LineSegment>();
         for (int i = 0; i < state.m_lineSegments.size(); i++)
         {
             final LineSegment ls = (LineSegment)state.m_lineSegments.get(i);
@@ -190,7 +190,7 @@ public class GametableMap
 
     public void clearLines()
     {
-        m_lines = new ArrayList();
+        m_lines = new ArrayList<LineSegment>();
     }
 
     public void clearPogs()
@@ -215,7 +215,7 @@ public class GametableMap
     /** ***************** UNDO MANAGEMENT********************* */
     public void clearUndos()
     {
-        m_undoLevels = new ArrayList();
+        m_undoLevels = new ArrayList<MapState>();
         m_redoIndex = -1;
 
         // seed it
@@ -253,7 +253,7 @@ public class GametableMap
 
     public LineSegment getLineAt(final int idx)
     {
-        return (LineSegment)m_lines.get(idx);
+        return m_lines.get(idx);
     }
 
     /* ***************** SCROLL MANAGEMENT********************* */
@@ -341,10 +341,10 @@ public class GametableMap
         return Collections.unmodifiableList(m_pogs);
     }
 
-    public List getPogsNamed(final String pogName)
+    public List<Pog> getPogsNamed(final String pogName)
     {
         final String normalizedName = UtilityFunctions.normalizeName(pogName);
-        final List retVal = new ArrayList();
+        final List<Pog> retVal = new ArrayList<Pog>();
         for (int i = 0, size = getNumPogs(); i < size; ++i)
         {
             final Pog pog = getPog(i);
@@ -488,11 +488,11 @@ public class GametableMap
 
     public void removeCardPogsForCards(final DeckData.Card discards[])
     {
-        final List removeList = new ArrayList();
+        final List<Pog> removeList = new ArrayList<Pog>();
 
         for (int i = 0; i < m_pogs.size(); i++)
         {
-            final Pog pog = (Pog)m_pogs.get(i);
+            final Pog pog = m_pogs.get(i);
             if (pog.isCardPog())
             {
                 final DeckData.Card pogCard = pog.getCard();
@@ -513,7 +513,7 @@ public class GametableMap
         {
             for (int i = 0; i < removeList.size(); i++)
             {
-                removePog((Pog)removeList.get(i));
+                removePog(removeList.get(i));
             }
         }
     }

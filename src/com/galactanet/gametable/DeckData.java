@@ -106,7 +106,7 @@ public class DeckData
         return dd.doCreateBlankCard();
     }
 
-    private final List m_cardTypes = new ArrayList();
+    private final List<Card> m_cardTypes = new ArrayList<Card>();
 
     /** ************************* DATA *********************** */
     private int        m_numCards;
@@ -129,7 +129,7 @@ public class DeckData
         m_numCards = 0;
         for (int i = 0; i < m_cardTypes.size(); i++)
         {
-            final Card cardType = (Card)m_cardTypes.get(i);
+            final Card cardType = m_cardTypes.get(i);
             m_numCards += cardType.m_quantityInDeck;
         }
     }
@@ -152,7 +152,7 @@ public class DeckData
         int cardIndex = cardNum;
         for (int i = 0; i < m_cardTypes.size(); i++)
         {
-            final Card cardType = (Card)m_cardTypes.get(i);
+            final Card cardType = m_cardTypes.get(i);
             cardIndex -= cardType.m_quantityInDeck;
 
             if (cardIndex < 0)

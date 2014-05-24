@@ -38,12 +38,12 @@ import com.galactanet.gametable.Log;
 public class UtilityFunctions
 {
     public final static int            CANCEL                   = -1;
-    private static final Map           ENTITY_NAME_MAP          = getEncodingMap();
+    private static final Map<Character, String> ENTITY_NAME_MAP = getEncodingMap();
 
     /**
      * Simple image cache.
      */
-    private static Map                 g_imageCache             = new HashMap();
+    private static Map<String, Image>  g_imageCache             = new HashMap<String, Image>();
     static private String              lastDir                  = null;
     public static final char           LOCAL_SEPARATOR          = File.separatorChar;
 
@@ -92,7 +92,7 @@ public class UtilityFunctions
         boolean quoting = false;
         boolean escaping = false;
         StringBuffer word = new StringBuffer();        
-        final List words = new ArrayList();
+        final List<String> words = new ArrayList<String>();
         
         for (int i = 0; i < line.length(); i++)
         {
@@ -277,7 +277,7 @@ public class UtilityFunctions
      */
     public static Image getCachedImage(final String name)
     {
-        Image image = (Image)g_imageCache.get(name);
+        Image image = g_imageCache.get(name);
         if (image == null)
         {
             image = getImage(name);
@@ -319,9 +319,9 @@ public class UtilityFunctions
         return new Point(screenPoint.x - screenPos.x, screenPoint.y - screenPos.y);
     }
 
-    private static Map getEncodingMap()
+    private static Map<Character, String> getEncodingMap()
     {
-        final Map retVal = new HashMap();
+        final Map<Character, String> retVal = new HashMap<Character, String>();
         retVal.put(new Character('\''), "apos");
         retVal.put(new Character('\"'), "quot");
         retVal.put(new Character('<'), "lt");
@@ -1095,7 +1095,7 @@ public class UtilityFunctions
             }
 
             final char c = (char)i;
-            final String entity = (String)ENTITY_NAME_MAP.get(new Character(c));
+            final String entity = ENTITY_NAME_MAP.get(new Character(c));
             if (entity != null)
             {
                 out.write('&');

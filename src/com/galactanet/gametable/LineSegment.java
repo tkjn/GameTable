@@ -47,7 +47,7 @@ public class LineSegment
         m_color = color;
     }
 
-    private void addLineSegment(final List vector, final Point start, final Point end)
+    private void addLineSegment(final List<LineSegment> vector, final Point start, final Point end)
     {
         final LineSegment ls = new LineSegment(start, end, m_color);
         vector.add(ls);
@@ -157,7 +157,7 @@ public class LineSegment
         }
 
         // now we can start making some lines
-        final List returnLines = new ArrayList();
+        final List<LineSegment> returnLines = new ArrayList<LineSegment>();
 
         // first off, if we didn't intersect the rect at all, it's just us
         if ((leftInt == null) && (rightInt == null) && (topInt == null) && (bottomInt == null))

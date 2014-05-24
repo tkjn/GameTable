@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import com.galactanet.gametable.DeckData.Card;
 import com.galactanet.gametable.net.PacketSourceState;
 import com.galactanet.gametable.ui.PogLibrary;
 import com.galactanet.gametable.util.UtilityFunctions;
@@ -107,7 +108,7 @@ public class Pog implements Comparable
     /**
      * Name/value pairs of the attributes assigned to this pog.
      */
-    private final Map          m_attributes               = new TreeMap();
+    private final Map<String, Attribute>          m_attributes               = new TreeMap<String, Attribute>();
 
     // a special kind of hack-ish value that will cause a pog
     // to set itself to not be loaded if the values for it are
@@ -133,7 +134,7 @@ public class Pog implements Comparable
 
     // null in most cases. If it's not null, it's a
     // card in a deck
-    private DeckData.Card      m_card;
+    private DeckData.Card               m_card;
 
     /**
      * The unique id of this pog.
@@ -250,9 +251,9 @@ public class Pog implements Comparable
         int numAttributes = 0;
         if (onlyChanged)
         {
-            for (final Iterator iterator = m_attributes.values().iterator(); iterator.hasNext();)
+            for (final Iterator<Attribute> iterator = m_attributes.values().iterator(); iterator.hasNext();)
             {
-                final Attribute attribute = (Attribute)iterator.next();
+                final Attribute attribute = iterator.next();
                 if (attribute.changed)
                 {
                     numAttributes++;
@@ -274,7 +275,7 @@ public class Pog implements Comparable
         final FontMetrics valueMetrics = g2.getFontMetrics(FONT_ATTRIBUTE_VALUE);
         int height = 0;
         int width = 0;
-        for (final Iterator iterator = m_attributes.values().iterator(); iterator.hasNext();)
+        for (final Iterator<Attribute> iterator = m_attributes.values().iterator(); iterator.hasNext();)
         {
             final Attribute attribute = (Attribute)iterator.next();
             if (onlyChanged && !attribute.changed)
@@ -307,9 +308,9 @@ public class Pog implements Comparable
 
         drawX += PADDING;
         drawY += PADDING;
-        for (final Iterator iterator = m_attributes.values().iterator(); iterator.hasNext();)
+        for (final Iterator<Attribute> iterator = m_attributes.values().iterator(); iterator.hasNext();)
         {
-            final Attribute attribute = (Attribute)iterator.next();
+            final Attribute attribute = iterator.next();
             if (onlyChanged && !attribute.changed)
             {
                 continue;
@@ -606,7 +607,7 @@ public class Pog implements Comparable
     public String getAttribute(final String name)
     {
         final String normalizedName = UtilityFunctions.normalizeName(name);
-        final Attribute a = (Attribute)m_attributes.get(normalizedName);
+        final Attribute a = m_attributes.get(normalizedName);
         if (a == null)
         {
             return null;
@@ -616,10 +617,10 @@ public class Pog implements Comparable
 
     public Set getAttributeNames()
     {
-        final Set s = new HashSet();
-        for (final Iterator iterator = m_attributes.values().iterator(); iterator.hasNext();)
+        final Set<String> s = new HashSet<String>();
+        for (final Iterator<Attribute> iterator = m_attributes.values().iterator(); iterator.hasNext();)
         {
-            final Attribute attribute = (Attribute)iterator.next();
+            final Attribute attribute = iterator.next();
             s.add(attribute.name);
         }
         return Collections.unmodifiableSet(s);

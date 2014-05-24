@@ -79,6 +79,7 @@ import org.xml.sax.SAXException;
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
 import co.tkjn.gametable.PogLibraryDialog;
 
+import com.galactanet.gametable.DeckData.Card;
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;
 import com.galactanet.gametable.net.NetworkThread;
@@ -297,7 +298,7 @@ public class GametableFrame extends JFrame implements ActionListener
     private boolean                 m_bMaximized;   // Is the frame maximized?
 
     // all the cards you have
-    private final List              m_cards                  = new ArrayList();
+    private final List<DeckData.Card> m_cards                = new ArrayList<DeckData.Card>();
     public String                   m_characterName          = DEFAULT_CHARACTER_NAME; // The character name
     
     
@@ -305,7 +306,7 @@ public class GametableFrame extends JFrame implements ActionListener
 
 
     // only valid if this client is the host
-    private final List              m_decks                  = new ArrayList(); // List of decks
+    private final List<Deck>        m_decks                  = new ArrayList<Deck>(); // List of decks
 
     private JMenuItem               m_disconnectMenuItem;
 
@@ -326,7 +327,7 @@ public class GametableFrame extends JFrame implements ActionListener
     private long                    m_lastPingTime           = 0;
 
     private long                    m_lastTickTime           = 0;
-    private final Map               m_macroMap               = new TreeMap();
+    private final Map<String, DiceMacro> m_macroMap          = new TreeMap<String, DiceMacro>();
     
     
  
@@ -349,7 +350,7 @@ public class GametableFrame extends JFrame implements ActionListener
     public String                   m_password               = DEFAULT_PASSWORD;
     public String                   m_playerName             = System.getProperty("user.name");
 
-    private List                    m_players                = new ArrayList();
+    private List<Player>            m_players                = new ArrayList<Player>();
 
     private JFrame                  pogWindow                = null;
     private boolean                 b_pogWindowDocked        = true;
@@ -379,7 +380,7 @@ public class GametableFrame extends JFrame implements ActionListener
     private JToggleButton           m_toolButtons[]          = null;
 
     private final ToolManager       m_toolManager            = new ToolManager();
-    private final List              m_typing                 = new ArrayList();
+    private final List<String>      m_typing                 = new ArrayList<String>();
     // window size and position
     private Point                   m_windowPos;
     private Dimension               m_windowSize;
@@ -665,7 +666,7 @@ public class GametableFrame extends JFrame implements ActionListener
 
         for (int i = 0; i < m_cards.size(); i++) //for each card
         {
-            final DeckData.Card card = (DeckData.Card)m_cards.get(i);
+            final DeckData.Card card = m_cards.get(i);
             if (card.m_deckName.equals(deckName)) // if it belongs to the deck to erase
             {
                 // this card has to go.
@@ -983,7 +984,7 @@ public class GametableFrame extends JFrame implements ActionListener
             for (int i = 0; i < m_cards.size(); i++) // for each card
             {
                 final int cardIdx = i + 1;
-                final DeckData.Card card = (DeckData.Card)m_cards.get(i); // get the card
+                final DeckData.Card card = m_cards.get(i); // get the card
                 // craft a message
                 final String toPost = "" + cardIdx + ": " + card.m_cardName + " (" + card.m_deckName + ")";
                 // log the message
@@ -1012,7 +1013,7 @@ public class GametableFrame extends JFrame implements ActionListener
 
                 for (int i = 0; i < discards.length; i++)
                 {
-                    discards[i] = (DeckData.Card)m_cards.get(i);
+                    discards[i] = m_cards.get(i);
                 }
             }
             else
@@ -1041,7 +1042,7 @@ public class GametableFrame extends JFrame implements ActionListener
                     return;
                 }
                 discards = new DeckData.Card[1];
-                discards[0] = (DeckData.Card)m_cards.get(idx);
+                discards[0] = m_cards.get(idx);
             }
 
             // now we have the discards[] filled with the cards to be
@@ -1062,7 +1063,7 @@ public class GametableFrame extends JFrame implements ActionListener
             m_chatPanel.logSystemMessage(lang.DECK_THERE_ARE + " " + m_decks.size() + " " + lang.DECK_DECKS);
             for (int i = 0; i < m_decks.size(); i++)
             {
-                final Deck deck = (Deck)m_decks.get(i);
+                final Deck deck = m_decks.get(i);
                 m_chatPanel.logSystemMessage("---" + deck.m_name);
             }
         }
@@ -1119,7 +1120,7 @@ public class GametableFrame extends JFrame implements ActionListener
         // to the card to remove directly by index or something like that.
         for (int i = 0; i < m_cards.size(); i++) // for each card we have
         {
-            final DeckData.Card handCard = (DeckData.Card)m_cards.get(i); 
+            final DeckData.Card handCard = m_cards.get(i); 
             for (int j = 0; j < discards.length; j++) // compare with each card to discard
             {
                 if (handCard.equals(discards[j])) // if they are the same
@@ -1157,7 +1158,7 @@ public class GametableFrame extends JFrame implements ActionListener
         m_disconnectMenuItem.setEnabled(false); // disable the menu item to disconnect from the game 
 
         // make me the only player in the game
-        m_players = new ArrayList();
+        m_players = new ArrayList<Player>();
         final Player me = new Player(m_playerName, m_characterName, -1);
         m_players.add(me);
         m_myPlayerIndex = 0;
@@ -1485,7 +1486,7 @@ public class GametableFrame extends JFrame implements ActionListener
         // Doesn't get here if idx == -1; no need for else
         // else
         {
-            final Deck d = (Deck)m_decks.get(idx);
+            final Deck d = m_decks.get(idx);
             return d;
         }
     }
@@ -1499,7 +1500,7 @@ public class GametableFrame extends JFrame implements ActionListener
     {
         for (int i = 0; i < m_decks.size(); i++)
         {
-            final Deck d = (Deck)m_decks.get(i);
+            final Deck d = m_decks.get(i);
             if (d.m_name.equals(name))
             {
                 return i;
@@ -1969,7 +1970,7 @@ public class GametableFrame extends JFrame implements ActionListener
      */
     public Player getMyPlayer()
     {
-        return (Player)m_players.get(getMyPlayerIndex());
+        return m_players.get(getMyPlayerIndex());
     }
 
     /**
@@ -2114,7 +2115,7 @@ public class GametableFrame extends JFrame implements ActionListener
     {
         for (int i = 0; i < m_players.size(); i++)
         {
-            final Player plr = (Player)m_players.get(i);
+            final Player plr = m_players.get(i);
             if (conn == plr.getConnection())
             {
                 return plr;
@@ -2836,7 +2837,7 @@ public class GametableFrame extends JFrame implements ActionListener
 
         // clear out all players
         m_nextPlayerId = 0;
-        m_players = new ArrayList();
+        m_players = new ArrayList<Player>();
         final Player me = new Player(m_playerName, m_characterName, m_nextPlayerId); // this means the host is always
                                                                                      // player 0
         m_nextPlayerId++;
@@ -3310,7 +3311,7 @@ public class GametableFrame extends JFrame implements ActionListener
 
             // now that we've successfully made a connection, let the host know
             // who we are
-            m_players = new ArrayList();
+            m_players = new ArrayList<Player>();
             final Player me = new Player(m_playerName, m_characterName, -1);
             me.setConnection(conn);
             m_players.add(me);
@@ -4166,7 +4167,7 @@ public class GametableFrame extends JFrame implements ActionListener
         // we're not interested in point packets of our own hand
         if (plrIdx != getMyPlayerIndex())
         {
-            final Player plr = (Player)m_players.get(plrIdx);
+            final Player plr = m_players.get(plrIdx);
             plr.setPoint(x, y);
             plr.setPointing(bPointing);
         }
@@ -4232,7 +4233,7 @@ public class GametableFrame extends JFrame implements ActionListener
     {
         if (m_netStatus == NETSTATE_HOST) {
             for (int i = 0; i < m_players.size(); i++) {
-                final Player player = (Player)m_players.get(i);
+                final Player player = m_players.get(i);
                 if (player.hasName(toName)) {
                     send(PacketManager.makePrivMechanicsPacket(toName, text), player);
                 }
@@ -4256,7 +4257,7 @@ public class GametableFrame extends JFrame implements ActionListener
             // if you're the host, push to the appropriate player(s)
             for (int i = 0; i < m_players.size(); i++)
             {
-                final Player player = (Player)m_players.get(i);
+                final Player player = m_players.get(i);
                 if (player.hasName(toName))
                 {
                     // send the message to this player
@@ -4776,7 +4777,7 @@ public class GametableFrame extends JFrame implements ActionListener
         // and we have to push this data out to everyone
         for (int i = 0; i < m_players.size(); i++)
         {
-            final Player recipient = (Player)m_players.get(i);
+            final Player recipient = m_players.get(i);
             final byte[] castPacket = PacketManager.makeCastPacket(recipient);
             send(castPacket, recipient);
         }
@@ -4991,7 +4992,7 @@ public class GametableFrame extends JFrame implements ActionListener
         confirmJoined();
 
         // set up the current cast
-        m_players = new ArrayList();
+        m_players = new ArrayList<Player>();
         for (int i = 0; i < players.length; i++)
         {
             addPlayer(players[i]);
