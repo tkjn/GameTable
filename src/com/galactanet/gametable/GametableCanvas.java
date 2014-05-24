@@ -24,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.text.JTextComponent;
 
+import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.PacketManager;
 import com.galactanet.gametable.net.PacketSourceState;
 import com.galactanet.gametable.tools.NullTool;
@@ -2463,5 +2464,10 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         }, 0f));
         g.drawLine(x, y, x2, y2);
         g2d.setStroke(oldStroke);
+    }
+    
+    public Language getLanguage()
+    {
+        return m_gametableFrame.lang;
     }
 }
