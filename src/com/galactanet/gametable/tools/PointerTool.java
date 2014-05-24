@@ -8,7 +8,10 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -17,13 +20,17 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import co.tkjn.gametable.PogLibraryDialog;
+
 import com.galactanet.gametable.GametableCanvas;
 import com.galactanet.gametable.GametableFrame;
 import com.galactanet.gametable.GametableMap;
 import com.galactanet.gametable.GridMode;
+import com.galactanet.gametable.Log;
 import com.galactanet.gametable.Pog;
 import com.galactanet.gametable.SetPogAttributeDialog;
 import com.galactanet.gametable.util.UtilityFunctions;
+import com.galactanet.gametable.net.PacketManager;
 import com.galactanet.gametable.prefs.PreferenceDescriptor;
 
 /**
@@ -104,6 +111,7 @@ public class PointerTool extends NullTool
     private GametableMap    m_from;
     private GametableMap    m_to;
     private boolean         m_clicked = true;
+    private boolean         m_pressed = false;
     private Pog             m_ghostPog;
     private Pog             m_grabbedPog;
     private Point           m_grabOffset;
@@ -115,6 +123,8 @@ public class PointerTool extends NullTool
     private Point           m_startMouse;
 
     private Point           m_startScroll;
+    
+    private JPopupMenu      m_activePopup;
 
     /**
      * Constructor
@@ -191,6 +201,7 @@ public class PointerTool extends NullTool
      */
     public void mouseButtonPressed(final int x, final int y, final int modifierMask)
     {
+        m_pressed = true;
         m_clicked = true;
         m_mousePosition = new Point(x, y);
         m_grabbedPog = m_canvas.getActiveMap().getPogAt(m_mousePosition);
@@ -214,32 +225,63 @@ public class PointerTool extends NullTool
      */
     public void mouseButtonReleased(final int x, final int y, final int modifierMask)
     {
-        if (m_grabbedPog != null)
+        if (m_pressed) // release can be fired by a press that wasn't caught by the above (clicking out of a popup menu) 
         {
-            if (m_clicked)
+            if (m_grabbedPog != null)
             {
-                popupContextMenu(x, y, modifierMask);
-            }
-            else
-            {
-                if (!m_grabbedPog.isLocked())
+                if (m_clicked)
                 {
-                    // Dont need this, it is done in move pog, and why move it if we are removing it?
-                    //m_grabbedPog.setPosition(m_ghostPog.getPosition());
-                    if (!m_canvas.isPointVisible(m_mousePosition))
+                    if (!isContextMenuActive())
                     {
-                        // they removed this pog
-                            //If pog not locked, do remove
-                            m_canvas.removePog(m_grabbedPog.getId());
+                        popupContextMenu(x, y, modifierMask);
                     }
-                    else
+                }
+                else
+                {
+                    if (!m_grabbedPog.isLocked())
                     {
-                        m_canvas.movePog(m_grabbedPog.getId(), m_ghostPog.getX(), m_ghostPog.getY());
+                        // Dont need this, it is done in move pog, and why move it if we are removing it?
+                        //m_grabbedPog.setPosition(m_ghostPog.getPosition());
+                        if (!m_canvas.isPointVisible(m_mousePosition))
+                        {
+                            // they removed this pog
+                                //If pog not locked, do remove
+                                m_canvas.removePog(m_grabbedPog.getId());
+                        }
+                        else
+                        {
+                            m_canvas.movePog(m_grabbedPog.getId(), m_ghostPog.getX(), m_ghostPog.getY());
+                        }
                     }
                 }
             }
+            else if (m_clicked && !isContextMenuActive())
+            {
+                popupMapContextMenu(x,y, modifierMask);            
+            }
         }
+         
+        m_pressed = false;
+        
         endAction();
+    }
+    
+    /**
+     * Check if a pointer tool context menu is already active
+     * @return boolean
+     */
+    public boolean isContextMenuActive()
+    {
+        if (m_activePopup == null)
+        {
+            return false;
+        }
+        if (!m_activePopup.isVisible())
+        {
+            m_activePopup = null;
+            return false;
+        }
+        return true;
     }
 
     /*
@@ -267,6 +309,7 @@ public class PointerTool extends NullTool
         }
         else if (m_startScroll != null)
         {
+            m_clicked = false;
             final Point mousePosition = m_canvas.modelToView(x, y);
             final Point viewDelta = new Point(m_startMouse.x - mousePosition.x, m_startMouse.y - mousePosition.y);
             final Point modelDelta = m_canvas.drawToModel(viewDelta);
@@ -292,7 +335,111 @@ public class PointerTool extends NullTool
             m_ghostPog.drawGhostlyToCanvas(g);
         }
     }
+    /**
+     * Pops up the map context menu.
+     * 
+     * @param x X location of mouse.
+     * @param y Y location of mouse.
+     */
+    private void popupMapContextMenu(final int x, final int y, final int modifierMask)
+    {
+        final JPopupMenu menu = new JPopupMenu("Map");
+        m_activePopup = menu;
+        
+        // Determine grid location
+        final int xLocation;
+        final int yLocation;
+        final int m_gridModeId = m_canvas.getGridModeId();
+        
+        final int xPogDestination;
+        final int yPogDestination;
+        
+        if (m_gridModeId == GametableCanvas.GRID_MODE_SQUARES) //square mode
+        {
+            xLocation = (x / 64) - 1;
+            yLocation = (y / 64) * -1;
+            xPogDestination = xLocation * 64;
+            yPogDestination = (yLocation + 1) * -64;
+        }
+        else if (m_gridModeId == GametableCanvas.GRID_MODE_HEX) //hex mode - needs work to get it to display appropriate numbers
+        {
+            xLocation = x;
+            yLocation = y * -1;
+            xPogDestination = x;
+            yPogDestination = y;
+        }
+        else //no grid
+        {
+            xLocation = x;
+            yLocation = y * -1;
+            xPogDestination = x;
+            yPogDestination = y;
+        }
+        
+        if ((modifierMask & MODIFIER_SHIFT) > 0) // holding shift
+        {   
+            menu.add(new JMenuItem("X: " + xLocation));
+            menu.add(new JMenuItem("Y: " + yLocation));
+        }
+        else
+        {
+            menu.add(new JMenuItem("Cancel"));
+            JMenuItem item = new JMenuItem("Load Pog from Library");
+            item.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(final ActionEvent e)
+                {
+                    final PogLibraryDialog dialog = new PogLibraryDialog();
+                    dialog.setVisible(true);
+                    
 
+                    // If the user accepted the dialog (closed with Ok)
+                    Pog pog = dialog.getPog();
+                    if (pog != null)
+                    {
+                        if (pog.isUnknown()) { // we need this image
+                            PacketManager.requestPogImage(null, pog);
+                        }
+                        pog.setPosition(xPogDestination, yPogDestination);
+                        m_canvas.addPog(pog);
+                    }
+                }
+            });
+            menu.add(item);
+            
+            item = new JMenuItem("Load Pog File");
+            item.addActionListener(new ActionListener()
+            {
+                public void actionPerformed(final ActionEvent e)
+                {
+                    final File openFile = UtilityFunctions.doFileOpenDialog(m_canvas.getLanguage().OPEN, ".pog", true);
+
+                    if (openFile == null) { // they cancelled out of the open
+                        return;
+                    } 
+                    try {
+                        final FileInputStream infile = new FileInputStream(openFile);
+                        final DataInputStream dis = new DataInputStream(infile);
+                        final Pog pog = new Pog(dis);
+
+                        if (pog.isUnknown()) { // we need this image
+                            PacketManager.requestPogImage(null, pog);
+                        }
+                        pog.setPosition(xPogDestination, yPogDestination);
+                        m_canvas.addPog(pog);
+                    }
+                    catch (final IOException ex1) {
+                        Log.log(Log.SYS, ex1);
+                    }
+                }
+            });
+            menu.add(item);
+        }
+        
+        final Point mousePosition = m_canvas.modelToView(x, y);
+        menu.show(m_canvas, mousePosition.x, mousePosition.y);
+    }
+    
     /**
      * Pops up a pog context menu.
      * 
@@ -303,6 +450,7 @@ public class PointerTool extends NullTool
     {
         m_menuPog = m_grabbedPog;
         final JPopupMenu menu = new JPopupMenu("Pog");
+        m_activePopup = menu;
         if ((modifierMask & MODIFIER_SHIFT) > 0) // holding shift
         {   
             final int xLocation;
