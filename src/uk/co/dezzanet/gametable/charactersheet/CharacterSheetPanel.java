@@ -11,11 +11,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.PlainDocument;
 
 import com.galactanet.gametable.GametableFrame;
 
@@ -29,7 +24,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
 	private JSpinner wounds;
 
-	private JTextField max_wounds;
+	private JSpinner max_wounds;
 	
 	private boolean doing_update = false;
 	private boolean updating_wounds = false;
@@ -85,10 +80,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		final JLabel max_wounds_label = new JLabel("Max");
 		add(max_wounds_label);
 		
-		max_wounds = new JTextField("0", 2);
-		PlainDocument doc;
-		doc = (PlainDocument) max_wounds.getDocument();
-		doc.setDocumentFilter(new MaxWoundsDocumentFilter());
+		SpinnerModel max_wounds_model = new SpinnerNumberModel(0, 0, 200, 1);
+		max_wounds = new JSpinner(max_wounds_model);
+		max_wounds.addChangeListener(new MaxWoundsChangeListener());
 		add(max_wounds);
 		
 		// Gold
@@ -178,11 +172,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		layout.putConstraint(SpringLayout.SOUTH, notes_scroller, -5, SpringLayout.SOUTH, this);
 		layout.putConstraint(SpringLayout.WEST, notes_scroller, 5, SpringLayout.WEST, this);
 		layout.putConstraint(SpringLayout.EAST, notes_scroller, -5, SpringLayout.EAST, this);
-		
-		
-		
-		
-		
 
 		setBorder(new CompoundBorder(new MatteBorder(2, 2, 2, 2, Color.WHITE), new MatteBorder(1, 1, 1, 1, Color.BLACK)));
 	}
@@ -223,85 +212,22 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		
 	}
 	
-	private class MaxWoundsDocumentFilter extends DocumentFilter {
-		@Override
-	 	public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-			Document doc = fb.getDocument();
-		    StringBuilder sb = new StringBuilder();
-		    sb.append(doc.getText(0, doc.getLength()));
-		    sb.insert(offset, string);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
+	private class MaxWoundsChangeListener implements ChangeListener {
+
+		public void stateChanged(ChangeEvent arg0) {
+			updating_max_wounds = true;
+			SpinnerNumberModel model = (SpinnerNumberModel) max_wounds.getModel();
+			int value = model.getNumber().intValue();
+			characterData.setMaxWounds(value);
+			int real_value = characterData.getMaxWounds(); 
+			
+			if (real_value != value) {
+				model.setValue(real_value);
 		    }
-		    updating_max_wounds = true;
-		    int value = Integer.parseInt(sb.toString());
-		    if (characterData.getMaxWounds() != value) {
-		    	characterData.setMaxWounds(value);
-		    }
-		    if (characterData.getMaxWounds() != value) {
-		    	return;
-		    }
-		    super.insertString(fb, offset, string, attr);
-		    updating_max_wounds = false;
+			
+			updating_max_wounds = false;
 		}
 		
-		@Override
-	 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-			Document doc = fb.getDocument();
-			StringBuilder sb = new StringBuilder();
-			sb.append(doc.getText(0, doc.getLength()));
-			sb.replace(offset, offset + length, text);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    updating_max_wounds = true;
-		    int value = Integer.parseInt(sb.toString());
-		    if (characterData.getMaxWounds() != value) {
-		    	characterData.setMaxWounds(value);
-		    }
-		    if (characterData.getMaxWounds() != value) {
-		    	return;
-		    }
-		    super.replace(fb, offset, length, text, attrs);
-		    updating_max_wounds = false;
-		}
-		
-		@Override
-		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-			Document doc = fb.getDocument();
-		    StringBuilder sb = new StringBuilder();
-		    sb.append(doc.getText(0, doc.getLength()));
-		    sb.delete(offset, offset + length);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter a positive or 0 number for max wounds", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    updating_max_wounds = true;
-		    int value = Integer.parseInt(sb.toString());
-		    if (characterData.getMaxWounds() != value) {
-		    	characterData.setMaxWounds(value);
-		    }
-		    if (characterData.getMaxWounds() != value) {
-		    	return;
-		    }
-		    super.remove(fb, offset, length);
-		    updating_max_wounds = false;
-		}
-		
-		private boolean testInt(String text) {
-			try {
-				int value = Integer.parseInt(text);
-				if (value < 0) {
-					throw new NumberFormatException();
-				}
-				return true;
-			}
-			catch (NumberFormatException e) {
-				return false;
-			}
-		}
 	}
 	
 	private class GoldChangeListener implements ChangeListener {
@@ -343,7 +269,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 			wounds.setValue(characterData.getWounds());
 		}
 		if ( ! updating_max_wounds) {
-			max_wounds.setText(String.valueOf(characterData.getMaxWounds()));
+			max_wounds.setValue(characterData.getMaxWounds());
 		}
 		if ( ! updating_gold) {
 			gold.setValue(characterData.getGold());
