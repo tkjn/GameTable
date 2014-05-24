@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.AttributeSet;
@@ -16,8 +18,6 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
 
 import com.galactanet.gametable.GametableFrame;
-import com.galactanet.gametable.SetPogAttributeDialog;
-import com.galactanet.gametable.ui.chat.ChatPanel;
 
 public class CharacterSheetPanel extends JPanel implements ICharacterDataChangedListener {
 
@@ -41,7 +41,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
 	private PogAdapter pog_adapter;
 
-	private JTextField gold;
+	private JSpinner gold;
 
 	private GametableFrame frame;
 	
@@ -111,9 +111,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		final JLabel gold_label = new JLabel("Gold");
 		add(gold_label);
 		
-		gold = new JTextField("0", 5);
-		PlainDocument gold_doc = (PlainDocument) gold.getDocument();
-		gold_doc.setDocumentFilter(new GoldDocumentFilter());
+		SpinnerModel model = new SpinnerNumberModel(0, 0, 1000000, 1);
+		gold = new JSpinner(model);
+		gold.addChangeListener(new GoldChangeListener());
 		add(gold);
 		
 		final JButton sub_gold = new JButton("-");
@@ -403,82 +403,16 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		}
 	}
 	
-	private class GoldDocumentFilter extends DocumentFilter {
-		@Override
-	 	public void insertString(DocumentFilter.FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-			Document doc = fb.getDocument();
-		    StringBuilder sb = new StringBuilder();
-		    sb.append(doc.getText(0, doc.getLength()));
-		    sb.insert(offset, string);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    updating_gold = true;
-		    int value = Integer.parseInt(sb.toString());
-		    if (characterData.getGold() != value) {
-		    	characterData.setGold(value);
-		    }
-		    if (characterData.getGold() != value) {
-		    	return;
-		    }
-		    super.insertString(fb, offset, string, attr);
-		    updating_gold = false;
+	private class GoldChangeListener implements ChangeListener {
+
+		public void stateChanged(ChangeEvent arg0) {
+			updating_gold = true;
+			SpinnerNumberModel model = (SpinnerNumberModel) gold.getModel();
+			int value = model.getNumber().intValue();
+			characterData.setGold(value);
+			updating_gold = false;
 		}
 		
-		@Override
-	 	public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
-			Document doc = fb.getDocument();
-			StringBuilder sb = new StringBuilder();
-			sb.append(doc.getText(0, doc.getLength()));
-			sb.replace(offset, offset + length, text);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    updating_gold = true;
-		    int value = Integer.parseInt(sb.toString());
-		    if (characterData.getGold() != value) {
-		    	characterData.setGold(value);
-		    }
-		    if (characterData.getGold() != value) {
-		    	return;
-		    }
-		    super.replace(fb, offset, length, text, attrs);
-		    updating_gold = false;
-		}
-		
-		@Override
-		public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-			Document doc = fb.getDocument();
-		    StringBuilder sb = new StringBuilder();
-		    sb.append(doc.getText(0, doc.getLength()));
-		    sb.delete(offset, offset + length);
-		    if ( ! testInt(sb.toString())) {
-		    	JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-		    	return;
-		    }
-		    updating_gold = true;
-		    int value = Integer.parseInt(sb.toString());
-		    if (characterData.getGold() != value) {
-		    	characterData.setGold(value);
-		    }
-		    if (characterData.getGold() != value) {
-		    	return;
-		    }
-		    super.remove(fb, offset, length);
-		    updating_gold = false;
-		}
-		
-		private boolean testInt(String text) {
-			try {
-				int value = Integer.parseInt(text);
-				return true;
-			}
-			catch (NumberFormatException e) {
-				return false;
-			}
-		}
 	}
 	
 	private class NotesDocumentListener implements DocumentListener {
@@ -511,7 +445,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 			max_wounds.setText(String.valueOf(characterData.getMaxWounds()));
 		}
 		if ( ! updating_gold) {
-			gold.setText(String.valueOf(characterData.getGold()));
+			gold.setValue(characterData.getGold());
 		}
 		if ( ! updating_notes) {
 			notes.setText(characterData.getNotes());
