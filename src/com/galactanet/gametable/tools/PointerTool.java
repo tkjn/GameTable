@@ -459,12 +459,12 @@ public class PointerTool extends NullTool
             final int tempSize = pogSize;
             final int m_gridModeId = m_canvas.getGridModeId();
 
-            if (m_gridModeId == 1) //square mode
+            if (m_gridModeId == GametableCanvas.GRID_MODE_SQUARES) //square mode
             {
                 xLocation =  (m_menuPog.getX() / 64) + ( ((tempSize % 2 == 0) ? pogSize - 1 : pogSize) / 2);
                 yLocation = ((m_menuPog.getY() / 64) + ( ((tempSize % 2 == 0) ? pogSize - 1 : pogSize) / 2)) * -1;
             }
-            else if (m_gridModeId == 2) //hex mode - needs work to get it to display appropriate numbers
+            else if (m_gridModeId == GametableCanvas.GRID_MODE_HEX) //hex mode - needs work to get it to display appropriate numbers
             {
                 xLocation = m_menuPog.getX();
                 yLocation = m_menuPog.getY() * -1;
