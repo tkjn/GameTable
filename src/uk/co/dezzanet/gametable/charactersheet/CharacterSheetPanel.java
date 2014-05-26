@@ -31,6 +31,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private boolean updating_max_wounds = false;
 	private boolean updating_notes = false;
 	private boolean updating_gold = false;
+	private boolean updating_ws = false;
 
 	private JTextArea notes;
 
@@ -39,6 +40,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 	private JSpinner gold;
 
 	private GametableFrame frame;
+
+	private JSpinner weapon_skill;
 	
 	/**
 	 * This is the default constructor
@@ -84,6 +87,15 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		max_wounds = new JSpinner(max_wounds_model);
 		max_wounds.addChangeListener(new MaxWoundsChangeListener());
 		add(max_wounds);
+		
+		// Weapon Skill
+		JLabel ws_label = new JLabel("WS");
+		add(ws_label);
+		
+		SpinnerModel ws_model = new SpinnerNumberModel(1, 1, 10, 1);
+		weapon_skill = new JSpinner(ws_model);
+		weapon_skill.addChangeListener(new WeaponSkillChangeListener());
+		add(weapon_skill);
 		
 		// Gold
 		final JLabel gold_label = new JLabel("Gold");
@@ -139,6 +151,14 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		// Max Wounds field should be and same horz. as wounds label and 5 below max wounds label
 		layout.putConstraint(SpringLayout.WEST, max_wounds, 0, SpringLayout.WEST, max_wounds_label);
 		layout.putConstraint(SpringLayout.NORTH, max_wounds, 5, SpringLayout.SOUTH, max_wounds_label);
+		
+		// WS Label should be 5 from the top and 5 to the left of max wounds
+		layout.putConstraint(SpringLayout.WEST, ws_label, 5, SpringLayout.EAST, max_wounds);
+		layout.putConstraint(SpringLayout.NORTH, ws_label, 5, SpringLayout.NORTH, this);
+		
+		// WS field should be and same horz. as ws label and 5 below ws label
+		layout.putConstraint(SpringLayout.WEST, weapon_skill, 0, SpringLayout.WEST, ws_label);
+		layout.putConstraint(SpringLayout.NORTH, weapon_skill, 5, SpringLayout.SOUTH, ws_label);
 		
 		// Gold line
 		// Gold label should be below wounds
@@ -230,6 +250,24 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		
 	}
 	
+	private class WeaponSkillChangeListener implements ChangeListener {
+		
+		public void stateChanged(ChangeEvent arg0) {
+			updating_ws = true;
+			SpinnerNumberModel model = (SpinnerNumberModel) weapon_skill.getModel();
+			int value = model.getNumber().intValue();
+			characterData.setWeaponSkill(value);
+			int real_value = characterData.getWeaponSkill(); 
+			
+			if (real_value != value) {
+				model.setValue(real_value);
+		    }
+			
+			updating_ws = false;
+		}
+		
+	}
+	
 	private class GoldChangeListener implements ChangeListener {
 
 		public void stateChanged(ChangeEvent arg0) {
@@ -270,6 +308,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		}
 		if ( ! updating_max_wounds) {
 			max_wounds.setValue(characterData.getMaxWounds());
+		}
+		if ( ! updating_ws) {
+			weapon_skill.setValue(characterData.getWeaponSkill());
 		}
 		if ( ! updating_gold) {
 			gold.setValue(characterData.getGold());
