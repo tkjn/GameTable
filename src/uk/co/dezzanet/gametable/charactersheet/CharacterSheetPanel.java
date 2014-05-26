@@ -92,8 +92,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		SpinnerModel gold_model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
 		gold = new JSpinner(gold_model);
 		gold.addChangeListener(new GoldChangeListener());
-		Dimension gold_size = new Dimension();
-		gold_size.setSize(70, wounds_size.getHeight());
+		Dimension gold_size = new Dimension(gold.getPreferredSize());
+		gold_size.width = 70;
 		gold.setPreferredSize(gold_size);
 		add(gold);
 		
