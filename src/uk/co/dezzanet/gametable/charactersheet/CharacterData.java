@@ -29,6 +29,11 @@ public class CharacterData {
 	private int gold = 0;
 	
 	/**
+	 * Current weapon skill of the character
+	 */
+	private int weapon_skill = 1;
+	
+	/**
 	 * @return the max wounds for this character
 	 */
 	public int getMaxWounds() {
@@ -105,6 +110,23 @@ public class CharacterData {
 		notifyChange();
 	}
 	
+	/**
+	 * @return int the current weapon skill
+	 */
+	public int getWeaponSkill() {
+		return weapon_skill;
+	}
+	
+	/**
+	 * @param passed_weapon_skill
+	 */
+	public void setWeaponSkill(int passed_weapon_skill) {
+		if (passed_weapon_skill > 0 && passed_weapon_skill <= 10) {
+			weapon_skill = passed_weapon_skill;
+			notifyChange();
+		}
+	}
+	
 	private void notifyChange() {
 		for (ICharacterDataChangedListener listener : listeners) {
 			listener.dataChanged();
@@ -118,5 +140,6 @@ public class CharacterData {
 		setMaxWounds(0); // Will also set wounds
 		setGold(0);
 		setNotes("");
+		setWeaponSkill(1);
 	}
 }
