@@ -89,9 +89,12 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		final JLabel gold_label = new JLabel("Gold");
 		add(gold_label);
 		
-		SpinnerModel gold_model = new SpinnerNumberModel(0, 0, 1000000, 1);
+		SpinnerModel gold_model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
 		gold = new JSpinner(gold_model);
 		gold.addChangeListener(new GoldChangeListener());
+		Dimension gold_size = gold.getPreferredSize();
+		gold_size.width = 70;
+		gold.setPreferredSize(gold_size);
 		add(gold);
 		
 		final JButton sub_gold = new JButton("-");
