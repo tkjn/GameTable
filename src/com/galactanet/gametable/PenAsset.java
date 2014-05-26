@@ -26,7 +26,7 @@ public class PenAsset
 
     GametableCanvas            m_canvas;
     Color                      m_color;
-    List                       m_points              = new ArrayList();
+    List<Point>                m_points              = new ArrayList<Point>();
 
     public PenAsset()
     {
@@ -44,7 +44,7 @@ public class PenAsset
         if (m_points.size() > 0)
         {
             // only add it if it's a reasonable distance from the last one.
-            final Point lastPoint = (Point)m_points.get(m_points.size() - 1);
+            final Point lastPoint = m_points.get(m_points.size() - 1);
 
             final int dx = lastPoint.x - modelX;
             final int dy = lastPoint.y - modelY;
@@ -119,8 +119,8 @@ public class PenAsset
         final LineSegment[] ret = new LineSegment[m_points.size() - 1];
         for (int i = 0; i < m_points.size() - 1; i++)
         {
-            final Point start = (Point)m_points.get(i);
-            final Point end = (Point)m_points.get(i + 1);
+            final Point start = m_points.get(i);
+            final Point end = m_points.get(i + 1);
             ret[i] = new LineSegment(start, end, m_color);
         }
 
@@ -175,11 +175,11 @@ public class PenAsset
 
     protected boolean pointsOutsideDirectLine(final int startIdx, final int endIdx)
     {
-        final Point checkStart = (Point)m_points.get(startIdx);
-        final Point checkEnd = (Point)m_points.get(endIdx);
+        final Point checkStart = m_points.get(startIdx);
+        final Point checkEnd = m_points.get(endIdx);
         for (int i = startIdx + 1; i < endIdx; i++)
         {
-            final Point checkMiddle = (Point)m_points.get(i);
+            final Point checkMiddle = m_points.get(i);
             final double dist = distanceToLine(checkStart, checkEnd, checkMiddle);
             if (dist > WIGGLE_TOLERANCE)
             {
@@ -203,7 +203,7 @@ public class PenAsset
             return;
         }
 
-        final List newPoints = new ArrayList(m_points.size());
+        final List<Point> newPoints = new ArrayList<Point>(m_points.size());
 
         // no matter what, the first point will have to be in there
         newPoints.add(m_points.get(0));

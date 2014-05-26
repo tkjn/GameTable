@@ -43,7 +43,7 @@ public class SetPogAttributeDialog extends JDialog
 
     private String            value                 = null;
     private String            name                  = null;
-    private HashMap           toAdd                 = new HashMap();
+    private HashMap<String, String> toAdd           = new HashMap<String, String>();
 
     /**
      * This is the default constructor
@@ -83,7 +83,7 @@ public class SetPogAttributeDialog extends JDialog
         return applyButton;
     }
 
-    public HashMap getAttribs() {
+    public HashMap<String, String> getAttribs() {
         return toAdd;
     }
        

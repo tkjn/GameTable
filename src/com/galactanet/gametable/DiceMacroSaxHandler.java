@@ -47,7 +47,7 @@ public class DiceMacroSaxHandler extends DefaultHandler
     /**
      * The collected list of macros.
      */
-    private final List         macros               = new ArrayList();
+    private final List<DiceMacro> macros = new ArrayList<DiceMacro>();
 
     // --- Constructor -----------------------------------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ public class DiceMacroSaxHandler extends DefaultHandler
     /**
      * @return The macros from the latest parse.
      */
-    public List getMacros()
+    public List<DiceMacro> getMacros()
     {
         return Collections.unmodifiableList(macros);
     }

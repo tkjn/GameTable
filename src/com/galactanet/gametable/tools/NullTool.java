@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.galactanet.gametable.GametableCanvas;
+import com.galactanet.gametable.prefs.PreferenceDescriptor;
 
 
 
@@ -50,9 +51,9 @@ public class NullTool implements Tool
     /*
      * @see com.galactanet.gametable.Tool#getPreferences()
      */
-    public List getPreferences()
+    public List<PreferenceDescriptor> getPreferences()
     {
-        return Collections.EMPTY_LIST;
+        return Collections.<PreferenceDescriptor>emptyList();
     }
 
     /*

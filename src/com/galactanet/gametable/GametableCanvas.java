@@ -668,7 +668,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         getActiveMap().clearLines();
         for (int i = 0; i < survivingLines.size(); i++)
         {
-            getActiveMap().addLine((LineSegment)survivingLines.get(i));
+            getActiveMap().addLine(survivingLines.get(i));
         }
         getActiveMap().endUndoableAction(authorID, stateID);
         repaint();
@@ -706,7 +706,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         repaint();
     }
 
-    public void doPogReorder(final Map changes)
+    public void doPogReorder(final Map<Integer,Long> changes)
     {
         getActiveMap().reorderPogs(changes);
         m_gametableFrame.refreshActivePogList();
@@ -789,7 +789,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
                 final DeckData.Card cards[] = new DeckData.Card[cardsList.size()];
                 for (int i = 0; i < cards.length; i++)
                 {
-                    cards[i] = (DeckData.Card)cardsList.get(i);
+                    cards[i] = cardsList.get(i);
                 }
                 m_gametableFrame.discardCards(cards);
             }
@@ -847,7 +847,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         repaint();
     }
 
-    public void doSetPogData(final int id, final String s, final Map toAdd, final Set toDelete)
+    public void doSetPogData(final int id, final String s, final Map<String, String> toAdd, final Set<String> toDelete)
     {
         final Pog pog = getActiveMap().getPogByID(id);
         if (pog == null)
@@ -862,19 +862,19 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
 
         if (toDelete != null)
         {
-            for (final Iterator iterator = toDelete.iterator(); iterator.hasNext();)
+            for (final Iterator<String> iterator = toDelete.iterator(); iterator.hasNext();)
             {
-                final String key = (String)iterator.next();
+                final String key = iterator.next();
                 pog.removeAttribute(key);
             }
         }
 
         if (toAdd != null)
         {
-            for (final Iterator iterator = toAdd.entrySet().iterator(); iterator.hasNext();)
+            for (final Iterator<Map.Entry<String, String>> iterator = toAdd.entrySet().iterator(); iterator.hasNext();)
             {
-                final Map.Entry entry = (Map.Entry)iterator.next();
-                pog.setAttribute((String)entry.getKey(), (String)entry.getValue());
+                final Map.Entry<String, String> entry = iterator.next();
+                pog.setAttribute(entry.getKey(), entry.getValue());
             }
         }
 
@@ -1562,7 +1562,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
             Pog pog;
             int nx,ny,tx,ty;            
             for(int i = 0; i < map.m_selectedPogs.size(); ++i) {
-               pog = (Pog)map.m_selectedPogs.get(i);
+               pog = map.m_selectedPogs.get(i);
                if(pog.getId() != id) {
                    tx = pog.getX();
                    ty = pog.getY();
@@ -1572,11 +1572,11 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
                }
             }
         } else if(toMove.isGrouped()) {        
-            ArrayList grp = GametableFrame.getGametableFrame().getGrouping().getGroup(toMove.getGroup());
+            ArrayList<Pog> grp = GametableFrame.getGametableFrame().getGrouping().getGroup(toMove.getGroup());
             Pog pog, npog;
             int nx,ny,tx,ty;   
             for(int i = 0;i < grp.size(); ++i) {
-                pog = (Pog)grp.get(i);
+                pog = grp.get(i);
                 npog = map.getPogByID(pog.getId());
                 if((npog != null) && (npog != toMove)){
                     if(pog.getId() != id) {
@@ -1844,10 +1844,10 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         
 
         // draw the cursor overlays
-        final List players = m_gametableFrame.getPlayers();
+        final List<Player> players = m_gametableFrame.getPlayers();
         for (int i = 0; i < players.size(); i++)
         {
-            final Player plr = (Player)players.get(i);
+            final Player plr = players.get(i);
             if (plr.isPointing())
             {
                 // draw this player's point cursor
@@ -2074,7 +2074,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         }
     }
 
-    public void reorderPogs(final Map changes)
+    public void reorderPogs(final Map<Integer,Long> changes)
     {
         if (isPublicMap())
         {
@@ -2199,7 +2199,7 @@ public class GametableCanvas extends JComponent implements MouseListener, MouseM
         }
     }
 
-    public void setPogData(final int id, final String s, final Map toAdd, final Set toDelete)
+    public void setPogData(final int id, final String s, final Map<String, String> toAdd, final Set<String> toDelete)
     {
         if (isPublicMap())
         {

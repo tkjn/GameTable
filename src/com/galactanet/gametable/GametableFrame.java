@@ -1722,13 +1722,13 @@ public class GametableFrame extends JFrame implements ActionListener
     public DiceMacro getMacro(final String name)
     {
         final String realName = UtilityFunctions.normalizeName(name);
-        return (DiceMacro)m_macroMap.get(realName);
+        return m_macroMap.get(realName);
     }
 
     /**
      * @return Gets the list of macros.
      */
-    public Collection getMacros()
+    public Collection<DiceMacro> getMacros()
     {
         return Collections.unmodifiableCollection(m_macroMap.values());
     }
@@ -2139,7 +2139,7 @@ public class GametableFrame extends JFrame implements ActionListener
     /**
      * @return Returns the player list.
      */
-    public List getPlayers()
+    public List<Player> getPlayers()
     {
         return Collections.unmodifiableList(m_players);
     }
@@ -2234,7 +2234,7 @@ public class GametableFrame extends JFrame implements ActionListener
                 GroupingDialog gd = new GroupingDialog(false);
                 gd.setVisible(true);
                 if (gd.isAccepted()) {
-                    ArrayList pogs = getGrouping().getGroup(gd.getGroup());                        
+                    ArrayList<Pog> pogs = getGrouping().getGroup(gd.getGroup());                        
                     getGametableCanvas().getActiveMap().addSelectedPogs(pogs);
                     getGametableCanvas().repaint();
                 }
@@ -2256,7 +2256,7 @@ public class GametableFrame extends JFrame implements ActionListener
                 int size = map.m_selectedPogs.size();
                 if(size > 0) {
                     for(int i = 0;i < size; ++i) {
-                        pog = (Pog)map.m_selectedPogs.get(i);
+                        pog = map.m_selectedPogs.get(i);
                         getGrouping().remove(pog);
                     }
                 }
@@ -2511,7 +2511,7 @@ public class GametableFrame extends JFrame implements ActionListener
                 if(size > 0) {
                     final int pogs[] = new int[size];
                     for(int i = 0;i < size; ++i) {
-                        pog = (Pog)map.m_selectedPogs.get(i);
+                        pog = map.m_selectedPogs.get(i);
                         pogs[i] = pog.getId();
                     }
                     getGametableCanvas().removePogs(pogs,false);
@@ -2545,7 +2545,7 @@ public class GametableFrame extends JFrame implements ActionListener
                 if(size > 0) {         
                     // Do this backwards to keep from getting errors as pogs are removed from selection.
                     for(int i = size-1;i >= 0; --i) {
-                        pog = (Pog)map.m_selectedPogs.get(i);
+                        pog = map.m_selectedPogs.get(i);
                         to.addPog(pog);
                         map.removePog(pog, true);                        
                         if(copy) {
@@ -3264,10 +3264,10 @@ public class GametableFrame extends JFrame implements ActionListener
                     keyInfo = " (Ctrl+" + info.getQuickKey() + ")";
                 }
                 button.setToolTipText(info.getName() + keyInfo);
-                final List prefs = info.getTool().getPreferences();
+                final List<PreferenceDescriptor> prefs = info.getTool().getPreferences();
                 for (int i = 0; i < prefs.size(); i++)
                 {
-                    m_preferences.addPreference((PreferenceDescriptor)prefs.get(i));
+                    m_preferences.addPreference(prefs.get(i));
                 }
             }
         }
@@ -3649,9 +3649,9 @@ public class GametableFrame extends JFrame implements ActionListener
             // we are done parsing the file. The handler contains all the macros, ready to be added to the macro map
             // clear the state
             m_macroMap.clear();
-            for (final Iterator iterator = handler.getMacros().iterator(); iterator.hasNext();)
+            for (final Iterator<DiceMacro> iterator = handler.getMacros().iterator(); iterator.hasNext();)
             {
-                final DiceMacro macro = (DiceMacro)iterator.next();
+                final DiceMacro macro = iterator.next();
                 addMacro(macro);
             }
         }
@@ -4109,7 +4109,7 @@ public class GametableFrame extends JFrame implements ActionListener
         sendDeckList();
     }
 
-    public void pogDataPacketReceived(final int id, final String s, final Map toAdd, final Set toDelete)
+    public void pogDataPacketReceived(final int id, final String s, final Map<String, String> toAdd, final Set<String> toDelete)
     {
         getGametableCanvas().doSetPogData(id, s, toAdd, toDelete);
 
@@ -4133,7 +4133,7 @@ public class GametableFrame extends JFrame implements ActionListener
         }
     }
 
-    public void pogReorderPacketReceived(final Map changes)
+    public void pogReorderPacketReceived(final Map<Integer, Long> changes)
     {
         getGametableCanvas().doPogReorder(changes);
         if (m_netStatus == NETSTATE_HOST)
@@ -4593,9 +4593,9 @@ public class GametableFrame extends JFrame implements ActionListener
         final XmlSerializer out = new XmlSerializer();
         out.startDocument(new OutputStreamWriter(new FileOutputStream (file), "UTF-8")); 
         out.startElement(DiceMacroSaxHandler.ELEMENT_DICE_MACROS);
-        for (final Iterator iterator = m_macroMap.values().iterator(); iterator.hasNext();)
+        for (final Iterator<DiceMacro> iterator = m_macroMap.values().iterator(); iterator.hasNext();)
         {
-            final DiceMacro macro = (DiceMacro)iterator.next();
+            final DiceMacro macro = iterator.next();
             macro.serialize(out);
         }
         out.endElement();
@@ -4904,19 +4904,20 @@ public class GametableFrame extends JFrame implements ActionListener
         final NetworkThread thread = m_networkThread;
         if (thread != null)
         {
-            final Set lostConnections = thread.getLostConnections();
-            Iterator iterator = lostConnections.iterator();
+            final Set<Connection> lostConnections = thread.getLostConnections();
+            Iterator<Connection> iterator = lostConnections.iterator();
             while (iterator.hasNext())
             {
-                final Connection connection = (Connection)iterator.next();
+                final Connection connection = iterator.next();
                 connectionDropped(connection);
             }
-
-            final List packets = thread.getPackets();
-            iterator = packets.iterator();
-            while (iterator.hasNext())
+            
+            
+            final List<Packet> packets = thread.getPackets();
+            Iterator<Packet> iterator2 = packets.iterator();
+            while (iterator2.hasNext())
             {
-                final Packet packet = (Packet)iterator.next();
+                final Packet packet = iterator2.next();
                 packetReceived(packet.getSource(), packet.getData());
             }
 

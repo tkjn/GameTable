@@ -26,7 +26,7 @@ public class XmlSerializer
 
     boolean bTagOpen = false;
     Writer  out;
-    List    tagStack = new LinkedList();
+    List<String> tagStack = new LinkedList<String>();
 
     // --- Constructors ----------------------------------------------------------------------------------------------
 
@@ -45,12 +45,12 @@ public class XmlSerializer
         out.write('"');
     }
 
-    public void addAttributes(final Map attributes) throws IOException
+    public void addAttributes(final Map<String, String> attributes) throws IOException
     {
-        for (final Iterator iterator = attributes.entrySet().iterator(); iterator.hasNext();)
+        for (final Iterator<Map.Entry<String, String>> iterator = attributes.entrySet().iterator(); iterator.hasNext();)
         {
-            final Map.Entry entry = (Map.Entry)iterator.next();
-            addAttribute((String)entry.getKey(), (String)entry.getValue());
+            final Map.Entry<String, String> entry = iterator.next();
+            addAttribute(entry.getKey(), entry.getValue());
         }
     }
 
@@ -92,7 +92,7 @@ public class XmlSerializer
 
     private String popTag()
     {
-        return (String)tagStack.remove(0);
+        return tagStack.remove(0);
     }
 
     /* --- Private Methods ------------------------------------------------- */

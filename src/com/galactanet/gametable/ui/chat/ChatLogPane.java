@@ -7,10 +7,8 @@ package com.galactanet.gametable.ui.chat;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -238,7 +236,7 @@ public class ChatLogPane extends JEditorPane
         return out.toString();
     }
 
-    private LinkedList  entries          = new LinkedList();
+    private LinkedList<String> entries   = new LinkedList<String>();
     private boolean     jumpToBottom     = true;
     private final Point mousePosition    = new Point();
     private Point       rolloverPosition = null;
@@ -246,7 +244,7 @@ public class ChatLogPane extends JEditorPane
 
     private int         m_id = 0;
 
-    protected List      privMsgLogs      = new ArrayList();
+//    protected List      privMsgLogs      = new ArrayList();
 //    private int         playerA          = 0; // never used locally
 //    private int         playerB          = 0; // never used locally
     
@@ -407,10 +405,10 @@ public class ChatLogPane extends JEditorPane
             final StringBuffer bodyContent = new StringBuffer();
             bodyContent.append(DEFAULT_TEXT_HEADER);
 
-            Iterator iterator = entries.iterator();
+            Iterator<String> iterator = entries.iterator();
             while(iterator.hasNext())
             {               
-                final String entry = (String)iterator.next();
+                final String entry = iterator.next();
                 bodyContent.append(entry);
                 if(iterator.hasNext()) bodyContent.append("<br>\n");
             }
@@ -447,7 +445,7 @@ public class ChatLogPane extends JEditorPane
     public void clearText()
     {
         setText(DEFAULT_TEXT);
-        entries = new LinkedList();
+        entries = new LinkedList<String>();
         if(m_id == 0)
             addText("Welcome to <a href=\"http://http://sourceforge.net/projects/gametable/\">" + GametableApp.VERSION + "</a>." + GametableApp.BUILD);
     }

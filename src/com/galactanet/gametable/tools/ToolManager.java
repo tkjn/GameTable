@@ -37,7 +37,7 @@ public class ToolManager
      */
     public static class Info
     {
-        private final List cursors = new ArrayList();
+        private final List<Cursor> cursors = new ArrayList<Cursor>();
         private Image      icon;
         private int        id;
         private String     name;
@@ -116,7 +116,7 @@ public class ToolManager
          */
         public Cursor getCursor(final int index)
         {
-            return (Cursor)cursors.get(index);
+            return cursors.get(index);
         }
 
         /**
@@ -262,13 +262,13 @@ public class ToolManager
         return Toolkit.getDefaultToolkit().createCustomCursor(bi, new Point(0, 0), "empty");
     }
 
-    private final List infoList           = new ArrayList();
+    private final List<Info> infoList     = new ArrayList<Info>();
 
     // when this is true, no mouse events will be dispatched.
     // it is set to false when a mousePressed event is received.
     private boolean    m_bActionCancelled = false;
 
-    private final Map  nameInfoMap        = new HashMap();
+    private final Map<String, Info> nameInfoMap = new HashMap<String, Info>();
 
     /**
      * Constructor.
@@ -331,7 +331,7 @@ public class ToolManager
      */
     public Info getToolInfo(final int index)
     {
-        return (Info)infoList.get(index);
+        return infoList.get(index);
     }
 
     /**
@@ -340,7 +340,7 @@ public class ToolManager
      */
     public Info getToolInfo(final String name)
     {
-        return (Info)nameInfoMap.get(name);
+        return nameInfoMap.get(name);
     }
 
     /**

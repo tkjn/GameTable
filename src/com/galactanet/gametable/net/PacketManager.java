@@ -34,12 +34,12 @@ public class PacketManager
     /**
      * Set of files already asked for. TODO: Add some kind of timed retry feature.
      */
-    private static Set      g_requestedFiles          = new HashSet();
+    private static Set<String> g_requestedFiles       = new HashSet<String>();
 
     /**
      * A Map of sets of pending incoming requests that could not be fulfilled.
      */
-    private static Map      g_unfulfilledRequests     = new HashMap();
+    private static Map<String, Set<Connection>> g_unfulfilledRequests = new HashMap<String, Set<Connection>>();
 
     // Pog added
     public static final int PACKET_ADDPOG             = 5;
@@ -160,10 +160,10 @@ public class PacketManager
 
     private static void addUnfulfilledRequest(final String filename, final Connection connection)
     {
-        Set set = (Set)g_unfulfilledRequests.get(filename);
+        Set<Connection> set = g_unfulfilledRequests.get(filename);
         if (set == null)
         {
-            set = new HashSet();
+            set = new HashSet<Connection>();
             g_unfulfilledRequests.put(filename, set);
         }
 
@@ -350,11 +350,11 @@ public class PacketManager
 
             dos.writeInt(PACKET_CAST);
 
-            final List players = frame.getPlayers();
+            final List<Player> players = frame.getPlayers();
             dos.writeInt(players.size());
             for (int i = 0; i < players.size(); i++)
             {
-                final Player player = (Player)players.get(i);
+                final Player player = players.get(i);
                 dos.writeUTF(player.getCharacterName());
                 dos.writeUTF(player.getPlayerName());
                 dos.writeInt(player.getId());
@@ -397,7 +397,7 @@ public class PacketManager
     }
 
     /* *********************** DECK LIST PACKET *********************************** */
-    public static byte[] makeDeckListPacket(final List decks)
+    public static byte[] makeDeckListPacket(final List<Deck> decks)
     {
         try
         {
@@ -408,7 +408,7 @@ public class PacketManager
             dos.writeInt(decks.size()); // number of decks
             for (int i = 0; i < decks.size(); i++)
             {
-                final Deck d = (Deck)decks.get(i);
+                final Deck d = decks.get(i);
                 dos.writeUTF(d.m_name); // the name of this deck
             }
             return baos.toByteArray();
@@ -770,7 +770,7 @@ public class PacketManager
         return makePogDataPacket(id, s, null, null);
     }
 
-    public static byte[] makePogDataPacket(final int id, final String s, final Map toAdd, final Set toDelete)
+    public static byte[] makePogDataPacket(final int id, final String s, final Map<String, String> toAdd, final Set<String> toDelete)
     {
         try
         {
@@ -797,9 +797,9 @@ public class PacketManager
             else
             {
                 dos.writeInt(toDelete.size());
-                for (final Iterator iterator = toDelete.iterator(); iterator.hasNext();)
+                for (final Iterator<String> iterator = toDelete.iterator(); iterator.hasNext();)
                 {
-                    final String key = (String)iterator.next();
+                    final String key = iterator.next();
                     dos.writeUTF(key);
                 }
             }
@@ -812,11 +812,11 @@ public class PacketManager
             else
             {
                 dos.writeInt(toAdd.size());
-                for (final Iterator iterator = toAdd.entrySet().iterator(); iterator.hasNext();)
+                for (final Iterator<Map.Entry<String, String>> iterator = toAdd.entrySet().iterator(); iterator.hasNext();)
                 {
-                    final Map.Entry entry = (Map.Entry)iterator.next();
-                    dos.writeUTF((String)entry.getKey());
-                    dos.writeUTF((String)entry.getValue());
+                    final Map.Entry<String, String> entry = iterator.next();
+                    dos.writeUTF(entry.getKey());
+                    dos.writeUTF(entry.getValue());
                 }
             }
 
@@ -857,7 +857,7 @@ public class PacketManager
     
     /* *********************** REMOVEPOG PACKET *********************************** */
 
-    public static byte[] makePogReorderPacket(final Map changes)
+    public static byte[] makePogReorderPacket(final Map<Integer, Long> changes)
     {
         try
         {
@@ -866,11 +866,11 @@ public class PacketManager
 
             dos.writeInt(PACKET_POG_REORDER);
             dos.writeInt(changes.size());
-            for (final Iterator iterator = changes.entrySet().iterator(); iterator.hasNext();)
+            for (final Iterator<Map.Entry<Integer, Long>> iterator = changes.entrySet().iterator(); iterator.hasNext();)
             {
-                final Map.Entry entry = (Map.Entry)iterator.next();
-                final Integer id = (Integer)entry.getKey();
-                final Long order = (Long)entry.getValue();
+                final Map.Entry<Integer, Long> entry = iterator.next();
+                final Integer id = entry.getKey();
+                final Long order = entry.getValue();
                 dos.writeInt(id.intValue());
                 dos.writeLong(order.longValue());
             }
@@ -1977,12 +1977,12 @@ public class PacketManager
 
             // Ok, now send the file out to any previously unfulfilled requests.
             final File providedFile = new File(filename).getCanonicalFile();
-            final Iterator iterator = g_unfulfilledRequests.keySet().iterator();
+            final Iterator<String> iterator = g_unfulfilledRequests.keySet().iterator();
             byte[] packet = null;
             while (iterator.hasNext())
             {
-                final String requestedFilename = (String)iterator.next();
-                final Set connections = (Set)g_unfulfilledRequests.get(requestedFilename);
+                final String requestedFilename = iterator.next();
+                final Set<Connection> connections = g_unfulfilledRequests.get(requestedFilename);
                 if (connections.isEmpty())
                 {
                     iterator.remove();
@@ -2004,10 +2004,10 @@ public class PacketManager
                     }
 
                     // send to everyone asking for this file
-                    final Iterator connectionIterator = connections.iterator();
+                    final Iterator<Connection> connectionIterator = connections.iterator();
                     while (connectionIterator.hasNext())
                     {
-                        final Connection connection = (Connection)connectionIterator.next();
+                        final Connection connection = connectionIterator.next();
                         connection.sendPacket(packet);
                     }
                 }
@@ -2056,13 +2056,13 @@ public class PacketManager
                 name = dis.readUTF();
             }
 
-            final Set toDelete = new HashSet();
+            final Set<String> toDelete = new HashSet<String>();
             final int numToDelete = dis.readInt();
             for (int i = 0; i < numToDelete; ++i)
             {
                 toDelete.add(dis.readUTF());
             }
-            final Map toAdd = new HashMap();
+            final Map<String, String> toAdd = new HashMap<String, String>();
             final int numToAdd = dis.readInt();
             for (int i = 0; i < numToAdd; ++i)
             {
@@ -2101,7 +2101,7 @@ public class PacketManager
         try
         {
             final int numChanges = dis.readInt();
-            final Map changes = new HashMap();
+            final Map<Integer, Long> changes = new HashMap<Integer, Long>();
             for (int i = 0; i < numChanges; ++i)
             {
                 final int id = dis.readInt();

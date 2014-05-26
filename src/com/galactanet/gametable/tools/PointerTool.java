@@ -161,7 +161,7 @@ public class PointerTool extends NullTool
     /*
      * @see com.galactanet.gametable.Tool#getPreferences()
      */
-    public List getPreferences()
+    public List<PreferenceDescriptor> getPreferences()
     {
         return PREFERENCES;
     }
@@ -575,7 +575,7 @@ public class PointerTool extends NullTool
                     dialog.setVisible(true);               
                    
                     if(dialog.isConfirmed()) {
-                        final Map toAdd = dialog.getAttribs();
+                        final Map<String,String> toAdd = dialog.getAttribs();
                         m_canvas.setPogData(m_menuPog.getId(), null, toAdd, null);
                     }
                 }

@@ -66,10 +66,10 @@ public class ChatLogEntryPane extends JEditorPane
     {
         boolean allSet = true;
 
-        final List elements = getElementsIn(doc, start, end);
+        final List<AbstractDocument.LeafElement> elements = getElementsIn(doc, start, end);
         for (int i = 0, size = elements.size(); i < size; ++i)
         {
-            final AbstractDocument.LeafElement element = (AbstractDocument.LeafElement)elements.get(i);
+            final AbstractDocument.LeafElement element = elements.get(i);
             if (!element.containsAttributes(styleOn))
             {
                 allSet = false;
@@ -132,9 +132,9 @@ public class ChatLogEntryPane extends JEditorPane
         return getCleanStyle(doc.getStyle(name));
     }
 
-    private static List getElementsIn(final HTMLDocument doc, final int start, final int end)
+    private static List<AbstractDocument.LeafElement> getElementsIn(final HTMLDocument doc, final int start, final int end)
     {
-        final List retVal = new ArrayList();
+        final List<AbstractDocument.LeafElement> retVal = new ArrayList<AbstractDocument.LeafElement>();
         int pos = start;
         while (true)
         {
@@ -154,7 +154,7 @@ public class ChatLogEntryPane extends JEditorPane
     /**
      * List of sent items.
      */
-    private final List           history         = new ArrayList();
+    private final List<String>   history         = new ArrayList<String>();
     private int                  historyPosition = 0;
 
     // --- Constructors ----------------------------------------------------------------------------------------------
@@ -374,7 +374,7 @@ public class ChatLogEntryPane extends JEditorPane
                 }
                 else
                 {
-                    setText((String)history.get(historyPosition));
+                    setText(history.get(historyPosition));
                 }
                 toolbar.updateStyles();
             }
@@ -406,7 +406,7 @@ public class ChatLogEntryPane extends JEditorPane
                     }
                     else
                     {
-                        setText((String)history.get(historyPosition));
+                        setText(history.get(historyPosition));
                     }
                 }
                 toolbar.updateStyles();

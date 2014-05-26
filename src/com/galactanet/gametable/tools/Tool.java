@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.util.List;
 
 import com.galactanet.gametable.GametableCanvas;
+import com.galactanet.gametable.prefs.PreferenceDescriptor;
 
 
 
@@ -46,7 +47,7 @@ public interface Tool
      * 
      * @return a List of PreferenceDescriptors.
      */
-    List getPreferences();
+    List<PreferenceDescriptor> getPreferences();
 
     /**
      * The tool should return true if the tool is in a mode where it is actively being used.

@@ -27,7 +27,7 @@ public class PogAdapter implements ICharacterDataChangedListener {
 		String wounds = String.valueOf(character_data.getWounds()) + " / " + String.valueOf(character_data.getMaxWounds());
 		String gold = String.valueOf(character_data.getGold());
 		
-		HashMap<String, String> map = new HashMap();
+		HashMap<String, String> map = new HashMap<String, String>();
 		if ( ! wounds.equals(current_pog.getAttribute("Wounds"))) {
 			map.put("Wounds", wounds);
 		}

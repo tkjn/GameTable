@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class MapState
 {
-    public List m_lineSegments; // the line segments
+    public List<LineSegment> m_lineSegments; // the line segments
 
     public int  m_playerID;    // the ID of the player who put it into this state
 
@@ -32,13 +32,13 @@ public class MapState
     {
     }
 
-    public void setLines(final List lines)
+    public void setLines(final List<LineSegment> lines)
     {
-        m_lineSegments = new ArrayList();
+        m_lineSegments = new ArrayList<LineSegment>();
         // we're going to copy every line segment
         for (int i = 0; i < lines.size(); i++)
         {
-            final LineSegment ls = (LineSegment)lines.get(i);
+            final LineSegment ls = lines.get(i);
             final LineSegment newLS = new LineSegment(ls);
             m_lineSegments.add(newLS);
         }

@@ -138,7 +138,7 @@ public class PublishTool extends NullTool
             // now, copy over all the line segments. we run through all the
             // line segments on the private layer, and collect a list of the
             // ones that are at least partially in the rect
-            final List lineList = new ArrayList();
+            final List<LineSegment> lineList = new ArrayList<LineSegment>();
 
             for (int i = 0; i < m_from.getNumLines(); i++)
             {
@@ -156,7 +156,7 @@ public class PublishTool extends NullTool
             final LineSegment[] toAdd = new LineSegment[lineList.size()];
             for (int i = 0; i < toAdd.length; i++)
             {
-                toAdd[i] = (LineSegment)lineList.get(i);
+                toAdd[i] = lineList.get(i);
             }
 
             m_canvas.setActiveMap(m_to);

@@ -268,7 +268,7 @@ public class GametableMap
         return m_pogs.size();
     }
 
-    public SortedSet getOrderedPogs()
+    public SortedSet<Pog> getOrderedPogs()
     {
         return Collections.unmodifiableSortedSet(m_orderedPogs);
     }

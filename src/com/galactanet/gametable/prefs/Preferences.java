@@ -24,12 +24,12 @@ public class Preferences
     /**
      * The map of custom preference descriptors.
      */
-    private final Map preferenceDescriptors = new HashMap();
+    private final Map<String, PreferenceDescriptor> preferenceDescriptors = new HashMap<String, PreferenceDescriptor>();
 
     /**
      * Map of the custom preference values.
      */
-    private final Map preferenceValues      = new HashMap();
+    private final Map<String, Object> preferenceValues = new HashMap<String, Object>();
 
     // --- Constructors ---
 
@@ -132,10 +132,10 @@ public class Preferences
 
     public PreferenceDescriptor getPreference(final String name)
     {
-        return (PreferenceDescriptor)preferenceDescriptors.get(name);
+        return preferenceDescriptors.get(name);
     }
 
-    public Set getPreferenceNames()
+    public Set<Map.Entry<String, PreferenceDescriptor>> getPreferenceNames()
     {
         return Collections.unmodifiableSet(preferenceDescriptors.entrySet());
     }

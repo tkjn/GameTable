@@ -77,9 +77,9 @@ public class NetworkThread extends Thread
         }
     }
 
-    private final Set           connections     = new HashSet();
-    private final Set           lostConnections = new HashSet();
-    private final List          pendingCommands = new LinkedList();
+    private final Set<Connection> connections     = new HashSet<Connection>();
+    private final Set<Connection> lostConnections = new HashSet<Connection>();
+    private final List<Runnable>  pendingCommands = new LinkedList<Runnable>();
 
     private Selector            selector;
     private final int           serverPort;
@@ -155,10 +155,10 @@ public class NetworkThread extends Thread
         {
             synchronized (connections)
             {
-                final Iterator iter = connections.iterator();
+                final Iterator<Connection> iter = connections.iterator();
                 while (iter.hasNext())
                 {
-                    final Connection connection = (Connection)iter.next();
+                    final Connection connection = iter.next();
                     connection.close();
                 }
                 connections.clear();
@@ -184,13 +184,13 @@ public class NetworkThread extends Thread
 
     private void cullLostConnections()
     {
-        final Set lost = new HashSet();
+        final Set<Connection> lost = new HashSet<Connection>();
         synchronized (connections)
         {
-            final Iterator iterator = connections.iterator();
+            final Iterator<Connection> iterator = connections.iterator();
             while (iterator.hasNext())
             {
-                final Connection connection = (Connection)iterator.next();
+                final Connection connection = iterator.next();
                 if (connection.isDead())
                 {
                     lost.add(connection);
@@ -198,16 +198,16 @@ public class NetworkThread extends Thread
             }
         }
 
-        final Iterator iterator = lost.iterator();
+        final Iterator<Connection> iterator = lost.iterator();
         while (iterator.hasNext())
         {
-            remove((Connection)iterator.next());
+            remove(iterator.next());
         }
     }
 
-    public Set getConnections()
+    public Set<Connection> getConnections()
     {
-        final Set retVal = new HashSet();
+        final Set<Connection> retVal = new HashSet<Connection>();
         synchronized (connections)
         {
             retVal.addAll(connections);
@@ -217,28 +217,28 @@ public class NetworkThread extends Thread
         return retVal;
     }
 
-    public Set getLostConnections()
+    public Set<Connection> getLostConnections()
     {
         cullLostConnections();
 
-        Set retVal = null;
+        Set<Connection> retVal = null;
         synchronized (lostConnections)
         {
-            retVal = new HashSet(lostConnections);
+            retVal = new HashSet<Connection>(lostConnections);
             lostConnections.clear();
             return retVal;
         }
     }
 
-    public List getPackets()
+    public List<Packet> getPackets()
     {
-        final List retVal = new ArrayList();
+        final List<Packet> retVal = new ArrayList<Packet>();
         synchronized (connections)
         {
-            final Iterator iter = connections.iterator();
+            final Iterator<Connection> iter = connections.iterator();
             while (iter.hasNext())
             {
-                final Connection connection = (Connection)iter.next();
+                final Connection connection = iter.next();
                 while (connection.hasPackets())
                 {
                     final byte[] data = connection.receivePacket();

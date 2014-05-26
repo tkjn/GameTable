@@ -615,7 +615,7 @@ public class Pog implements Comparable
         return a.value;
     }
 
-    public Set getAttributeNames()
+    public Set<String> getAttributeNames()
     {
         final Set<String> s = new HashSet<String>();
         for (final Iterator<Attribute> iterator = m_attributes.values().iterator(); iterator.hasNext();)

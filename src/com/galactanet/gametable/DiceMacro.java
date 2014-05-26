@@ -70,12 +70,12 @@ public class DiceMacro
          */
         public int m_repeat = 1;
         public String m_termString = null;
-        public final List m_terms = new ArrayList();
+        public final List<Term> m_terms = new ArrayList<Term>();
         
         public TermList() {            
         }
         
-        public void add(Object oadd) {
+        public void add(Term oadd) {
             m_terms.add(oadd);
         }
 // never used locally        
@@ -185,7 +185,7 @@ public class DiceMacro
     
     private StringBuffer outputString = null;
   
-    public String generateOutputString(final String rollerName, final List result, final String rollName)
+    public String generateOutputString(final String rollerName, final List<Result> result, final String rollName)
     {        
         final StringBuffer ret = new StringBuffer();
         if(rollerName == null) ret.append("You Privately Roll ");
@@ -195,7 +195,7 @@ public class DiceMacro
         outputString.append("<b><font color=\"#006600\">");  
         outputString.append(rollName + "</font></b>:");        
         for(int i = 0;i < result.size();i++) {
-            final Result curResult = (Result)result.get(i);
+            final Result curResult = result.get(i);
             if(i > 0) outputString.append(",");
             outputString.append(" (" + curResult.roll +  ") : [");
             for(int j = 0;j < curResult.result.length; j++) {
@@ -289,7 +289,7 @@ public class DiceMacro
    /**
      * List of parsed terms in this macro.
      */
-    private final List m_terms = new ArrayList();
+    private final List<TermList> m_terms = new ArrayList<TermList>();
 
     // --- Constructors ---
 
@@ -330,7 +330,7 @@ public class DiceMacro
         final Player me = GametableFrame.getGametableFrame().getMyPlayer();
         final String name = me.getCharacterName();
 
-        final List result = roll();
+        final List<Result> result = roll();
 
         if(priv)
             GametableFrame.getGametableFrame().getChatPanel().logMechanics(generateOutputString(null, result, getName()));
@@ -339,7 +339,7 @@ public class DiceMacro
         
     }
     
-    public List runMacro() {
+    public List<Result> runMacro() {
         return roll();
     }
 
@@ -582,9 +582,9 @@ public class DiceMacro
      * 
      * @return DiceMacro.Result object.
      */
-    public List roll()
+    public List<Result> roll()
     {
-        List rList = new ArrayList();
+        List<Result> rList = new ArrayList<Result>();
         if (!isInitialized())
         {
             return null;
@@ -592,7 +592,7 @@ public class DiceMacro
         
        
         for (int t = 0; t < m_terms.size(); t++) {
-            TermList cur_term = (TermList)m_terms.get(t);
+            TermList cur_term = m_terms.get(t);
             int[] totals = new int[cur_term.m_repeat];
             String[] results = new String[cur_term.m_repeat]; 
             
@@ -601,7 +601,7 @@ public class DiceMacro
                 int total = 0;
                 for (int i = 0; i < cur_term.m_terms.size(); i++) {
                     // get the die type
-                    final Term dieType = (Term)cur_term.m_terms.get(i);
+                    final Term dieType = cur_term.m_terms.get(i);
                     boolean bFirstAdd = (i == 0);
 
                     int subtotal = 0;

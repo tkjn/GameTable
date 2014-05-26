@@ -35,7 +35,7 @@ public class Log
     // --- Constants ---
 
     private static final Object     G_LOCK            = new Object();
-    private static Map              g_loggingContexts = new HashMap();
+    private static Map<Integer, Log> g_loggingContexts = new HashMap<Integer, Log>();
     /**
      * The logging context for network output.
      */
@@ -77,7 +77,7 @@ public class Log
     {
         synchronized (G_LOCK)
         {
-            final Log oldLog = (Log)g_loggingContexts.get(new Integer(context));
+            final Log oldLog = g_loggingContexts.get(new Integer(context));
             if (oldLog != null)
             {
                 oldLog.close();
@@ -93,7 +93,7 @@ public class Log
     {
         synchronized (G_LOCK)
         {
-            final Log oldLog = (Log)g_loggingContexts.get(new Integer(context));
+            final Log oldLog = g_loggingContexts.get(new Integer(context));
             if (oldLog != null)
             {
                 oldLog.close();
@@ -109,7 +109,7 @@ public class Log
     {
         synchronized (G_LOCK)
         {
-            final Log l = (Log)g_loggingContexts.get(new Integer(context));
+            final Log l = g_loggingContexts.get(new Integer(context));
             if (l != null)
             {
                 l.log(s);
@@ -121,7 +121,7 @@ public class Log
     {
         synchronized (G_LOCK)
         {
-            final Log l = (Log)g_loggingContexts.get(new Integer(context));
+            final Log l = g_loggingContexts.get(new Integer(context));
             if (l != null)
             {
                 l.log(t);

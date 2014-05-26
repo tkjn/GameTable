@@ -268,9 +268,9 @@ public class ActivePogsPanel extends JPanel
      */
     private class BranchTracker implements TreeExpansionListener
     {
-        private boolean   allExpanded    = false;
-        private final Set collapsedNodes = new HashSet();
-        private final Set expandedNodes  = new HashSet();
+        private boolean        allExpanded    = false;
+        private final Set<Pog> collapsedNodes = new HashSet<Pog>();
+        private final Set<Pog> expandedNodes  = new HashSet<Pog>();
 
         public BranchTracker()
         {
@@ -342,10 +342,10 @@ public class ActivePogsPanel extends JPanel
             tree.removeTreeExpansionListener(this);
             try
             {
-                Iterator iterator = new HashSet(expandedNodes).iterator();
+                Iterator<Pog> iterator = new HashSet<Pog>(expandedNodes).iterator();
                 while (iterator.hasNext())
                 {
-                    final Pog pog = (Pog)iterator.next();
+                    final Pog pog = iterator.next();
                     final PogNode node = root.findNodeFor(pog);
                     if (node != null)
                     {
@@ -358,10 +358,10 @@ public class ActivePogsPanel extends JPanel
                     }
                 }
 
-                iterator = new HashSet(collapsedNodes).iterator();
+                iterator = new HashSet<Pog>(collapsedNodes).iterator();
                 while (iterator.hasNext())
                 {
-                    final Pog pog = (Pog)iterator.next();
+                    final Pog pog = iterator.next();
                     final PogNode node = root.findNodeFor(pog);
                     if (node != null)
                     {
@@ -432,9 +432,9 @@ public class ActivePogsPanel extends JPanel
         public PogNode(final Pog pog)
         {
             super(pog, true);
-            for (final Iterator iterator = getPog().getAttributeNames().iterator(); iterator.hasNext();)
+            for (final Iterator<String> iterator = getPog().getAttributeNames().iterator(); iterator.hasNext();)
             {
-                add(new AttributeNode((String)iterator.next()));
+                add(new AttributeNode(iterator.next()));
             }
         }
 
@@ -485,9 +485,9 @@ public class ActivePogsPanel extends JPanel
         public RootNode(final GametableMap map)
         {
             super(map, true);
-            for (final Iterator iterator = getMap().getOrderedPogs().iterator(); iterator.hasNext();)
+            for (final Iterator<Pog> iterator = getMap().getOrderedPogs().iterator(); iterator.hasNext();)
             {
-                add(new PogNode((Pog)iterator.next()));
+                add(new PogNode(iterator.next()));
             }
         }
 
@@ -573,7 +573,7 @@ public class ActivePogsPanel extends JPanel
     /**
      * A map of GametableMaps to BranchTrackers for thier pog lists.
      */
-    private final Map                       trackers            = new HashMap();
+    private final Map<GametableMap,BranchTracker> trackers  = new HashMap<GametableMap,BranchTracker>();
 
     // --- Constructors ----------------------------------------------------------------------------------------------
 
@@ -824,7 +824,7 @@ public class ActivePogsPanel extends JPanel
 
     private BranchTracker getTrackerFor(final GametableMap map)
     {
-        BranchTracker tracker = (BranchTracker)trackers.get(map);
+        BranchTracker tracker = trackers.get(map);
         if (tracker == null)
         {
             tracker = new BranchTracker();
@@ -951,24 +951,24 @@ public class ActivePogsPanel extends JPanel
                 Pog targetPog = node.getPog();
                 if (!sourcePog.equals(targetPog))
                 {
-                    final List pogs = new ArrayList(GametableFrame.getGametableFrame().getGametableCanvas()
+                    final List<Pog> pogs = new ArrayList<Pog>(GametableFrame.getGametableFrame().getGametableCanvas()
                         .getActiveMap().getOrderedPogs());
                     final int sourceIndex = pogs.indexOf(sourcePog);
                     int targetIndex = pogs.indexOf(targetPog);
-                    final Map changes = new HashMap();
+                    final Map<Integer, Long> changes = new HashMap<Integer, Long>();
                     if (sourceIndex < targetIndex)
                     {
                         // Moving a pog down in the list
                         if (!after)
                         {
                             --targetIndex;
-                            targetPog = (Pog)pogs.get(targetIndex);
+                            targetPog = pogs.get(targetIndex);
                         }
                         changes.put(new Integer(sourcePog.getId()), new Long(targetPog.getSortOrder()));
                         for (int i = sourceIndex + 1; i <= targetIndex; ++i)
                         {
-                            final Pog a = (Pog)pogs.get(i);
-                            final Pog b = (Pog)pogs.get(i - 1);
+                            final Pog a = pogs.get(i);
+                            final Pog b = pogs.get(i - 1);
 
                             changes.put(new Integer(a.getId()), new Long(b.getSortOrder()));
                         }
@@ -979,8 +979,8 @@ public class ActivePogsPanel extends JPanel
                         changes.put(new Integer(sourcePog.getId()), new Long(targetPog.getSortOrder()));
                         for (int i = targetIndex; i < sourceIndex; ++i)
                         {
-                            final Pog a = (Pog)pogs.get(i);
-                            final Pog b = (Pog)pogs.get(i + 1);
+                            final Pog a = pogs.get(i);
+                            final Pog b = pogs.get(i + 1);
 
                             changes.put(new Integer(a.getId()), new Long(b.getSortOrder()));
                         }
@@ -998,9 +998,9 @@ public class ActivePogsPanel extends JPanel
 
     private void removeTrackers()
     {
-        for (final Iterator iterator = trackers.values().iterator(); iterator.hasNext();)
+        for (final Iterator<BranchTracker> iterator = trackers.values().iterator(); iterator.hasNext();)
         {
-            pogTree.removeTreeExpansionListener((TreeExpansionListener)iterator.next());
+            pogTree.removeTreeExpansionListener(iterator.next());
         }
     }
 }
