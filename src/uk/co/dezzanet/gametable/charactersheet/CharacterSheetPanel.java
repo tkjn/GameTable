@@ -405,7 +405,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     	
     	// Header row etc
     	buff.append("<html><table>");
-    	buff.append("<tr><th style='border-bottom: 1px solid #000000'>Enemy's WS</th>");
+    	buff.append("<tr><th>Enemy's WS</th>");
     	for (int i = 1; i <= 10; ++i) {
     		buff.append(String.format("<td>%d</td>", i));
     	}
@@ -415,12 +415,21 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     	ToHitModel toHitModel = new ToHitModel();
     	try {
     		int[] toHitData = toHitModel.getToHitForWS(characterData.getWeaponSkill());
+    		int[] defendData = toHitModel.getToHitForAttacker(characterData.getWeaponSkill());
     		for (int toHit : toHitData) {
+    			buff.append(String.format("<td>%d</td>", toHit));
+    		}
+    		buff.append("</tr>");
+        	buff.append("<tr><th>Enemy requires:</th>");
+        	for (int toHit : defendData) {
     			buff.append(String.format("<td>%d</td>", toHit));
     		}
     	}
     	catch (IllegalArgumentException e) {
     		buff.append("<td colspan='10'>?</td>");
+    		buff.append("</tr>");
+        	buff.append("<tr><th>To hit foe:</th>");
+        	buff.append("<td colspan='10'>?</td>");
     	}
     	buff.append("</tr>");
     	buff.append("</table></html>");

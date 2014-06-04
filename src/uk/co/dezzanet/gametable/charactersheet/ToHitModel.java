@@ -49,4 +49,22 @@ public class ToHitModel {
 		}
 		return toHitTable[attackersWS - 1][defendersWS - 1];
 	}
+	
+	/**
+	 * Gets the to-hit table for a given defend WS
+	 * @param defendersWS
+	 * @return int[] zero-based array of ints
+	 */
+	public int[] getToHitForAttacker(int defendersWS) {
+		if (defendersWS < 1 || defendersWS > 10) {
+			throw new IllegalArgumentException("Invalid WS");
+		}
+		int[] data = new int[10];
+		
+		for (int i = 0; i < 10; ++i) {
+			data[i] = toHitTable[i][defendersWS - 1];
+		}
+		
+		return data;
+	}
 }
