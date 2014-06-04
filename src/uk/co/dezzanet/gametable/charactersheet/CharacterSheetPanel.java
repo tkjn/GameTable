@@ -75,8 +75,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		wounds.addChangeListener(new WoundsChangeListener());
 		add(wounds);
 		
-		Dimension wounds_size = wounds.getPreferredSize();
-		
 		final JLabel max_wounds_label = new JLabel("Max");
 		add(max_wounds_label);
 		
@@ -95,9 +93,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		Dimension gold_size = gold.getPreferredSize();
 		gold_size.width = 70;
 		gold.setPreferredSize(gold_size);
-		add(gold);
-		
-		Dimension gold_size = gold.getPreferredSize(); 
+		add(gold); 
 		
 		Dimension button_size = new Dimension();
 		button_size.setSize(30, gold_size.getHeight());
