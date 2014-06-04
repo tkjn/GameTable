@@ -43,6 +43,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
 	private JSpinner weapon_skill;
 	
+	private JLabel toHitTable;
+	
 	/**
 	 * This is the default constructor
 	 */
@@ -123,6 +125,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		plus_gold.setMargin(new Insets(1,1,1,1));
 		add(plus_gold);
 		
+		toHitTable = new JLabel(getToHitString());
+		add(toHitTable);
+		
 		// Notes
 		final JLabel note_label = new JLabel("Notes");
 		add(note_label);
@@ -180,10 +185,14 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		layout.putConstraint(SpringLayout.NORTH, plus_gold, 5, SpringLayout.SOUTH, gold_label);
 		layout.putConstraint(SpringLayout.WEST, plus_gold, 5, SpringLayout.EAST, gold);
 		
+		// To Hit should be below gold
+		layout.putConstraint(SpringLayout.NORTH, toHitTable, 5, SpringLayout.SOUTH, gold);
+		layout.putConstraint(SpringLayout.WEST, toHitTable, 5, SpringLayout.WEST, this);
+		
 		// NOTES
 		
-		// top of the notes label should be just below gold
-		layout.putConstraint(SpringLayout.NORTH, note_label, 5, SpringLayout.SOUTH, sub_gold);
+		// top of the notes label should be just below to hit
+		layout.putConstraint(SpringLayout.NORTH, note_label, 5, SpringLayout.SOUTH, toHitTable);
 		layout.putConstraint(SpringLayout.WEST, note_label, 5, SpringLayout.WEST, this);
 		
 		// top of the notes should be just below the label
@@ -321,6 +330,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		if ( ! updating_notes) {
 			notes.setText(characterData.getNotes());
 		}
+		toHitTable.setText(getToHitString());
 		doing_update = false;
 	}
 	
@@ -388,5 +398,33 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     
     public PogAdapter getPogAdapter() {
     	return pog_adapter;
+    }
+    
+    public String getToHitString() {
+    	StringBuilder buff = new StringBuilder();
+    	
+    	// Header row etc
+    	buff.append("<html><table>");
+    	buff.append("<tr><th style='border-bottom: 1px solid #000000'>Enemy's WS</th>");
+    	for (int i = 1; i <= 10; ++i) {
+    		buff.append(String.format("<td>%d</td>", i));
+    	}
+    	buff.append("</tr>");
+    	buff.append("<tr><th>To hit foe:</th>");
+    	
+    	ToHitModel toHitModel = new ToHitModel();
+    	try {
+    		int[] toHitData = toHitModel.getToHitForWS(characterData.getWeaponSkill());
+    		for (int toHit : toHitData) {
+    			buff.append(String.format("<td>%d</td>", toHit));
+    		}
+    	}
+    	catch (IllegalArgumentException e) {
+    		buff.append("<td colspan='10'>?</td>");
+    	}
+    	buff.append("</tr>");
+    	buff.append("</table></html>");
+    	
+    	return buff.toString();
     }
 }
