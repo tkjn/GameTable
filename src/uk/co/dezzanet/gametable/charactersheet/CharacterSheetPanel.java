@@ -93,7 +93,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		Dimension gold_size = gold.getPreferredSize();
 		gold_size.width = 70;
 		gold.setPreferredSize(gold_size);
-		add(gold); 
+		add(gold);
 		
 		Dimension button_size = new Dimension();
 		button_size.setSize(30, gold_size.getHeight());
