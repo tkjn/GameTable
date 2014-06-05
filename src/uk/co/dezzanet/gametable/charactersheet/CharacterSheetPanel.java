@@ -428,7 +428,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     	catch (IllegalArgumentException e) {
     		buff.append("<td colspan='10'>?</td>");
     		buff.append("</tr>");
-        	buff.append("<tr><th>To hit foe:</th>");
+        	buff.append("<tr><th>Enemy requires:</th>");
         	buff.append("<td colspan='10'>?</td>");
     	}
     	buff.append("</tr>");
