@@ -743,9 +743,14 @@ public class GametableFrame extends JFrame implements ActionListener
         final boolean priv = !(getGametableCanvas().isPublicMap());
         
         nPog.setId(-1);
-        if ((m_netStatus == NETSTATE_NONE) || priv)  {
+        if (m_netStatus == NETSTATE_NONE 
+         || m_netStatus == NETSTATE_HOST // The host always sends to all clients when it receives a packet 
+         || priv)
+        {
             addPogPacketReceived(nPog, !priv);
-        } else {
+        }
+        else
+        {
             send(PacketManager.makeAddPogPacket(nPog));
         }
     }
