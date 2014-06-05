@@ -75,8 +75,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		wounds.addChangeListener(new WoundsChangeListener());
 		add(wounds);
 		
-		Dimension wounds_size = wounds.getPreferredSize();
-		
 		final JLabel max_wounds_label = new JLabel("Max");
 		add(max_wounds_label);
 		
@@ -97,15 +95,18 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		gold.setPreferredSize(gold_size);
 		add(gold);
 		
+		Dimension button_size = new Dimension();
+		button_size.setSize(30, gold_size.getHeight());
+		
 		final JButton sub_gold = new JButton("-");
-		sub_gold.setPreferredSize(wounds_size);
+		sub_gold.setPreferredSize(button_size);
 		sub_gold.setFont(new Font("Ariel", Font.PLAIN, 8));
 		sub_gold.setMargin(new Insets(1,1,1,1));
 		sub_gold.addActionListener(new SubGoldActionListener());
 		add(sub_gold);
 		
 		final JButton plus_gold = new JButton("+");
-		plus_gold.setPreferredSize(wounds_size);
+		plus_gold.setPreferredSize(button_size);
 		plus_gold.setFont(new Font("Ariel", Font.PLAIN, 8));
 		plus_gold.addActionListener(new PlusGoldActionListener());
 		plus_gold.setMargin(new Insets(1,1,1,1));
