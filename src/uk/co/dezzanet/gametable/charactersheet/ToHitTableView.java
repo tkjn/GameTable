@@ -30,7 +30,7 @@ public class ToHitTableView extends JPanel implements ICharacterDataChangedListe
 		enemy_ws_con.gridx = 0;
 		enemy_ws_con.gridy = 0;
 		enemy_ws_con.gridwidth = 2;
-		enemy_ws_con.fill = GridBagConstraints.HORIZONTAL;
+		enemy_ws_con.fill = GridBagConstraints.HORIZONTAL; // Force it to fill the grid square
 		enemy_ws.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, Color.BLACK));
 		add(enemy_ws, enemy_ws_con);
 		
