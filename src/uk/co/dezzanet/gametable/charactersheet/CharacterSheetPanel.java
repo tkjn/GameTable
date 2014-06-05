@@ -43,8 +43,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
 	private JSpinner weapon_skill;
 	
-	private JLabel toHitTable;
-	
 	/**
 	 * This is the default constructor
 	 */
@@ -125,7 +123,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		plus_gold.setMargin(new Insets(1,1,1,1));
 		add(plus_gold);
 		
-		toHitTable = new JLabel(getToHitString());
+		JPanel toHitTable = new ToHitTableView(characterData);
 		add(toHitTable);
 		
 		// Notes
@@ -330,7 +328,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 		if ( ! updating_notes) {
 			notes.setText(characterData.getNotes());
 		}
-		toHitTable.setText(getToHitString());
 		doing_update = false;
 	}
 	
@@ -398,42 +395,5 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     
     public PogAdapter getPogAdapter() {
     	return pog_adapter;
-    }
-    
-    public String getToHitString() {
-    	StringBuilder buff = new StringBuilder();
-    	
-    	// Header row etc
-    	buff.append("<html><table>");
-    	buff.append("<tr><th>Enemy's WS</th>");
-    	for (int i = 1; i <= 10; ++i) {
-    		buff.append(String.format("<td>%d</td>", i));
-    	}
-    	buff.append("</tr>");
-    	buff.append("<tr><th>To hit foe:</th>");
-    	
-    	ToHitModel toHitModel = new ToHitModel();
-    	try {
-    		int[] toHitData = toHitModel.getToHitForWS(characterData.getWeaponSkill());
-    		int[] defendData = toHitModel.getToHitForAttacker(characterData.getWeaponSkill());
-    		for (int toHit : toHitData) {
-    			buff.append(String.format("<td>%d</td>", toHit));
-    		}
-    		buff.append("</tr>");
-        	buff.append("<tr><th>Enemy requires:</th>");
-        	for (int toHit : defendData) {
-    			buff.append(String.format("<td>%d</td>", toHit));
-    		}
-    	}
-    	catch (IllegalArgumentException e) {
-    		buff.append("<td colspan='10'>?</td>");
-    		buff.append("</tr>");
-        	buff.append("<tr><th>Enemy requires:</th>");
-        	buff.append("<td colspan='10'>?</td>");
-    	}
-    	buff.append("</tr>");
-    	buff.append("</table></html>");
-    	
-    	return buff.toString();
     }
 }
