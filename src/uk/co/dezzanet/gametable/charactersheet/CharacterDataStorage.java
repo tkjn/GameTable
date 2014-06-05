@@ -125,6 +125,11 @@ public class CharacterDataStorage {
 			notes.appendChild(doc.createTextNode(String.valueOf(character_data.getNotes())));
 			rootElement.appendChild(notes);
 			
+			// Weapon Skill
+			Element weapon_skill = doc.createElement("weapon_skill");
+			weapon_skill.appendChild(doc.createTextNode(String.valueOf(character_data.getWeaponSkill())));
+			rootElement.appendChild(weapon_skill);
+			
 			DOMSource domSource = new DOMSource(doc);
 			StringWriter writer = new StringWriter();
 			StreamResult result = new StreamResult(writer);
@@ -176,6 +181,11 @@ public class CharacterDataStorage {
 			String notes = getTextValue(doc, "notes");
 			if (notes != null && ! notes.isEmpty()) {
 				characterData.setNotes(notes);
+			}
+			
+			String weapon_skill = getTextValue(doc, "weapon_skill");
+			if (weapon_skill != null && ! weapon_skill.isEmpty()) {
+				characterData.setWeaponSkill(Integer.parseInt(weapon_skill));
 			}
 			
 		}
