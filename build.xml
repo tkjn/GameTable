@@ -79,6 +79,9 @@
 
     <target name="build" depends="assets, compile" description="Builds ${projectdisplayname} into an executable jar.">
         <mkdir dir="${zip.src}" />
+        <mkdir dir="${export}" />
+        <mkdir dir="overlays" />
+        <mkdir dir="poginstances" />
 
         <!-- create jar -->
         <jar destfile="${jar.preopt.dest}" basedir="${jar.src}">
@@ -113,7 +116,7 @@
         
          
         
-        <copy file="Gametable.bat" tofile="${export}/gametable.bat" />
+        <copy file="gametable.bat" tofile="${export}/gametable.bat" />
         <copy file="gametable.sh" tofile="${export}/gametable.sh" />
         <copy file="readme.txt" tofile="${export}/readme.txt" />
         
