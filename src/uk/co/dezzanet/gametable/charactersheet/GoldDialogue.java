@@ -1,25 +1,14 @@
 package uk.co.dezzanet.gametable.charactersheet;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.Frame;
-import java.awt.GraphicsConfiguration;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Window;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.PlainDocument;
-import javax.swing.text.DocumentFilter.FilterBypass;
 
 public class GoldDialogue extends JDialog {
 	
@@ -30,7 +19,7 @@ public class GoldDialogue extends JDialog {
 	private JPanel centerPanel;
 	private int value = 0;
 
-	public GoldDialogue(String passed_description) {
+	GoldDialogue(String passed_description) {
 		super();
 		description = passed_description;
 		init();
