@@ -3,6 +3,7 @@ package uk.co.dezzanet.gametable.charactersheet;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,24 +39,29 @@ public class GoldDialogue extends JDialog {
 		if (applyButton == null) {
             applyButton = new JButton();
             applyButton.setText(description);
-            applyButton.addActionListener(new java.awt.event.ActionListener() {
-                public void actionPerformed(final java.awt.event.ActionEvent e) {
-                	if (validateGold()) {
-	                	value = Integer.parseInt(getField().getText());
-	                    dispose();
-                	}
-                	else {
-                		JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
-                	}
-                }
-            });
+            applyButton.addActionListener(getSubmitListener());
         }
         return applyButton;
 	}
-	
-	private JTextField getField() {
+
+    private ActionListener getSubmitListener() {
+        return new ActionListener() {
+            public void actionPerformed(final java.awt.event.ActionEvent e) {
+                if (validateGold()) {
+                    value = Integer.parseInt(getField().getText());
+                    dispose();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+    }
+
+    private JTextField getField() {
 		if (goldField == null) {
 			goldField = new JTextField("0", 5);
+            goldField.addActionListener(getSubmitListener());
         }
         return goldField;
 	}
