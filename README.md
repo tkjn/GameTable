@@ -3,20 +3,40 @@
 An open ended game table with network support.
 
 This also provides some convenience features for Warhammer Quest (1995) style gameplay.
+In future these game specific features will likely be moved into some kind of optional plugin.
 
 ## Networking
 Servers listen on port 6812 by default, although this can be configured when starting a session.
 
 ## Map controls
- Scroll: Right click and drag
- Zoom: +/- keys and mouse wheel
- Display pointer (visiable to all players): Space bar while mouse pointer present in map area
- Recenter view for all players: **Map** => **Recenter for all players**
- View all pog data text: Shift key
- Add pog: Drag from pog side panel. OR **Map** => **Load Pog**
- Move pog: Left click on pog and drag
- Pog menu: Left click on pog
- Disable grid-snapping while moving pog: Ctrl key
+
+### Scroll
+Right click and drag
+
+### Zoom
++/- keys and mouse wheel
+
+### Display pointer (visiable to all players)
+Space bar while mouse pointer present in map area
+
+### Recenter view for all players
+**Map** => **Recenter for all players**
+
+### View all pog data text
+Shift key
+
+### Add pog
+Drag from pog side panel
+OR **Map** => **Load Pog**
+
+### Move pog
+Left click on pog and drag
+
+### Pog menu
+Left click on pog
+
+### Disable grid-snapping while moving pog
+Ctrl key
 
 ## Pog Library
 Pogs can be saved to the Pog Library in their full state for future use.
