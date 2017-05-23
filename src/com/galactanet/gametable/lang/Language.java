@@ -159,6 +159,7 @@ public class Language
     public String DECK_THERE_ARE;
     public String DECK_YOU_HAVE;
     public String RANDOM_ROTATE;
+    public String PLUGIN_FAILED_TO_START;
 
     /**
      * Constructor.
@@ -511,6 +512,8 @@ public class Language
             DECK_YOU_HAVE = value;
         } else if (name.equals("RANDOM_ROTATE")){
             RANDOM_ROTATE = value;
+        } else if (name.equals("PLUGIN_FAILED_TO_START")){
+            PLUGIN_FAILED_TO_START = value;
         }
     }
 }

@@ -258,3 +258,7 @@ DECK_THERE_ARE              = There are
 // DECK_THERE_ARE + number + DECK_DECKS
 
 DECK_YOU_HAVE               = You have
+
+// Plugins
+
+PLUGIN_FAILED_TO_START = Failed to start %s plugin: %s

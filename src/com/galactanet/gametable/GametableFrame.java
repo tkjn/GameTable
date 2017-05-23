@@ -79,7 +79,6 @@ import org.xml.sax.SAXException;
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
 import co.tkjn.gametable.PogLibraryDialog;
 
-import com.galactanet.gametable.DeckData.Card;
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;
 import com.galactanet.gametable.net.NetworkThread;
@@ -410,6 +409,8 @@ public class GametableFrame extends JFrame implements ActionListener
     private final JLabel            m_status                 = new JLabel(" "); // Status Bar
 
 	private CharacterSheetPanel charsheetpanel;
+
+	private List<IGametablePlugin> plugins = new ArrayList<>();
 
     /**
      * Construct the frame
@@ -2926,6 +2927,8 @@ public class GametableFrame extends JFrame implements ActionListener
 
         // Load frame preferences
         loadPrefs();
+
+        initialisePlugins();
  
         setContentPane(new JPanel(new BorderLayout())); // Set the main UI object with a Border Layout
         setDefaultCloseOperation(EXIT_ON_CLOSE);        // Ensure app ends with this frame is closed
@@ -3207,6 +3210,21 @@ public class GametableFrame extends JFrame implements ActionListener
 //        });
 
         initializeExecutorThread();
+    }
+
+    private void initialisePlugins()
+    {
+        for (IGametablePlugin plugin : plugins) {
+            try {
+                plugin.initialise(this);
+            } catch (Exception ex) {
+                logPluginStartFailed(plugin, ex);
+            }
+        }
+    }
+
+    private void logPluginStartFailed(IGametablePlugin plugin, Exception ex) {
+        m_chatPanel.logAlertMessage(String.format(lang.PLUGIN_FAILED_TO_START, plugin.getName(), ex.getMessage()));
     }
 
     private void populateLeftPanel() {
@@ -5132,5 +5150,9 @@ public class GametableFrame extends JFrame implements ActionListener
     public void addPanelToLeftPane(JPanel panel, String title)
     {
         m_pogsTabbedPane.add(panel, title);
+    }
+
+    public void registerPlugin(IGametablePlugin toAdd) {
+        plugins.add(toAdd);
     }
 }
