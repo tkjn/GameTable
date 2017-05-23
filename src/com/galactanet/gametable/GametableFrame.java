@@ -77,6 +77,7 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.SAXException;
 
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
+import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPlugin;
 import co.tkjn.gametable.PogLibraryDialog;
 
 import com.galactanet.gametable.lang.Language;
@@ -2917,6 +2918,9 @@ public class GametableFrame extends JFrame implements ActionListener
 
             });
         }
+
+        // TODO: Need to come up with a better way of registering plugins, but for now....
+        registerPlugin(new CharacterSheetPlugin());
 
         // Configure macro panel
         m_macroPanel = new MacroPanel();
