@@ -121,7 +121,7 @@ CUSTOM_POG_LIBRARY          = Pog Library
 //Map -> Grid Mode
 MAP_CLEAR                   = Clear map
 MAP_CLEAR_WARNING           = This will clear all lines, pogs, and underlays on the entire layer. Are you sure?
-MAP_GRID_CHANGE             = changes the grid mode.
+MAP_GRID_CHANGE             = %s changes the grid mode.
 MAP_GRID_HEX                = Hex Grid
 MAP_GRID_NONE               = No Grid
 MAP_GRID_SQUARE             = Square Grid

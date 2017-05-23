@@ -462,7 +462,7 @@ public class GametableFrame extends JFrame implements ActionListener
             // Repaint the canvas
             getGametableCanvas().repaint();
             // Notify other players
-            postSystemMessage(getMyPlayer().getPlayerName() + lang.MAP_GRID_CHANGE);
+            notifyMapGridChange();
         }
         else if (e.getSource() == m_squareGridModeMenuItem)
         {
@@ -476,7 +476,7 @@ public class GametableFrame extends JFrame implements ActionListener
             // Repaint the canvas
             getGametableCanvas().repaint();
             // Notify other players
-            postSystemMessage(getMyPlayer().getPlayerName() + lang.MAP_GRID_CHANGE);
+            notifyMapGridChange();
         }
         else if (e.getSource() == m_hexGridModeMenuItem)
         {
@@ -490,8 +490,14 @@ public class GametableFrame extends JFrame implements ActionListener
             // Repaint the canvas
             getGametableCanvas().repaint();
             // Notify other players
-            postSystemMessage(getMyPlayer().getPlayerName() + lang.MAP_GRID_CHANGE);
+            notifyMapGridChange();
         }
+    }
+
+    private void notifyMapGridChange() {
+        String playerName = getMyPlayer().getPlayerName();
+        String message = String.format(lang.MAP_GRID_CHANGE, playerName);
+        postSystemMessage(message);
     }
 
     /**
