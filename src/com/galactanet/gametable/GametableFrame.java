@@ -3026,15 +3026,12 @@ public class GametableFrame extends JFrame implements ActionListener
         // pogWindow
 
         m_pogPanel = new PogPanel(m_pogLibrary, getGametableCanvas());
-        m_pogsTabbedPane.add(m_pogPanel, lang.POG_LIBRARY);
         m_activePogsPanel = new ActivePogsPanel();
-        m_pogsTabbedPane.add(m_activePogsPanel, lang.POG_ACTIVE);
-        
-        m_pogsTabbedPane.add(m_macroPanel, lang.DICE_MACROS);
-        m_pogsTabbedPane.setFocusable(false);
-        
         charsheetpanel = new CharacterSheetPanel();
-        m_pogsTabbedPane.add(charsheetpanel, "Character Sheet");
+
+        populateLeftPanel();
+
+        m_pogsTabbedPane.setFocusable(false);
 
         m_canvasPane.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(1, 1, 1, 1)));
         m_canvasPane.add(getGametableCanvas(), BorderLayout.CENTER);
@@ -3210,6 +3207,13 @@ public class GametableFrame extends JFrame implements ActionListener
 //        });
 
         initializeExecutorThread();
+    }
+
+    private void populateLeftPanel() {
+        addPanelToLeftPane(m_pogPanel, lang.POG_LIBRARY);
+        addPanelToLeftPane(m_activePogsPanel, lang.POG_ACTIVE);
+        addPanelToLeftPane(m_macroPanel, lang.DICE_MACROS);
+        addPanelToLeftPane(charsheetpanel, "Character Sheet");
     }
 
     /**
@@ -5123,5 +5127,10 @@ public class GametableFrame extends JFrame implements ActionListener
     
     public CharacterSheetPanel getCharacterSheetPanel() {
     	return charsheetpanel;
+    }
+
+    public void addPanelToLeftPane(JPanel panel, String title)
+    {
+        m_pogsTabbedPane.add(panel, title);
     }
 }
