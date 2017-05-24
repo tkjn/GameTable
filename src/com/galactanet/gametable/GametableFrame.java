@@ -22,16 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -409,9 +400,10 @@ public class GametableFrame extends JFrame implements ActionListener
     // The status goes at the bottom of the pane
     private final JLabel            m_status                 = new JLabel(" "); // Status Bar
 
-	private CharacterSheetPanel charsheetpanel;
+    private CharacterSheetPanel charsheetpanel;
 
-	private List<IGametablePlugin> plugins = new ArrayList<>();
+    private List<IGametablePlugin> plugins = new ArrayList<>();
+    private List<IAutoSaveListener> autoSaveListeners = new ArrayList<>();
 
     /**
      * Construct the frame
@@ -2932,13 +2924,13 @@ public class GametableFrame extends JFrame implements ActionListener
         // Load frame preferences
         loadPrefs();
 
-        initialisePlugins();
- 
         setContentPane(new JPanel(new BorderLayout())); // Set the main UI object with a Border Layout
         setDefaultCloseOperation(EXIT_ON_CLOSE);        // Ensure app ends with this frame is closed
         setTitle(GametableApp.VERSION);                 // Set frame title to the current version
         setJMenuBar(getMainMenuBar());                  // Set the main MenuBar
-        
+
+        initialisePlugins();
+
         // Set this class to handle events from changing grid types
         m_noGridModeMenuItem.addActionListener(this);   
         m_squareGridModeMenuItem.addActionListener(this);
@@ -3034,7 +3026,6 @@ public class GametableFrame extends JFrame implements ActionListener
 
         m_pogPanel = new PogPanel(m_pogLibrary, getGametableCanvas());
         m_activePogsPanel = new ActivePogsPanel();
-        charsheetpanel = new CharacterSheetPanel();
 
         populateLeftPanel();
 
@@ -3228,14 +3219,19 @@ public class GametableFrame extends JFrame implements ActionListener
     }
 
     private void logPluginStartFailed(IGametablePlugin plugin, Exception ex) {
-        m_chatPanel.logAlertMessage(String.format(lang.PLUGIN_FAILED_TO_START, plugin.getName(), ex.getMessage()));
+        String userMessage = String.format(lang.PLUGIN_FAILED_TO_START, plugin.getName(), ex.getMessage());
+        m_chatPanel.logAlertMessage(userMessage);
+        Log.log(Log.SYS, userMessage);
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        Log.log(Log.SYS, sw.toString());
     }
 
     private void populateLeftPanel() {
         addPanelToLeftPane(m_pogPanel, lang.POG_LIBRARY);
         addPanelToLeftPane(m_activePogsPanel, lang.POG_ACTIVE);
         addPanelToLeftPane(m_macroPanel, lang.DICE_MACROS);
-        addPanelToLeftPane(charsheetpanel, "Character Sheet");
     }
 
     /**
@@ -4601,8 +4597,15 @@ public class GametableFrame extends JFrame implements ActionListener
         saveState(getGametableCanvas().getPublicMap(), new File("autosave.grm"));
         saveState(getGametableCanvas().getPrivateMap(), new File("autosavepvt.grm"));
         savePrefs();
-        charsheetpanel.getStorage().autoSave();
+        notifyAutoSaveListeners();
     }
+
+    private void notifyAutoSaveListeners() {
+        for (IAutoSaveListener listener : autoSaveListeners) {
+            listener.autoSave();
+        }
+    }
+
 
     public void saveMacros()
     {
@@ -5158,5 +5161,14 @@ public class GametableFrame extends JFrame implements ActionListener
 
     public void registerPlugin(IGametablePlugin toAdd) {
         plugins.add(toAdd);
+    }
+
+    public void registerAutoSaveListener(IAutoSaveListener listener) {
+        autoSaveListeners.add(listener);
+    }
+
+    /*TODO temporary method*/
+    public void setCharacterSheetPanel(CharacterSheetPanel panel) {
+        charsheetpanel = panel;
     }
 }
