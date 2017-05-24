@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 
 import javax.swing.UIManager;
 
+import co.tkjn.gametable.GametableVersion;
 
 
 /**
@@ -32,8 +33,8 @@ public class GametableApp
     /**
      * String to describe gametable's chat version
      */
-    public static final String VERSION        = "tkjn-OSU-gt (Gametable) 1.0.RC2";
-    public static final String BUILD          = "build 20140524";
+    public static final String VERSION        = GametableVersion.VERSION;
+    public static final String BUILD          = GametableVersion.BUILD;
 
     public static final String LANGUAGE       = "En";
 
