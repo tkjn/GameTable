@@ -236,3 +236,8 @@ pip-log.txt
 logs/*
 macros.xml
 prefs.prf
+
+####################
+# Generated java src
+####################
+src/co/tkjn/gametable/GametableVersion.java
