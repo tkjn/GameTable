@@ -65,9 +65,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.galactanet.gametable.events.EventDispatcher;
 import org.xml.sax.SAXException;
 
-import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPlugin;
 import co.tkjn.gametable.PogLibraryDialog;
 
@@ -400,10 +400,9 @@ public class GametableFrame extends JFrame implements ActionListener
     // The status goes at the bottom of the pane
     private final JLabel            m_status                 = new JLabel(" "); // Status Bar
 
-    private CharacterSheetPanel charsheetpanel;
-
     private List<IGametablePlugin> plugins = new ArrayList<>();
     private List<IAutoSaveListener> autoSaveListeners = new ArrayList<>();
+    private EventDispatcher eventDispatcher = new EventDispatcher();
 
     /**
      * Construct the frame
@@ -5149,10 +5148,6 @@ public class GametableFrame extends JFrame implements ActionListener
             m_windowPos = getLocation();
         }
     }
-    
-    public CharacterSheetPanel getCharacterSheetPanel() {
-    	return charsheetpanel;
-    }
 
     public void addPanelToLeftPane(JPanel panel, String title)
     {
@@ -5167,8 +5162,7 @@ public class GametableFrame extends JFrame implements ActionListener
         autoSaveListeners.add(listener);
     }
 
-    /*TODO temporary method*/
-    public void setCharacterSheetPanel(CharacterSheetPanel panel) {
-        charsheetpanel = panel;
+    public EventDispatcher getEventDispatcher() {
+        return eventDispatcher;
     }
 }

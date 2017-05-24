@@ -11,9 +11,9 @@ public class CharacterSheetPlugin implements IGametablePlugin {
     @Override
     public void initialise(GametableFrame gametable) {
         CharacterSheetPanel panel = new CharacterSheetPanel();
-        gametable.setCharacterSheetPanel(panel);
         gametable.addPanelToLeftPane(panel, PANEL_TITLE);
         gametable.registerAutoSaveListener(new AutoSaveListener(panel.getStorage()));
+        gametable.getEventDispatcher().listenForPogMenuRender(new PogMenuRenderListener(panel.getPogAdapter()));
     }
 
     @Override
