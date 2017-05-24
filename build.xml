@@ -106,64 +106,61 @@ public class GametableVersion
         </jar>
         
         <delete includeemptydirs="true">
-			    <fileset dir="${export}" includes="**/.svn" defaultexcludes="false"/>
-  			</delete>
+            <fileset dir="${export}" includes="**/.svn" defaultexcludes="false"/>
+        </delete>
 
         <!-- obfuscate -->        
         <copy file="${jar.preopt.dest}" tofile="${jar.dest}" />
-        
+
         <zip destfile="${export}/tkjn-osu-gt-${version}.zip">
-        
-        	<file file="${jar.dest}" basedir="${export}" />
-        
-	        <file file="gametable.bat" />
-        	<file file="gametable.sh" />
-        	<file file="README.md" />
-        
-        	<zipfileset dir="decks" prefix="decks" />
-        	<zipfileset dir="environment" prefix="environment" />
-        	<zipfileset dir="language" prefix="language" />
-        	<zipfileset dir="overlays" prefix="overlays" />
-        	<zipfileset dir="pogs" prefix="pogs" />        
-        	<zipfileset dir="poginstances" prefix="poginstances" />
-        	<zipfileset dir="underlays" prefix="underlays" />        	
+
+            <file file="${jar.dest}" basedir="${export}" />
+
+            <file file="gametable.bat" />
+            <file file="gametable.sh" />
+            <file file="README.md" />
+
+            <zipfileset dir="decks" prefix="decks" />
+            <zipfileset dir="environment" prefix="environment" />
+            <zipfileset dir="language" prefix="language" />
+            <zipfileset dir="overlays" prefix="overlays" />
+            <zipfileset dir="pogs" prefix="pogs" />
+            <zipfileset dir="poginstances" prefix="poginstances" />
+            <zipfileset dir="underlays" prefix="underlays" />
         </zip>
-        
-         
-        
+
         <copy file="gametable.bat" tofile="${export}/gametable.bat" />
         <copy file="gametable.sh" tofile="${export}/gametable.sh" />
         <copy file="README.md" tofile="${export}/README.md" />
-        
+
         <copy todir="${export}/decks" >
-        	<fileset dir="decks"/>
+            <fileset dir="decks"/>
         </copy>
-        
+
         <copy todir="${export}/environment" >
-        	<fileset dir="environment"/>
+            <fileset dir="environment"/>
         </copy>
-        
+
         <copy todir="${export}/language">
-        	<fileset dir="language"/>
+            <fileset dir="language"/>
         </copy>
-        
+
         <copy todir="${export}/overlays" >
-        	<fileset dir="overlays"/>
+            <fileset dir="overlays"/>
         </copy>
-        
+
         <copy todir="${export}/pogs" >
-        	<fileset dir="pogs"/>
+            <fileset dir="pogs"/>
         </copy>
-    	
+
         <copy todir="${export}/poginstances" >
-        	<fileset dir="poginstances"/>
+            <fileset dir="poginstances"/>
         </copy>
-        
+
         <copy todir="${export}/underlays" >
-        	<fileset dir="underlays"/>
+            <fileset dir="underlays"/>
         </copy>
-        
-        
+
     </target>
 
     <target name="dist0" depends="distclean,build" description="Packages ${projectdisplayname} for intermediate drop.">
@@ -173,7 +170,7 @@ public class GametableVersion
         <copy todir="${zip.src}">
             <fileset dir=".">
                 <include name="pogs/**/*.png" />
-            	<include name="poginstances/**/*.pog" />
+                <include name="poginstances/**/*.pog" />
                 <include name="underlays/**/*.png" />
             </fileset>
         </copy>
@@ -207,7 +204,7 @@ public class GametableVersion
         <copy todir="${zip.src}">
             <fileset dir=".">
                 <include name="pogs/**/*.png" />
-            	<include name="poginstances/**/*.pog" />
+                <include name="poginstances/**/*.pog" />
                 <include name="underlays/**/*.png" />
             </fileset>
         </copy>
