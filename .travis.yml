@@ -1,0 +1,5 @@
+language: java
+install: ant rebuild
+jdk:
+  - oraclejdk8
+  - oraclejdk7

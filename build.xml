@@ -292,4 +292,8 @@ public class GametableVersion
             <include name="${src}/**/*.css" />
         </fixcrlf>
     </target>
+
+    <target name="test">
+        <echo message="No tests"/>
+    </target>
 </project>
