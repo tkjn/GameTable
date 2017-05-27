@@ -29,19 +29,20 @@ import com.galactanet.gametable.GridMode;
 import com.galactanet.gametable.Log;
 import com.galactanet.gametable.Pog;
 import com.galactanet.gametable.SetPogAttributeDialog;
+import com.galactanet.gametable.events.PogMenuRenderEvent;
 import com.galactanet.gametable.util.UtilityFunctions;
 import com.galactanet.gametable.net.PacketManager;
 import com.galactanet.gametable.prefs.PreferenceDescriptor;
 
 /**
  * The basic pog interaction tool.
- * 
+ *
  * @author iffy
  */
 public class PointerTool extends NullTool
 {
     GridMode                   m_gridMode;
-    
+
     private class DeletePogAttributeActionListener implements ActionListener
     {
         private final String key;
@@ -123,7 +124,7 @@ public class PointerTool extends NullTool
     private Point           m_startMouse;
 
     private Point           m_startScroll;
-    
+
     private JPopupMenu      m_activePopup;
 
     /**
@@ -225,7 +226,7 @@ public class PointerTool extends NullTool
      */
     public void mouseButtonReleased(final int x, final int y, final int modifierMask)
     {
-        if (m_pressed) // release can be fired by a press that wasn't caught by the above (clicking out of a popup menu) 
+        if (m_pressed) // release can be fired by a press that wasn't caught by the above (clicking out of a popup menu)
         {
             if (m_grabbedPog != null)
             {
@@ -257,15 +258,15 @@ public class PointerTool extends NullTool
             }
             else if (m_clicked && !isContextMenuActive())
             {
-                popupMapContextMenu(x,y, modifierMask);            
+                popupMapContextMenu(x,y, modifierMask);
             }
         }
-         
+
         m_pressed = false;
-        
+
         endAction();
     }
-    
+
     /**
      * Check if a pointer tool context menu is already active
      * @return boolean
@@ -337,7 +338,7 @@ public class PointerTool extends NullTool
     }
     /**
      * Pops up the map context menu.
-     * 
+     *
      * @param x X location of mouse.
      * @param y Y location of mouse.
      */
@@ -345,15 +346,15 @@ public class PointerTool extends NullTool
     {
         final JPopupMenu menu = new JPopupMenu("Map");
         m_activePopup = menu;
-        
+
         // Determine grid location
         final int xLocation;
         final int yLocation;
         final int m_gridModeId = m_canvas.getGridModeId();
-        
+
         final int xPogDestination;
         final int yPogDestination;
-        
+
         if (m_gridModeId == GametableCanvas.GRID_MODE_SQUARES) //square mode
         {
             xLocation = (x / 64) - 1;
@@ -375,9 +376,9 @@ public class PointerTool extends NullTool
             xPogDestination = x;
             yPogDestination = y;
         }
-        
+
         if ((modifierMask & MODIFIER_SHIFT) > 0) // holding shift
-        {   
+        {
             menu.add(new JMenuItem("X: " + xLocation));
             menu.add(new JMenuItem("Y: " + yLocation));
         }
@@ -391,7 +392,7 @@ public class PointerTool extends NullTool
                 {
                     final PogLibraryDialog dialog = new PogLibraryDialog();
                     dialog.setVisible(true);
-                    
+
 
                     // If the user accepted the dialog (closed with Ok)
                     Pog pog = dialog.getPog();
@@ -406,7 +407,7 @@ public class PointerTool extends NullTool
                 }
             });
             menu.add(item);
-            
+
             item = new JMenuItem("Load Pog File");
             item.addActionListener(new ActionListener()
             {
@@ -416,7 +417,7 @@ public class PointerTool extends NullTool
 
                     if (openFile == null) { // they cancelled out of the open
                         return;
-                    } 
+                    }
                     try {
                         final FileInputStream infile = new FileInputStream(openFile);
                         final DataInputStream dis = new DataInputStream(infile);
@@ -435,14 +436,14 @@ public class PointerTool extends NullTool
             });
             menu.add(item);
         }
-        
+
         final Point mousePosition = m_canvas.modelToView(x, y);
         menu.show(m_canvas, mousePosition.x, mousePosition.y);
     }
-    
+
     /**
      * Pops up a pog context menu.
-     * 
+     *
      * @param x X location of mouse.
      * @param y Y location of mouse.
      */
@@ -452,7 +453,7 @@ public class PointerTool extends NullTool
         final JPopupMenu menu = new JPopupMenu("Pog");
         m_activePopup = menu;
         if ((modifierMask & MODIFIER_SHIFT) > 0) // holding shift
-        {   
+        {
             final int xLocation;
             final int yLocation;
             final int pogSize = m_menuPog.getFaceSize();
@@ -474,7 +475,7 @@ public class PointerTool extends NullTool
                 xLocation = m_menuPog.getX();
                 yLocation = m_menuPog.getY() * -1;
             }
-            
+
             menu.add(new JMenuItem("X: " + xLocation));
             menu.add(new JMenuItem("Y: " + yLocation));
         }
@@ -495,26 +496,26 @@ public class PointerTool extends NullTool
             item.addActionListener(new ActionListener()
             {
                 public void actionPerformed(final ActionEvent e)
-                {  
+                {
                     if (m_canvas.isPublicMap()) m_from = m_canvas.getPublicMap();
-                    else m_from = m_canvas.getPrivateMap();                            
-                    
+                    else m_from = m_canvas.getPrivateMap();
+
                     if(m_menuPog.isSelected()) m_from.removeSelectedPog(m_menuPog);
-                    else m_from.addSelectedPog(m_menuPog);                                     
+                    else m_from.addSelectedPog(m_menuPog);
                 }
             });
             menu.add(item);
-            
+
             if(m_menuPog.isGrouped()) {
                 item = new JMenuItem("UnGroup");
                 item.addActionListener(new ActionListener()
                 {
                     public void actionPerformed(final ActionEvent e)
-                    {  
+                    {
                         GametableFrame.getGametableFrame().getGrouping().remove(m_menuPog);
                     }
                 });
-                menu.add(item);                
+                menu.add(item);
             }
             item = new JMenuItem(m_canvas.isPublicMap() ? "Unpublish" : "Publish");
             item.addActionListener(new ActionListener()
@@ -572,8 +573,8 @@ public class PointerTool extends NullTool
                 {
                     final SetPogAttributeDialog dialog = new SetPogAttributeDialog(false);
                     dialog.setLocationRelativeTo(m_canvas);
-                    dialog.setVisible(true);               
-                   
+                    dialog.setVisible(true);
+
                     if(dialog.isConfirmed()) {
                         final Map<String,String> toAdd = dialog.getAttribs();
                         m_canvas.setPogData(m_menuPog.getId(), null, toAdd, null);
@@ -613,15 +614,15 @@ public class PointerTool extends NullTool
                     {
                         final Pog pog = m_menuPog;
                             GametableFrame.getGametableFrame().copyPog(pog);
-                      
+
                     }
                 });
 
-          
-                menu.add(item);           
+
+                menu.add(item);
             // -------------------------------------
             // Save Pog
-           
+
                 item = new JMenuItem("Save Pog...");
                 //item.setAccelerator(KeyStroke.getKeyStroke("ctrl shift pressed S"));
                 item.addActionListener(new ActionListener()
@@ -633,39 +634,39 @@ public class PointerTool extends NullTool
                         if (spaf != null)
                         {
                             GametableFrame.getGametableFrame().savePog(spaf, pog);
-                        }                       
+                        }
                     }
                 });
                 menu.add(item);
 	            // -------------------------------------
             	// Save Pog to Library
-           
+
                 item = new JMenuItem("Save to Pog Library...");
                 item.addActionListener(new ActionListener()
                 {
                     public void actionPerformed(final ActionEvent e)
                     {
                         final Pog pog = m_menuPog;
-                        
+
                         String pogText = pog.getText();
                         // Remove special characters
                         pogText = pogText.replace(File.separator, "");
                         pogText = pogText.replace(".", "");
-                        
+
                         // Trim whitespace and then replace spaces with _
                         pogText = pogText.trim();
                         pogText = pogText.replaceAll("[ ]+", "_");
-                        
+
                         // Strip all other whitespace
                         pogText = pogText.replaceAll("\\s+","");
-                        
+
                         if (pogText.equals(""))
                         {
                             pogText = "unknown";
-                        }                        
-                        
+                        }
+
                         File spaf = new File("poginstances"+File.separator+pogText+".pog");
-                        
+
                         if (spaf.exists())
                         {
                             int overwriteResult = UtilityFunctions.yesNoCancelDialog(m_canvas, pog.getText()+".pog already exists in library. Overwrite? (No will create a new file with a different name)", "Overwrite Pog");
@@ -673,7 +674,7 @@ public class PointerTool extends NullTool
                             {
                                 return;
                             }
-                            
+
                             if (overwriteResult == UtilityFunctions.NO)
                             {
                                 while (spaf.exists())
@@ -686,11 +687,11 @@ public class PointerTool extends NullTool
                         if (spaf != null)
                         {
                             GametableFrame.getGametableFrame().savePog(spaf, pog);
-                        }                       
+                        }
                     }
                 });
                 menu.add(item);
-                
+
                 // -------------------------------------
                 // Pog Layers
                 int layer = m_menuPog.getLayer();
@@ -702,7 +703,7 @@ public class PointerTool extends NullTool
                     }
                 });
                 if(layer == Pog.LAYER_UNDERLAY) item.setEnabled(false);
-                
+
                 m_item.add(item);
                 item = new JMenuItem("Overlay");
                 item.addActionListener(new ActionListener() {
@@ -728,11 +729,11 @@ public class PointerTool extends NullTool
                 });
                 if(layer == Pog.LAYER_POG) item.setEnabled(false);
                 m_item.add(item);
-                menu.add(m_item);                    
-                
+                menu.add(m_item);
+
                 menu.addSeparator();
             // -------------------------------------
-                
+
             final JMenu sizeMenu = new JMenu("Face Size");
             item = new JMenuItem("Reset");
             item.addActionListener(new ActionListener()
@@ -750,8 +751,8 @@ public class PointerTool extends NullTool
                 public void actionPerformed(final ActionEvent e)
                 {
                     final String ns = (String)JOptionPane.showInputDialog(GametableFrame.getGametableFrame(),
-                        "New Size in Squares", 
-                        "Pog Size", 
+                        "New Size in Squares",
+                        "Pog Size",
                         JOptionPane.PLAIN_MESSAGE, null, null, "");
 
                     if (ns != null) {
@@ -761,7 +762,7 @@ public class PointerTool extends NullTool
                 }
             });
             sizeMenu.add(item);
-        
+
             item = new JMenuItem("0.5 squares");
             item.addActionListener(new ActionListener()
             {
@@ -832,7 +833,7 @@ public class PointerTool extends NullTool
               } else {
                   item2.setState(true);
               }
-              
+
               item2.addActionListener(new ActionListener()
               {
                   public void actionPerformed(final ActionEvent e)
@@ -846,7 +847,7 @@ public class PointerTool extends NullTool
               });
               rotateMenu.add(item2);
               rotateMenu.addSeparator();
-              
+
               item = new JMenuItem("0");
               item.addActionListener(new ActionListener()
               {
@@ -928,7 +929,7 @@ public class PointerTool extends NullTool
               rotateMenu.add(item);
 
               menu.add(rotateMenu);
-              
+
               final JMenu flipMenu = new JMenu("Flip");
               item = new JMenuItem("Reset");
               item.addActionListener(new ActionListener()
@@ -961,39 +962,30 @@ public class PointerTool extends NullTool
               flipMenu.add(item);
 
               menu.add(flipMenu);
-              
-              item = new JMenuItem("Change Image");        
+
+              item = new JMenuItem("Change Image");
               item.addActionListener(new ActionListener()
               {
                   public void actionPerformed(final ActionEvent e)
                   {
                       int size = GametableFrame.getGametableFrame().getGametableCanvas().getActiveMap().m_selectedPogs.size();
                       if(size > 1) {
-                          JOptionPane.showMessageDialog(GametableFrame.getGametableFrame(), "You must only have 1 Pog selected.", 
+                          JOptionPane.showMessageDialog(GametableFrame.getGametableFrame(), "You must only have 1 Pog selected.",
                               "Image Selection", JOptionPane.INFORMATION_MESSAGE);
-                          return;                    
+                          return;
                       } else if(size == 0) {
-                          JOptionPane.showMessageDialog(GametableFrame.getGametableFrame(), "No Pogs Selected.", 
+                          JOptionPane.showMessageDialog(GametableFrame.getGametableFrame(), "No Pogs Selected.",
                               "Image Selection", JOptionPane.INFORMATION_MESSAGE);
                           return;
                       }
-                      Pog pog = (Pog)GametableFrame.getGametableFrame().getGametableCanvas().getActiveMap().m_selectedPogs.get(0);                
+                      Pog pog = (Pog)GametableFrame.getGametableFrame().getGametableCanvas().getActiveMap().m_selectedPogs.get(0);
                       GametableFrame.getGametableFrame().getGametableCanvas().setPogType(m_menuPog, pog);
                       GametableFrame.getGametableFrame().getGametableCanvas().getActiveMap().clearSelectedPogs();
-                     
+
                   }
               });
               menu.add(item);
-              
-              // --- Mark as my pog (Character sheet)
-              item = new JMenuItem("Set as my character");
-              item.addActionListener(new ActionListener() {
-            	 public void actionPerformed(final ActionEvent e) {
-            		 GametableFrame.getGametableFrame().getCharacterSheetPanel().getPogAdapter().setCurrentPog(m_menuPog);
-            	 }
-              });
-              menu.add(item);
-              
+
               // --------------------------------
               if(layer == Pog.LAYER_UNDERLAY) {
                   menu.addSeparator();
@@ -1010,6 +1002,8 @@ public class PointerTool extends NullTool
                   });
                   menu.add(item);
               }
+
+            GametableFrame.getGametableFrame().getEventDispatcher().emitPogMenuRender(new PogMenuRenderEvent("Pog Menu", menu, m_menuPog));
         }
         final Point mousePosition = m_canvas.modelToView(x, y);
         menu.show(m_canvas, mousePosition.x, mousePosition.y);

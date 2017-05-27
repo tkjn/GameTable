@@ -22,16 +22,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -74,12 +65,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import com.galactanet.gametable.events.EventDispatcher;
 import org.xml.sax.SAXException;
 
-import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPanel;
+import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPlugin;
 import co.tkjn.gametable.PogLibraryDialog;
 
-import com.galactanet.gametable.DeckData.Card;
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;
 import com.galactanet.gametable.net.NetworkThread;
@@ -409,7 +400,9 @@ public class GametableFrame extends JFrame implements ActionListener
     // The status goes at the bottom of the pane
     private final JLabel            m_status                 = new JLabel(" "); // Status Bar
 
-	private CharacterSheetPanel charsheetpanel;
+    private List<IGametablePlugin> plugins = new ArrayList<>();
+    private List<IAutoSaveListener> autoSaveListeners = new ArrayList<>();
+    private EventDispatcher eventDispatcher = new EventDispatcher();
 
     /**
      * Construct the frame
@@ -2917,6 +2910,9 @@ public class GametableFrame extends JFrame implements ActionListener
             });
         }
 
+        // TODO: Need to come up with a better way of registering plugins, but for now....
+        registerPlugin(new CharacterSheetPlugin());
+
         // Configure macro panel
         m_macroPanel = new MacroPanel();
                 
@@ -2926,12 +2922,14 @@ public class GametableFrame extends JFrame implements ActionListener
 
         // Load frame preferences
         loadPrefs();
- 
+
         setContentPane(new JPanel(new BorderLayout())); // Set the main UI object with a Border Layout
         setDefaultCloseOperation(EXIT_ON_CLOSE);        // Ensure app ends with this frame is closed
         setTitle(GametableApp.VERSION);                 // Set frame title to the current version
         setJMenuBar(getMainMenuBar());                  // Set the main MenuBar
-        
+
+        initialisePlugins();
+
         // Set this class to handle events from changing grid types
         m_noGridModeMenuItem.addActionListener(this);   
         m_squareGridModeMenuItem.addActionListener(this);
@@ -3026,15 +3024,11 @@ public class GametableFrame extends JFrame implements ActionListener
         // pogWindow
 
         m_pogPanel = new PogPanel(m_pogLibrary, getGametableCanvas());
-        m_pogsTabbedPane.add(m_pogPanel, lang.POG_LIBRARY);
         m_activePogsPanel = new ActivePogsPanel();
-        m_pogsTabbedPane.add(m_activePogsPanel, lang.POG_ACTIVE);
-        
-        m_pogsTabbedPane.add(m_macroPanel, lang.DICE_MACROS);
+
+        populateLeftPanel();
+
         m_pogsTabbedPane.setFocusable(false);
-        
-        charsheetpanel = new CharacterSheetPanel();
-        m_pogsTabbedPane.add(charsheetpanel, "Character Sheet");
 
         m_canvasPane.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.LOWERED), new EmptyBorder(1, 1, 1, 1)));
         m_canvasPane.add(getGametableCanvas(), BorderLayout.CENTER);
@@ -3210,6 +3204,33 @@ public class GametableFrame extends JFrame implements ActionListener
 //        });
 
         initializeExecutorThread();
+    }
+
+    private void initialisePlugins()
+    {
+        for (IGametablePlugin plugin : plugins) {
+            try {
+                plugin.initialise(this);
+            } catch (Exception ex) {
+                logPluginStartFailed(plugin, ex);
+            }
+        }
+    }
+
+    private void logPluginStartFailed(IGametablePlugin plugin, Exception ex) {
+        String userMessage = String.format(lang.PLUGIN_FAILED_TO_START, plugin.getName(), ex.getMessage());
+        m_chatPanel.logAlertMessage(userMessage);
+        Log.log(Log.SYS, userMessage);
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        Log.log(Log.SYS, sw.toString());
+    }
+
+    private void populateLeftPanel() {
+        addPanelToLeftPane(m_pogPanel, lang.POG_LIBRARY);
+        addPanelToLeftPane(m_activePogsPanel, lang.POG_ACTIVE);
+        addPanelToLeftPane(m_macroPanel, lang.DICE_MACROS);
     }
 
     /**
@@ -4575,8 +4596,15 @@ public class GametableFrame extends JFrame implements ActionListener
         saveState(getGametableCanvas().getPublicMap(), new File("autosave.grm"));
         saveState(getGametableCanvas().getPrivateMap(), new File("autosavepvt.grm"));
         savePrefs();
-        charsheetpanel.getStorage().autoSave();
+        notifyAutoSaveListeners();
     }
+
+    private void notifyAutoSaveListeners() {
+        for (IAutoSaveListener listener : autoSaveListeners) {
+            listener.autoSave();
+        }
+    }
+
 
     public void saveMacros()
     {
@@ -5120,8 +5148,21 @@ public class GametableFrame extends JFrame implements ActionListener
             m_windowPos = getLocation();
         }
     }
-    
-    public CharacterSheetPanel getCharacterSheetPanel() {
-    	return charsheetpanel;
+
+    public void addPanelToLeftPane(JPanel panel, String title)
+    {
+        m_pogsTabbedPane.add(panel, title);
+    }
+
+    public void registerPlugin(IGametablePlugin toAdd) {
+        plugins.add(toAdd);
+    }
+
+    public void registerAutoSaveListener(IAutoSaveListener listener) {
+        autoSaveListeners.add(listener);
+    }
+
+    public EventDispatcher getEventDispatcher() {
+        return eventDispatcher;
     }
 }
