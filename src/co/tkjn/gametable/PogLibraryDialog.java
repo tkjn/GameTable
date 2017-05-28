@@ -30,14 +30,10 @@ import com.galactanet.gametable.Pog;
  */
 public class PogLibraryDialog extends JDialog implements ListSelectionListener /*implements FocusListener*/
 {
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 7635834691550405596L;
-
     private boolean           m_bAccepted;
     private final JButton     m_cancel         = new JButton();
     private final JButton     m_ok             = new JButton();
+    private final JButton     m_delete         = new JButton();
     
     private Pog selectedPog;
     
@@ -74,25 +70,7 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         }
         setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
 
-        //m_nameEntry.requestFocus();
     }
-
-  /*  public void focusGained(final FocusEvent e)
-    {
-        // only interested in JTextFields
-        if (!(e.getSource() instanceof JTextField))
-        {
-            return;
-        }
-
-        final JTextField focused = (JTextField)e.getSource();
-        focused.setSelectionStart(0);
-        focused.setSelectionEnd(focused.getText().length());
-    }
-
-    public void focusLost(final FocusEvent e)
-    {
-    }*/
 
     private void initialize()
     {
@@ -102,30 +80,12 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         pogList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         pogList.setLayoutOrientation(JList.VERTICAL);
         pogList.setVisibleRowCount(-1);
-        m_ok.setText("Load Pog");
-        m_ok.addActionListener(new ActionListener()
-        {
-            /*
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-            public void actionPerformed(final ActionEvent e)
-            {
-                selectedPog = ((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex());
-                dispose();
-            }
-        });
 
-        m_cancel.setText("Cancel");
-        m_cancel.addActionListener(new ActionListener()
-        {
-            /*
-             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-             */
-            public void actionPerformed(final ActionEvent e)
-            {
-                dispose();
-            }
-        });
+        initialiseOkButton();
+
+        initialiseCancelButton();
+
+        initialiseDeleteButton();
 
         pogListLabel.setText("Pogs:");
 
@@ -169,15 +129,68 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         outerBox.add(Box.createVerticalStrut(PADDING * 3));
         outerBox.add(Box.createVerticalGlue());
 
-        panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        outerBox.add(panel);
-        panel.add(m_ok);
-        panel.add(Box.createHorizontalStrut(PADDING));
-        panel.add(m_cancel);
+        JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        outerBox.add(buttonPanel1);
+        buttonPanel1.add(m_delete);
+
+        outerBox.add(Box.createVerticalStrut(PADDING));
+
+        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        outerBox.add(buttonPanel2);
+        buttonPanel2.add(m_ok);
+        buttonPanel2.add(Box.createHorizontalStrut(PADDING));
+        buttonPanel2.add(m_cancel);
 
         outerBox.add(Box.createVerticalStrut(PADDING));
 
         setModal(true);
+    }
+
+    private void initialiseOkButton()
+    {
+        m_ok.setText("Load Pog");
+        m_ok.addActionListener(new ActionListener()
+        {
+            /*
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(final ActionEvent e)
+            {
+                selectedPog = ((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex());
+                dispose();
+            }
+        });
+    }
+
+    private void initialiseCancelButton()
+    {
+        m_cancel.setText("Cancel");
+        m_cancel.addActionListener(new ActionListener()
+        {
+            /*
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(final ActionEvent e)
+            {
+                dispose();
+            }
+        });
+    }
+
+    private void initialiseDeleteButton()
+    {
+        m_delete.setText("Delete Pog");
+        m_delete.addActionListener(new ActionListener()
+        {
+            /*
+             * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+             */
+            public void actionPerformed(final ActionEvent e)
+            {
+                Pog pog = ((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex());
+            }
+        });
+        m_delete.setEnabled(false);
     }
 
     public Pog getPog()
@@ -188,5 +201,6 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
     public void valueChanged(ListSelectionEvent e)
     {
         pogDetails.setPog(((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex()));
+        m_delete.setEnabled(true);
     }
 }
