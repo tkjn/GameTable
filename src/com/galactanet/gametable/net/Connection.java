@@ -41,7 +41,7 @@ public class Connection
 
     private final SocketChannel channel;
     private SelectionKey        key;
-    private final List          queue               = new LinkedList();
+    private final List<byte[]>  queue               = new LinkedList<byte[]>();
     private ByteBuffer          receiveBuffer;
     private ByteBuffer          sendBuffer;
     private int                 state               = State.PENDING_CONNECTION;

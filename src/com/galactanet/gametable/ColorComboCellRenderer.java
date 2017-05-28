@@ -19,7 +19,7 @@ import javax.swing.ListCellRenderer;
  * 
  * @author sephalon
  */
-public class ColorComboCellRenderer extends JLabel implements ListCellRenderer
+public class ColorComboCellRenderer extends JLabel implements ListCellRenderer<Integer>
 {
     /**
      * 
@@ -66,14 +66,14 @@ public class ColorComboCellRenderer extends JLabel implements ListCellRenderer
      * @param isSelected Is the cell selected.
      * @param cellHasFocus The list and cell have the focus.
      */
-    public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+    public Component getListCellRendererComponent(final JList<? extends Integer> list, final Integer value, final int index,
         final boolean isSelected, final boolean cellHasFocus)
     {
 
         setText(value.toString());
 
         // find the color needed
-        final int col = ((Integer)value).intValue();
+        final int col = value.intValue();
         int idx = -1;
         for (int i = 0; i < GametableFrame.COLORS.length; i++)
         {

@@ -379,7 +379,7 @@ public class GametableFrame extends JFrame implements ActionListener
     // Controls in the Frame
     // The toolbar goes at the top of the pane
     private final JToolBar          m_toolBar                = new JToolBar(); // The main toolbar
-    private final JComboBox         m_colorCombo             = new JComboBox(COLORS); // Combo box for colore
+    private final JComboBox<Integer> m_colorCombo            = new JComboBox<Integer>(COLORS); // Combo box for colors
 
     // The map-pog split pane goes in the center
     private final JSplitPane        m_mapPogSplitPane        = new JSplitPane();    // Split between Pog pane and map pane
@@ -2971,7 +2971,7 @@ public class GametableFrame extends JFrame implements ActionListener
         final String[] units = {
             "ft", "m", "u"
         };
-        m_gridunit = new JComboBox(units);
+        m_gridunit = new JComboBox<String>(units);
         m_gridunit.setMaximumSize(new Dimension(42, 21));
         m_toolBar.add(m_gridunitmultiplier);
         m_toolBar.add(m_gridunit);

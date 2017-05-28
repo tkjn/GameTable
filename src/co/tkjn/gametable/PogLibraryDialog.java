@@ -43,7 +43,7 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
     
     private final PogListModel pogListModel    = new PogListModel("poginstances");
     private final JLabel      pogListLabel     = new JLabel();
-    private final JList       pogList          = new JList(pogListModel);
+    private final JList<String> pogList        = new JList<String>(pogListModel);
     
     private final PogDetailsPanel pogDetails   = new PogDetailsPanel();
 
