@@ -12,6 +12,7 @@ import java.awt.image.PixelGrabber;
 import java.io.*;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -678,54 +679,74 @@ public class UtilityFunctions
 
     public static void launchBrowser(final String url)
     {
-        final String osName = System.getProperty("os.name");
         try
         {
+            if (Desktop.isDesktopSupported())
+            {
+                Desktop desktop = Desktop.getDesktop();
+                desktop.browse(new URI(url));
+                return;
+            }
+
+            final String osName = System.getProperty("os.name");
+
             if (osName.startsWith("Mac OS"))
             {
-                final Class fileMgr = Class.forName("com.apple.eio.FileManager");
-                final Method openURL = fileMgr.getDeclaredMethod("openURL", new Class[] {
-                    String.class
-                });
-                openURL.invoke(null, new Object[] {
-                    url
-                });
+                launchMacBrowser(url);
+                return;
             }
-            else if (osName.startsWith("Windows"))
-            {
-                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
-            }
-            else
-            {
-                // assume Unix or Linux
-                final String[] browsers = {
-                    "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape"
-                };
-                String browser = null;
-                for (int count = 0; (count < browsers.length) && (browser == null); count++)
-                {
-                    if (Runtime.getRuntime().exec(new String[] {
-                        "which", browsers[count]
-                    }).waitFor() == 0)
-                    {
-                        browser = browsers[count];
-                    }
-                }
 
-                if (browser == null)
-                {
-                    throw new Exception("Could not find web browser");
-                }
-
-                Runtime.getRuntime().exec(new String[] {
-                    browser, url
-                });
+            if (osName.startsWith("Windows"))
+            {
+                launchWindowsBrowser(url);
+                return;
             }
+
+            // assume Unix or Linux
+            launchLinuxBrowser(url);
         }
         catch (final Exception e)
         {
             Log.log(Log.NET, e);
         }
+    }
+
+    private static void launchMacBrowser(final String url) throws Exception
+    {
+        final Class<?> fileMgr = Class.forName("com.apple.eio.FileManager");
+        final Method openURL = fileMgr.getDeclaredMethod("openURL", String.class);
+        openURL.invoke(null, url);
+    }
+
+    private static void launchWindowsBrowser(final String url) throws Exception
+    {
+        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+    }
+
+    private static void launchLinuxBrowser(final String url) throws Exception
+    {
+        final String[] browsers = {
+            "google-chrome", "firefox", "opera", "konqueror", "epiphany", "mozilla", "netscape"
+        };
+        String browser = null;
+        for (int count = 0; (count < browsers.length) && (browser == null); count++)
+        {
+            if (Runtime.getRuntime().exec(new String[] {
+                "which", browsers[count]
+            }).waitFor() == 0)
+            {
+                browser = browsers[count];
+            }
+        }
+
+        if (browser == null)
+        {
+            throw new Exception("Could not find web browser");
+        }
+
+        Runtime.getRuntime().exec(new String[] {
+            browser, url
+        });
     }
 
     private static Image loadAndWait(final Component component, final String name)
