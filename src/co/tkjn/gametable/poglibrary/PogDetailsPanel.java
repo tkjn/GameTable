@@ -59,4 +59,9 @@ public class PogDetailsPanel extends JPanel
         
         nameLabel.setText("<html>"+pog.getText()+"<br>" + attributeString+"</html>");
     }
+
+    public void removePog()
+    {
+        nameLabel.setText("");
+    }
 }

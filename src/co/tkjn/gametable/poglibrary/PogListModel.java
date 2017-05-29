@@ -28,7 +28,7 @@ public class PogListModel extends AbstractListModel<String>
     
     private File pogDir;
     
-    private Vector<Pog> pogs = new Vector<Pog>();
+    private Vector<PogFile> pogs = new Vector<PogFile>();
     
     public PogListModel(String libName)
     {
@@ -52,7 +52,14 @@ public class PogListModel extends AbstractListModel<String>
     
     public Pog getPogAt(int arg0)
     {
-        return pogs.get(arg0);
+        return pogs.get(arg0).getPog();
+    }
+
+    public void deletePog(int arg0)
+    {
+        pogs.get(arg0).getFile().delete();
+        pogs.removeElementAt(arg0);
+        fireIntervalRemoved(this, arg0, arg0);
     }
 
     /*
@@ -72,6 +79,7 @@ public class PogListModel extends AbstractListModel<String>
     public void refreshPogs()
     {
         String[] pogFiles = pogDir.list(new PogFilenameFilter());
+        int beforeCount = pogs.size();
         pogs.clear();
         for (int i=0; i < pogFiles.length; i++)
         {
@@ -85,12 +93,27 @@ public class PogListModel extends AbstractListModel<String>
                     PacketManager.requestPogImage(null, nPog);
                 }
                 
-                pogs.add(nPog);
+                pogs.add(new PogFile(openFile, nPog));
                 
             }
             catch (final IOException ex1) {
                 Log.log(Log.SYS, ex1);
             }
+        }
+
+        int afterCount = pogs.size();
+        if (beforeCount > 0)
+        {
+            fireContentsChanged(this, 0, Math.min(beforeCount, afterCount) - 1);
+        }
+
+        if (afterCount < beforeCount)
+        {
+            fireIntervalRemoved(this, afterCount, beforeCount - 1);
+        }
+        else if (beforeCount < afterCount)
+        {
+            fireIntervalAdded(this, beforeCount, afterCount - 1);
         }
     }
 

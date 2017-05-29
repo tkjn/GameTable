@@ -14,12 +14,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import java.io.File;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import com.galactanet.gametable.Log;
 import com.galactanet.gametable.Pog;
+import com.galactanet.gametable.util.UtilityFunctions;
 
 
 
@@ -184,6 +187,7 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
     private void initialiseDeleteButton()
     {
         m_delete.setText("Delete Pog");
+        final JDialog dialog = this;
         m_delete.addActionListener(new ActionListener()
         {
             /*
@@ -191,7 +195,21 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
              */
             public void actionPerformed(final ActionEvent e)
             {
-                Pog pog = ((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex());
+                PogListModel model = (PogListModel)pogList.getModel();
+                int index = pogList.getSelectedIndex();
+
+                Pog pog = model.getPogAt(index);
+
+                final int result = UtilityFunctions.yesNoDialog(
+                    dialog,
+                    "Are you sure you wish to permanently delete the pog '" + pog.getText() + "'?",
+                    "Delete Pog?"
+                );
+                if (result == UtilityFunctions.YES)
+                {
+                    model.deletePog(index);
+                }
+
             }
         });
         m_delete.setEnabled(false);
@@ -204,7 +222,15 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
     
     public void valueChanged(ListSelectionEvent e)
     {
-        pogDetails.setPog(((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex()));
+        int index = pogList.getSelectedIndex();
+        if (index < 0)
+        {
+            pogDetails.removePog();
+            m_delete.setEnabled(false);
+            return;
+        }
+
+        pogDetails.setPog(((PogListModel)pogList.getModel()).getPogAt(index));
         m_delete.setEnabled(true);
     }
 }
