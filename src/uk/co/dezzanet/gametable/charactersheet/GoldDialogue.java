@@ -1,19 +1,14 @@
 package uk.co.dezzanet.gametable.charactersheet;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class GoldDialogue extends JDialog {
-	
-	private String description;
+
+    private static final int BORDER = 5;
+    private String description;
 	private JButton applyButton;
 	private JTextField goldField;
 	private JPanel contentPanel;
@@ -30,7 +25,7 @@ public class GoldDialogue extends JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
         setResizable(false);
-        setTitle("Adjust Gold By...");
+        setTitle("Gold");
         setContentPane(getContentPanel());
         pack();
 	}
@@ -69,37 +64,13 @@ public class GoldDialogue extends JDialog {
 	private JPanel getContentPanel() {
         if (contentPanel == null) {
             contentPanel = new JPanel();
-            contentPanel.setLayout(new BorderLayout());
-            contentPanel.add(getCenterPanel(), java.awt.BorderLayout.CENTER);
+            contentPanel.setLayout(new GridLayout(3, 1));
+            contentPanel.setBorder(BorderFactory.createEmptyBorder(0, BORDER, BORDER, BORDER));
+            contentPanel.add(new JLabel("Adjust Gold by..."));
+            contentPanel.add(getField());
+            contentPanel.add(getApplyButton());
         }
         return contentPanel;
-    }
-	
-	/**
-     * This method initializes centerPanel
-     *
-     * @return javax.swing.JPanel
-     */
-    private JPanel getCenterPanel()
-    {
-        if (centerPanel == null) {
-            final GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-            gridBagConstraints21.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints21.gridy = 3;
-            gridBagConstraints21.weightx = 1.0;
-            gridBagConstraints21.gridx = 2;
-            final GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints1.gridy = 0;
-            gridBagConstraints1.weightx = 1.0;
-            gridBagConstraints1.gridx = 2;
-            centerPanel = new JPanel();
-            centerPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 0, 5));
-            centerPanel.setLayout(new GridBagLayout());
-            centerPanel.add(getField(), gridBagConstraints1);
-            centerPanel.add(getApplyButton(), gridBagConstraints21);
-        }
-        return centerPanel;
     }
     
     public int getValue() {
