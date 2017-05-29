@@ -28,7 +28,7 @@ import com.galactanet.gametable.Pog;
  * 
  * @author tkjn
  */
-public class PogLibraryDialog extends JDialog implements ListSelectionListener /*implements FocusListener*/
+public class PogLibraryDialog extends JDialog implements ListSelectionListener
 {
     private boolean           m_bAccepted;
     private final JButton     m_cancel         = new JButton();
@@ -74,9 +74,12 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
 
     private void initialize()
     {
+        int width  = 400;
+        int height = 500;
+
         setTitle("Pog Library");
         setResizable(false);
-        setPreferredSize(new Dimension(300,300));
+        setPreferredSize(new Dimension(width, height));
         pogList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         pogList.setLayoutOrientation(JList.VERTICAL);
         pogList.setVisibleRowCount(-1);
@@ -108,7 +111,8 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         
         JScrollPane listScroller = new JScrollPane(pogList);
         listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller.setPreferredSize(new Dimension(120, 200));
+
+        listScroller.setPreferredSize(new Dimension(width / 2 - 10, height - 100));
         pogListPanel.add(listScroller, BorderLayout.EAST);
         
         pogList.addListSelectionListener(this);
@@ -118,7 +122,7 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener /
         
         listScroller = new JScrollPane(pogDetails);
         listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller.setPreferredSize(new Dimension(150, 200));
+        listScroller.setPreferredSize(new Dimension(width / 2 - 10, height - 100));
         panel.add(listScroller, BorderLayout.EAST);
         
         outerBox.add(panel);
