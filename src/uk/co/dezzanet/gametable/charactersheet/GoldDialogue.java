@@ -70,33 +70,6 @@ public class GoldDialogue extends JDialog {
         }
         return contentPanel;
     }
-	
-	/**
-     * This method initializes centerPanel
-     *
-     * @return javax.swing.JPanel
-     */
-    private JPanel getCenterPanel()
-    {
-        if (centerPanel == null) {
-            final GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-            gridBagConstraints21.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints21.gridy = 3;
-            gridBagConstraints21.weightx = 1.0;
-            gridBagConstraints21.gridx = 2;
-            final GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
-            gridBagConstraints1.gridy = 0;
-            gridBagConstraints1.weightx = 1.0;
-            gridBagConstraints1.gridx = 2;
-            centerPanel = new JPanel();
-            centerPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 0, 5));
-            centerPanel.setLayout(new GridBagLayout());
-            centerPanel.add(getField(), gridBagConstraints1);
-            centerPanel.add(getApplyButton(), gridBagConstraints21);
-        }
-        return centerPanel;
-    }
     
     public int getValue() {
     	return value;
