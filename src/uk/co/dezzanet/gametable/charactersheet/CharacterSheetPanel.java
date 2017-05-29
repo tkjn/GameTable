@@ -188,7 +188,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
         JSpinner goldField = buildGoldField();
         Dimension goldSize = goldField.getPreferredSize();
-        goldSize.width = 70;
+        goldSize.width = 80;
         goldField.setPreferredSize(goldSize);
 
         panel.add(buildAddGoldButton(), BorderLayout.LINE_START);
