@@ -157,27 +157,67 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     }
 
     private JPanel getWoundsPanel() {
+        return getLabelFieldPairPanel(buildWoundsLabel(), buildWoundsField());
+    }
+
+    private JLabel buildWoundsLabel() {
+        return new JLabel("Wounds");
+    }
+
+    private JComponent buildWoundsField() {
+        SpinnerModel model = new SpinnerNumberModel(0, 0, 200, 1);
+        wounds = new JSpinner(model);
+        wounds.addChangeListener(new WoundsChangeListener());
+        return wounds;
+    }
+
+    private JPanel getLabelFieldPairPanel(JComponent label, JComponent field) {
         GridLayout layout = new GridLayout(2, 1);
         JPanel panel = new JPanel(layout);
-        panel.add(buildWoundsLabel());
-        panel.add(buildWoundsField());
+        panel.add(label);
+        panel.add(field);
         return panel;
     }
 
     private JPanel getMaxWoundsPanel() {
-        GridLayout layout = new GridLayout(2, 1);
-        JPanel panel = new JPanel(layout);
-        panel.add(buildMaxWoundsLabel());
-        panel.add(buildMaxWoundsField());
-        return panel;
+        return getLabelFieldPairPanel(buildMaxWoundsLabel(), buildMaxWoundsField());
+    }
+
+    private JLabel buildMaxWoundsLabel() {
+        return new JLabel("Max");
+    }
+
+    private JComponent buildMaxWoundsField() {
+        SpinnerModel max_wounds_model = new SpinnerNumberModel(0, 0, 200, 1);
+        max_wounds = new JSpinner(max_wounds_model);
+        max_wounds.addChangeListener(new MaxWoundsChangeListener());
+        return max_wounds;
     }
 
     private JPanel getWeaponSkillPanel() {
-        GridLayout layout = new GridLayout(2, 1);
-        JPanel panel = new JPanel(layout);
-        panel.add(buildWeaponSkillLabel());
-        panel.add(buildWeaponSkillField());
-        return panel;
+        return getLabelFieldPairPanel(buildWeaponSkillLabel(), buildWeaponSkillField());
+    }
+
+    private JLabel buildWeaponSkillLabel() {
+        return new JLabel("WS");
+    }
+
+    private JComponent buildWeaponSkillField() {
+        SpinnerModel ws_model = new SpinnerNumberModel(1, 1, 10, 1);
+        weapon_skill = new JSpinner(ws_model);
+        weapon_skill.addChangeListener(new WeaponSkillChangeListener());
+        return weapon_skill;
+    }
+
+    private JLabel buildGoldLabel() {
+        return new JLabel("Gold");
+    }
+
+    private SpinnerModel buildGoldField() {
+        SpinnerModel gold_model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
+        gold = new JSpinner(gold_model);
+        gold.addChangeListener(new GoldChangeListener());
+        return gold_model;
     }
 
     private JScrollPane buildNotesField() {
@@ -213,50 +253,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         sub_gold.setMargin(new Insets(1,1,1,1));
         sub_gold.addActionListener(new SubGoldActionListener());
         return sub_gold;
-    }
-
-    private SpinnerModel buildGoldField() {
-        SpinnerModel gold_model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
-        gold = new JSpinner(gold_model);
-        gold.addChangeListener(new GoldChangeListener());
-        return gold_model;
-    }
-
-    private JLabel buildGoldLabel() {
-        return new JLabel("Gold");
-    }
-
-    private JSpinner buildWeaponSkillField() {
-        SpinnerModel ws_model = new SpinnerNumberModel(1, 1, 10, 1);
-        weapon_skill = new JSpinner(ws_model);
-        weapon_skill.addChangeListener(new WeaponSkillChangeListener());
-        return weapon_skill;
-    }
-
-    private JLabel buildWeaponSkillLabel() {
-        return new JLabel("WS");
-    }
-
-    private JSpinner buildMaxWoundsField() {
-        SpinnerModel max_wounds_model = new SpinnerNumberModel(0, 0, 200, 1);
-        max_wounds = new JSpinner(max_wounds_model);
-        max_wounds.addChangeListener(new MaxWoundsChangeListener());
-        return max_wounds;
-    }
-
-    private JLabel buildMaxWoundsLabel() {
-        return new JLabel("Max");
-    }
-
-    private JLabel buildWoundsLabel() {
-        return new JLabel("Wounds");
-    }
-
-    private JSpinner buildWoundsField() {
-        SpinnerModel model = new SpinnerNumberModel(0, 0, 200, 1);
-        wounds = new JSpinner(model);
-        wounds.addChangeListener(new WoundsChangeListener());
-        return wounds;
     }
 
     private class PlusGoldActionListener implements ActionListener {
