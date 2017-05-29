@@ -10,11 +10,10 @@ public class CharacterSheetPlugin implements IGametablePlugin, ILeftPanel {
 
     private static final String PLUGIN_NAME = "Character sheet";
     private static final String PANEL_TITLE = "Character Sheet";
-    private CharacterSheetPanel panel;
+    private CharacterSheetPanel panel = new CharacterSheetPanel();
 
     @Override
     public void initialise(GametableFrame gametable) {
-        panel = new CharacterSheetPanel();
         gametable.addPanelToLeftPane(panel, PANEL_TITLE);
         gametable.registerAutoSaveListener(new AutoSaveListener(panel.getStorage()));
         gametable.getEventDispatcher().listenForPogMenuRender(new PogMenuRenderListener(panel.getPogAdapter()));
