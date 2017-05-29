@@ -6,8 +6,9 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class GoldDialogue extends JDialog {
-	
-	private String description;
+
+    private static final int BORDER = 5;
+    private String description;
 	private JButton applyButton;
 	private JTextField goldField;
 	private JPanel contentPanel;
@@ -64,6 +65,7 @@ public class GoldDialogue extends JDialog {
         if (contentPanel == null) {
             contentPanel = new JPanel();
             contentPanel.setLayout(new GridLayout(3, 1));
+            contentPanel.setBorder(BorderFactory.createEmptyBorder(0, BORDER, BORDER, BORDER));
             contentPanel.add(new JLabel("Adjust Gold by..."));
             contentPanel.add(getField());
             contentPanel.add(getApplyButton());
