@@ -191,9 +191,9 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         goldSize.width = 80;
         goldField.setPreferredSize(goldSize);
 
-        panel.add(buildAddGoldButton(), BorderLayout.LINE_START);
+        panel.add(buildSubtractGoldButton(), BorderLayout.LINE_START);
         panel.add(goldField, BorderLayout.CENTER);
-        panel.add(buildSubtractGoldButton(), BorderLayout.LINE_END);
+        panel.add(buildAddGoldButton(), BorderLayout.LINE_END);
 
         return panel;
     }
