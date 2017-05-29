@@ -2,11 +2,11 @@ package uk.co.dezzanet.gametable.charactersheet;
 
 import com.galactanet.gametable.GametableFrame;
 import com.galactanet.gametable.IGametablePlugin;
-import com.galactanet.gametable.ILeftPanel;
+import com.galactanet.gametable.ILeftPanelProvider;
 
 import javax.swing.*;
 
-public class CharacterSheetPlugin implements IGametablePlugin, ILeftPanel {
+public class CharacterSheetPlugin implements IGametablePlugin, ILeftPanelProvider {
 
     private static final String PLUGIN_NAME = "Character sheet";
     private static final String PANEL_TITLE = "Character Sheet";
@@ -27,5 +27,10 @@ public class CharacterSheetPlugin implements IGametablePlugin, ILeftPanel {
     @Override
     public JPanel getLeftPanel() {
         return panel;
+    }
+
+    @Override
+    public String getPanelTitle() {
+        return PANEL_TITLE;
     }
 }

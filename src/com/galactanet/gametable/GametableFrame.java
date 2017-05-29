@@ -403,7 +403,7 @@ public class GametableFrame extends JFrame implements ActionListener
     private List<IGametablePlugin> plugins = new ArrayList<>();
     private List<IAutoSaveListener> autoSaveListeners = new ArrayList<>();
     private EventDispatcher eventDispatcher = new EventDispatcher();
-    private List<ILeftPanel> leftPanelProviders = new ArrayList<>();
+    private List<ILeftPanelProvider> leftPanelProviders = new ArrayList<>();
 
     /**
      * Construct the frame
@@ -5163,7 +5163,7 @@ public class GametableFrame extends JFrame implements ActionListener
         autoSaveListeners.add(listener);
     }
 
-    public void registerLeftPanelProvider(ILeftPanel panelProvider) {
+    public void registerLeftPanelProvider(ILeftPanelProvider panelProvider) {
         leftPanelProviders.add(panelProvider);
     }
 
