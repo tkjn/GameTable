@@ -312,7 +312,7 @@ public class MacroPanel extends JPanel
     private JSplitPane        topPanel         = null;
     private JPanel            privateRolls     = null;
     private JPanel            addMacro         = null;
-    private final JComboBox   sendTo           = new JComboBox();
+    private final JComboBox<String> sendTo     = new JComboBox<String>();
 
     // --- Constructors ----------------------------------------------------------------------------------------------
 

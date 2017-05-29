@@ -40,7 +40,7 @@ public class GroupingDialog extends JDialog implements FocusListener
     
     
     private JLabel          label       = new JLabel("Select Group ");        
-    private final JComboBox groups      = new JComboBox();
+    private final JComboBox<String> groups = new JComboBox<String>();
     private JTextField      newGroup    = new JTextField(20);
     private JLabel          nlabel      = new JLabel("New Group "); 
 

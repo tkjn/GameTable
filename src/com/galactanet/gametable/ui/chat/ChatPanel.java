@@ -40,7 +40,7 @@ public class ChatPanel extends JPanel
     private final JPanel            m_textAndEntryPanel    = new JPanel();
 
     // List of players to whom to send a private message
-    private final JComboBox         pmSendTo               = new JComboBox();
+    private final JComboBox<String> pmSendTo               = new JComboBox<String>();
 //    private int                     pmToID                 = 0;
     
     public final static String    ALERT_MESSAGE_FONT       = "<b><font color=\"#FF0000\">";

@@ -103,17 +103,14 @@ public class SelectTool extends NullTool
 
             // first off, copy all the pogs/underlays over to the public layer
             
-System.out.println("start");            
             for (int i = 0; i < m_map.getNumPogs(); i++)
             {
-System.out.println("lop " + i);                
                 final Pog pog = m_map.getPog(i);
                 if (pog.isTinted() && (!pog.isLocked() || bIgnoreLock)) {
                     m_map.addSelectedPog(pog);
                 }
                 
             }
-System.out.println("end");            
         }
         endAction();
     }

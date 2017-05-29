@@ -5,6 +5,8 @@ An open ended game table with network support.
 This also provides some convenience features for Warhammer Quest (1995) style gameplay.
 In future these game specific features will likely be moved into some kind of optional plugin.
 
+[![Build Status](https://travis-ci.org/tkjn/GameTable.svg?branch=master)](https://travis-ci.org/tkjn/GameTable)
+
 ## Networking
 Servers listen on port 6812 by default, although this can be configured when starting a session.
 
