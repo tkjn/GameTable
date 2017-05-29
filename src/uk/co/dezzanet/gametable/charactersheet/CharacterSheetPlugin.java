@@ -14,7 +14,7 @@ public class CharacterSheetPlugin implements IGametablePlugin, ILeftPanel {
 
     @Override
     public void initialise(GametableFrame gametable) {
-        gametable.addPanelToLeftPane(panel, PANEL_TITLE);
+        gametable.registerLeftPanelProvider(this);
         gametable.registerAutoSaveListener(new AutoSaveListener(panel.getStorage()));
         gametable.getEventDispatcher().listenForPogMenuRender(new PogMenuRenderListener(panel.getPogAdapter()));
     }
