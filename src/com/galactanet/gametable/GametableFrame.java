@@ -3232,6 +3232,9 @@ public class GametableFrame extends JFrame implements ActionListener
         addPanelToLeftPane(m_pogPanel, lang.POG_LIBRARY);
         addPanelToLeftPane(m_activePogsPanel, lang.POG_ACTIVE);
         addPanelToLeftPane(m_macroPanel, lang.DICE_MACROS);
+        for (ILeftPanelProvider panelProvider : leftPanelProviders) {
+            addPanelToLeftPane(panelProvider.getLeftPanel(), panelProvider.getPanelTitle());
+        }
     }
 
     /**
