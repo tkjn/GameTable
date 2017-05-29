@@ -1,15 +1,9 @@
 package uk.co.dezzanet.gametable.charactersheet;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.*;
 import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 public class GoldDialogue extends JDialog {
 	
@@ -30,7 +24,7 @@ public class GoldDialogue extends JDialog {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setModal(true);
         setResizable(false);
-        setTitle("Adjust Gold By...");
+        setTitle("Gold");
         setContentPane(getContentPanel());
         pack();
 	}
@@ -69,8 +63,10 @@ public class GoldDialogue extends JDialog {
 	private JPanel getContentPanel() {
         if (contentPanel == null) {
             contentPanel = new JPanel();
-            contentPanel.setLayout(new BorderLayout());
-            contentPanel.add(getCenterPanel(), java.awt.BorderLayout.CENTER);
+            contentPanel.setLayout(new GridLayout(3, 1));
+            contentPanel.add(new JLabel("Adjust Gold by..."));
+            contentPanel.add(getField());
+            contentPanel.add(getApplyButton());
         }
         return contentPanel;
     }
