@@ -5153,7 +5153,7 @@ public class GametableFrame extends JFrame implements ActionListener
         }
     }
 
-    public void addPanelToLeftPane(JPanel panel, String title)
+    private void addPanelToLeftPane(JPanel panel, String title)
     {
         m_pogsTabbedPane.add(panel, title);
     }
