@@ -69,7 +69,7 @@ import com.galactanet.gametable.events.EventDispatcher;
 import org.xml.sax.SAXException;
 
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPlugin;
-import co.tkjn.gametable.PogLibraryDialog;
+import co.tkjn.gametable.poglibrary.PogLibraryDialog;
 
 import com.galactanet.gametable.lang.Language;
 import com.galactanet.gametable.net.Connection;

@@ -3,7 +3,7 @@
  */
 
 
-package co.tkjn.gametable;
+package co.tkjn.gametable.poglibrary;
 
 import java.io.DataInputStream;
 import java.io.File;
