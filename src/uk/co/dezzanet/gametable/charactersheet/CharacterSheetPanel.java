@@ -74,24 +74,8 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         JPanel weaponSkillPanel = getWeaponSkillPanel();
         add(weaponSkillPanel);
 
-        // Gold
-        final JLabel gold_label = buildGoldLabel();
-        add(gold_label);
-
-        buildGoldField();
-        Dimension gold_size = gold.getPreferredSize();
-        gold_size.width = 70;
-        gold.setPreferredSize(gold_size);
-        add(gold);
-
-        Dimension button_size = new Dimension();
-        button_size.setSize(30, gold_size.getHeight());
-
-        final JButton sub_gold = buildSubtractGoldButton(button_size);
-        add(sub_gold);
-
-        final JButton plus_gold = buildAddGoldButton(button_size);
-        add(plus_gold);
+        JPanel goldPanel = getGoldPanel();
+        add(goldPanel);
 
         JPanel toHitTable = buildToHitTable();
         add(toHitTable);
@@ -116,25 +100,12 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         layout.putConstraint(SpringLayout.WEST, weaponSkillPanel, 5, SpringLayout.EAST, maxWoundsPanel);
         layout.putConstraint(SpringLayout.NORTH, weaponSkillPanel, 5, SpringLayout.NORTH, this);
 
-        // Gold line
-        // Gold label should be below wounds panel
-        layout.putConstraint(SpringLayout.WEST, gold_label, 5, SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.NORTH, gold_label, 5, SpringLayout.SOUTH, woundsPanel);
-
-        // Gold - should be just below the gold label and 5px from the box edge
-        layout.putConstraint(SpringLayout.NORTH, sub_gold, 5, SpringLayout.SOUTH, gold_label);
-        layout.putConstraint(SpringLayout.WEST, sub_gold, 5, SpringLayout.WEST, this);
-
-        // Gold field should be just below the gold label and 5px from Gold-
-        layout.putConstraint(SpringLayout.NORTH, gold, 5, SpringLayout.SOUTH, gold_label);
-        layout.putConstraint(SpringLayout.WEST, gold, 5, SpringLayout.EAST, sub_gold);
-
-        // Gold + should be just below the gold label and 5px from Gold field
-        layout.putConstraint(SpringLayout.NORTH, plus_gold, 5, SpringLayout.SOUTH, gold_label);
-        layout.putConstraint(SpringLayout.WEST, plus_gold, 5, SpringLayout.EAST, gold);
+        // Gold panel should be below wounds panel
+        layout.putConstraint(SpringLayout.WEST, goldPanel, 5, SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.NORTH, goldPanel, 5, SpringLayout.SOUTH, woundsPanel);
 
         // To Hit should be below gold
-        layout.putConstraint(SpringLayout.NORTH, toHitTable, 5, SpringLayout.SOUTH, gold);
+        layout.putConstraint(SpringLayout.NORTH, toHitTable, 5, SpringLayout.SOUTH, goldPanel);
         layout.putConstraint(SpringLayout.WEST, toHitTable, 5, SpringLayout.WEST, this);
 
         // NOTES
@@ -172,7 +143,7 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
     }
 
     private JPanel getLabelFieldPairPanel(JComponent label, JComponent field) {
-        GridLayout layout = new GridLayout(2, 1);
+        GridLayout layout = new GridLayout(2, 1, 5, 5);
         JPanel panel = new JPanel(layout);
         panel.add(label);
         panel.add(field);
@@ -209,15 +180,55 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         return weapon_skill;
     }
 
+    private JPanel getGoldPanel() {
+        BorderLayout layout = new BorderLayout(5, 5);
+        JPanel panel = new JPanel(layout);
+
+        panel.add(buildGoldLabel(), BorderLayout.PAGE_START);
+
+        JSpinner goldField = buildGoldField();
+        Dimension goldSize = goldField.getPreferredSize();
+        goldSize.width = 70;
+        goldField.setPreferredSize(goldSize);
+
+        panel.add(buildAddGoldButton(), BorderLayout.LINE_START);
+        panel.add(goldField, BorderLayout.CENTER);
+        panel.add(buildSubtractGoldButton(), BorderLayout.LINE_END);
+
+        return panel;
+    }
+
     private JLabel buildGoldLabel() {
         return new JLabel("Gold");
     }
 
-    private SpinnerModel buildGoldField() {
+    private JSpinner buildGoldField() {
         SpinnerModel gold_model = new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1);
         gold = new JSpinner(gold_model);
         gold.addChangeListener(new GoldChangeListener());
-        return gold_model;
+        return gold;
+    }
+
+    private JButton buildAddGoldButton() {
+        final JButton plusGold = new JButton("+");
+        plusGold.setFont(new Font("Ariel", Font.PLAIN, 8));
+        plusGold.addActionListener(new PlusGoldActionListener());
+        plusGold.setMargin(new Insets(1,1,1,1));
+        Dimension size = plusGold.getPreferredSize();
+        size.width = 30;
+        plusGold.setPreferredSize(size);
+        return plusGold;
+    }
+
+    private JButton buildSubtractGoldButton() {
+        final JButton subGold = new JButton("-");
+        subGold.setFont(new Font("Ariel", Font.PLAIN, 8));
+        subGold.setMargin(new Insets(1,1,1,1));
+        subGold.addActionListener(new SubGoldActionListener());
+        Dimension size = subGold.getPreferredSize();
+        size.width = 30;
+        subGold.setPreferredSize(size);
+        return subGold;
     }
 
     private JScrollPane buildNotesField() {
@@ -235,24 +246,6 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
     private JPanel buildToHitTable() {
         return new ToHitTableView(characterData);
-    }
-
-    private JButton buildAddGoldButton(Dimension button_size) {
-        final JButton plus_gold = new JButton("+");
-        plus_gold.setPreferredSize(button_size);
-        plus_gold.setFont(new Font("Ariel", Font.PLAIN, 8));
-        plus_gold.addActionListener(new PlusGoldActionListener());
-        plus_gold.setMargin(new Insets(1,1,1,1));
-        return plus_gold;
-    }
-
-    private JButton buildSubtractGoldButton(Dimension button_size) {
-        final JButton sub_gold = new JButton("-");
-        sub_gold.setPreferredSize(button_size);
-        sub_gold.setFont(new Font("Ariel", Font.PLAIN, 8));
-        sub_gold.setMargin(new Insets(1,1,1,1));
-        sub_gold.addActionListener(new SubGoldActionListener());
-        return sub_gold;
     }
 
     private class PlusGoldActionListener implements ActionListener {
