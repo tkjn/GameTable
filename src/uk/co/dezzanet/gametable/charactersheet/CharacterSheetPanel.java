@@ -65,24 +65,14 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
         characterData.addListener(this);
 
-        final JLabel wounds_label = buildWoundsLabel();
-        add(wounds_label);
+        JPanel woundsPanel = getWoundsPanel();
+        add(woundsPanel);
 
-        buildWoundsField();
-        add(wounds);
+        JPanel maxWoundsPanel = getMaxWoundsPanel();
+        add(maxWoundsPanel);
 
-        final JLabel max_wounds_label = buildMaxWoundsLabel();
-        add(max_wounds_label);
-
-        buildMaxWoundsField();
-        add(max_wounds);
-
-        // Weapon Skill
-        JLabel ws_label = buildWeaponSkillLabel();
-        add(ws_label);
-
-        buildWeaponSkillField();
-        add(weapon_skill);
+        JPanel weaponSkillPanel = getWeaponSkillPanel();
+        add(weaponSkillPanel);
 
         // Gold
         final JLabel gold_label = buildGoldLabel();
@@ -114,37 +104,22 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
 
         add(notes_scroller, BorderLayout.CENTER);
 
-        //layout.getConstraints(panel).setX(Spring.constant(2));
-        //layout.getConstraints(panel).setY(Spring.constant(2));
+        // Wounds panel should start at 5x5 from the top left
+        layout.putConstraint(SpringLayout.WEST, woundsPanel, 5, SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.NORTH, woundsPanel, 5, SpringLayout.NORTH, this);
 
-        // Wounds label should start at 5x5 from the top left
-        layout.putConstraint(SpringLayout.WEST, wounds_label, 5, SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.NORTH, wounds_label, 5, SpringLayout.NORTH, this);
+        // Max Wounds Label should be 5 from the top and 5 to the left of wounds panel
+        layout.putConstraint(SpringLayout.WEST, maxWoundsPanel, 5, SpringLayout.EAST, woundsPanel);
+        layout.putConstraint(SpringLayout.NORTH, maxWoundsPanel, 5, SpringLayout.NORTH, this);
 
-        // Wounds field should be just below the wounds label and 5px from the edge
-        layout.putConstraint(SpringLayout.NORTH, wounds, 5, SpringLayout.SOUTH, wounds_label);
-        layout.putConstraint(SpringLayout.WEST, wounds, 5, SpringLayout.WEST, this);
-
-        // Max Wounds Label should be 5 from the top and 5 to the left of wounds label
-        layout.putConstraint(SpringLayout.WEST, max_wounds_label, 5, SpringLayout.EAST, wounds_label);
-        layout.putConstraint(SpringLayout.NORTH, max_wounds_label, 5, SpringLayout.NORTH, this);
-
-        // Max Wounds field should be and same horz. as wounds label and 5 below max wounds label
-        layout.putConstraint(SpringLayout.WEST, max_wounds, 0, SpringLayout.WEST, max_wounds_label);
-        layout.putConstraint(SpringLayout.NORTH, max_wounds, 5, SpringLayout.SOUTH, max_wounds_label);
-
-        // WS Label should be 5 from the top and 5 to the left of max wounds
-        layout.putConstraint(SpringLayout.WEST, ws_label, 5, SpringLayout.EAST, max_wounds);
-        layout.putConstraint(SpringLayout.NORTH, ws_label, 5, SpringLayout.NORTH, this);
-
-        // WS field should be and same horz. as ws label and 5 below ws label
-        layout.putConstraint(SpringLayout.WEST, weapon_skill, 0, SpringLayout.WEST, ws_label);
-        layout.putConstraint(SpringLayout.NORTH, weapon_skill, 5, SpringLayout.SOUTH, ws_label);
+        // WS Panel should be 5 from the top and 5 to the left of max wounds panel
+        layout.putConstraint(SpringLayout.WEST, weaponSkillPanel, 5, SpringLayout.EAST, maxWoundsPanel);
+        layout.putConstraint(SpringLayout.NORTH, weaponSkillPanel, 5, SpringLayout.NORTH, this);
 
         // Gold line
-        // Gold label should be below wounds
+        // Gold label should be below wounds panel
         layout.putConstraint(SpringLayout.WEST, gold_label, 5, SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.NORTH, gold_label, 5, SpringLayout.SOUTH, wounds);
+        layout.putConstraint(SpringLayout.NORTH, gold_label, 5, SpringLayout.SOUTH, woundsPanel);
 
         // Gold - should be just below the gold label and 5px from the box edge
         layout.putConstraint(SpringLayout.NORTH, sub_gold, 5, SpringLayout.SOUTH, gold_label);
@@ -179,6 +154,30 @@ public class CharacterSheetPanel extends JPanel implements ICharacterDataChanged
         layout.putConstraint(SpringLayout.EAST, notes_scroller, -5, SpringLayout.EAST, this);
 
         setBorder(new CompoundBorder(new MatteBorder(2, 2, 2, 2, Color.WHITE), new MatteBorder(1, 1, 1, 1, Color.BLACK)));
+    }
+
+    private JPanel getWoundsPanel() {
+        GridLayout layout = new GridLayout(2, 1);
+        JPanel panel = new JPanel(layout);
+        panel.add(buildWoundsLabel());
+        panel.add(buildWoundsField());
+        return panel;
+    }
+
+    private JPanel getMaxWoundsPanel() {
+        GridLayout layout = new GridLayout(2, 1);
+        JPanel panel = new JPanel(layout);
+        panel.add(buildMaxWoundsLabel());
+        panel.add(buildMaxWoundsField());
+        return panel;
+    }
+
+    private JPanel getWeaponSkillPanel() {
+        GridLayout layout = new GridLayout(2, 1);
+        JPanel panel = new JPanel(layout);
+        panel.add(buildWeaponSkillLabel());
+        panel.add(buildWeaponSkillField());
+        return panel;
     }
 
     private JScrollPane buildNotesField() {
