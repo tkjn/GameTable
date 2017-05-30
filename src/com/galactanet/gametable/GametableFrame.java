@@ -403,6 +403,7 @@ public class GametableFrame extends JFrame implements ActionListener
     private List<IGametablePlugin> plugins = new ArrayList<>();
     private List<IAutoSaveListener> autoSaveListeners = new ArrayList<>();
     private EventDispatcher eventDispatcher = new EventDispatcher();
+    private List<ILeftPanelProvider> leftPanelProviders = new ArrayList<>();
 
     /**
      * Construct the frame
@@ -3231,6 +3232,9 @@ public class GametableFrame extends JFrame implements ActionListener
         addPanelToLeftPane(m_pogPanel, lang.POG_LIBRARY);
         addPanelToLeftPane(m_activePogsPanel, lang.POG_ACTIVE);
         addPanelToLeftPane(m_macroPanel, lang.DICE_MACROS);
+        for (ILeftPanelProvider panelProvider : leftPanelProviders) {
+            addPanelToLeftPane(panelProvider.getLeftPanel(), panelProvider.getPanelTitle());
+        }
     }
 
     /**
@@ -5149,7 +5153,7 @@ public class GametableFrame extends JFrame implements ActionListener
         }
     }
 
-    public void addPanelToLeftPane(JPanel panel, String title)
+    private void addPanelToLeftPane(JPanel panel, String title)
     {
         m_pogsTabbedPane.add(panel, title);
     }
@@ -5160,6 +5164,10 @@ public class GametableFrame extends JFrame implements ActionListener
 
     public void registerAutoSaveListener(IAutoSaveListener listener) {
         autoSaveListeners.add(listener);
+    }
+
+    public void registerLeftPanelProvider(ILeftPanelProvider panelProvider) {
+        leftPanelProviders.add(panelProvider);
     }
 
     public EventDispatcher getEventDispatcher() {
