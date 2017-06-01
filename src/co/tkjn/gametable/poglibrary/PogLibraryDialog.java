@@ -27,24 +27,23 @@ import com.galactanet.gametable.util.UtilityFunctions;
 
 
 /**
- * TODO: comment
- * 
  * @author tkjn
  */
 public class PogLibraryDialog extends JDialog implements ListSelectionListener
 {
-    private boolean           m_bAccepted;
-    private final JButton     m_cancel         = new JButton();
-    private final JButton     m_ok             = new JButton();
-    private final JButton     m_delete         = new JButton();
+    private final JButton cancelButton = new JButton();
+    private final JButton okButton     = new JButton();
+    private final JButton deleteButton = new JButton();
     
     private Pog selectedPog;
     
-    private final PogListModel pogListModel    = new PogListModel("poginstances");
-    private final JLabel      pogListLabel     = new JLabel();
-    private final JList<String> pogList        = new JList<String>(pogListModel);
+    private final JList<PogFile> pogList = new JList<PogFile>(new PogListModel("poginstances"));
     
-    private final PogDetailsPanel pogDetails   = new PogDetailsPanel();
+    private final PogDetailsPanel pogDetailsPanel = new PogDetailsPanel();
+
+    private final int DIALOG_WIDTH = 400;
+    private final int DIALOG_HEIGHT = 500;
+    private final int PADDING = 5;
 
     public PogLibraryDialog()
     {
@@ -72,98 +71,147 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
             frameSize.width = screenSize.width;
         }
         setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
+    }
 
+    public Pog getPog()
+    {
+        return selectedPog;
+    }
+
+    public void valueChanged(ListSelectionEvent e)
+    {
+        Pog pog = getSelectedPog();
+        if (null == pog)
+        {
+            removePogDetails();
+            return;
+        }
+
+        setPogDetails(pog);
     }
 
     private void initialize()
     {
-        int width  = 400;
-        int height = 500;
-
         setTitle("Pog Library");
         setResizable(false);
-        setPreferredSize(new Dimension(width, height));
-        pogList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        pogList.setLayoutOrientation(JList.VERTICAL);
-        pogList.setVisibleRowCount(-1);
+        setPreferredSize(new Dimension(DIALOG_WIDTH, DIALOG_HEIGHT));
 
+        initialisePogList();
         initialiseOkButton();
-
         initialiseCancelButton();
-
         initialiseDeleteButton();
 
-        pogListLabel.setText("Pogs:");
-
-        final int PADDING = 5;
-
-        final Box outmostBox = Box.createHorizontalBox();
-        getContentPane().add(outmostBox, BorderLayout.CENTER);
-        outmostBox.add(Box.createHorizontalStrut(PADDING));
-        final Box outerBox = Box.createVerticalBox();
-        outmostBox.add(outerBox);
-        outmostBox.add(Box.createHorizontalStrut(PADDING));
+        final Box outerBox = generateOuterBox();
 
         outerBox.add(Box.createVerticalStrut(PADDING));
 
         JPanel panel = new JPanel(new BorderLayout());
-        
-        JPanel pogListPanel = new JPanel(new BorderLayout());
- 
-        pogListPanel.add(pogListLabel, BorderLayout.NORTH);
-        
-        JScrollPane listScroller = new JScrollPane(pogList);
-        listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-        listScroller.setPreferredSize(new Dimension(width / 2 - 10, height - 100));
-        pogListPanel.add(listScroller, BorderLayout.EAST);
-        
-        pogList.addListSelectionListener(this);
-        
-        
-        panel.add(pogListPanel, BorderLayout.WEST);
-        
-        listScroller = new JScrollPane(pogDetails);
-        listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        listScroller.setPreferredSize(new Dimension(width / 2 - 10, height - 100));
-        panel.add(listScroller, BorderLayout.EAST);
-        
+        panel.add(generatePogListPanel(), BorderLayout.WEST);
+
+        JScrollPane pogDetails = generatePogDetails();
+        panel.add(pogDetails, BorderLayout.EAST);
+
         outerBox.add(panel);
+
         outerBox.add(Box.createVerticalStrut(PADDING));
-
         outerBox.add(Box.createVerticalStrut(PADDING * 2));
-
         outerBox.add(Box.createVerticalStrut(PADDING * 3));
         outerBox.add(Box.createVerticalGlue());
 
-        JPanel buttonPanel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        outerBox.add(buttonPanel1);
-        buttonPanel1.add(m_delete);
+        JPanel controlButtonPanel = generateControlButtonPanel();
+        outerBox.add(controlButtonPanel);
 
         outerBox.add(Box.createVerticalStrut(PADDING));
 
-        JPanel buttonPanel2 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        outerBox.add(buttonPanel2);
-        buttonPanel2.add(m_ok);
-        buttonPanel2.add(Box.createHorizontalStrut(PADDING));
-        buttonPanel2.add(m_cancel);
+        JPanel okCancelButtonPanel = generateOkCancelButtonPanel();
+        outerBox.add(okCancelButtonPanel);
 
         outerBox.add(Box.createVerticalStrut(PADDING));
 
         setModal(true);
     }
 
+    private JPanel generateOkCancelButtonPanel()
+    {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        panel.add(okButton);
+        panel.add(Box.createHorizontalStrut(PADDING));
+        panel.add(cancelButton);
+        return panel;
+    }
+
+    private JPanel generateControlButtonPanel()
+    {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        panel.add(deleteButton);
+        return panel;
+    }
+
+    private Box generateOuterBox()
+    {
+        final Box outmostBox = Box.createHorizontalBox();
+        getContentPane().add(outmostBox, BorderLayout.CENTER);
+        outmostBox.add(Box.createHorizontalStrut(PADDING));
+        final Box outerBox = Box.createVerticalBox();
+        outmostBox.add(outerBox);
+        outmostBox.add(Box.createHorizontalStrut(PADDING));
+        return outerBox;
+    }
+
+    private JPanel generatePogListPanel()
+    {
+        JPanel pogListPanel = new JPanel(new BorderLayout());
+
+        JLabel pogListLabel = new JLabel();
+        pogListLabel.setText("Pogs:");
+        pogListPanel.add(pogListLabel, BorderLayout.NORTH);
+
+        JScrollPane listScroller = new JScrollPane(pogList);
+        listScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        listScroller.setPreferredSize(new Dimension(DIALOG_WIDTH / 2 - 10, DIALOG_HEIGHT - 100));
+        pogListPanel.add(listScroller, BorderLayout.EAST);
+
+        return pogListPanel;
+    }
+
+    private JScrollPane generatePogDetails()
+    {
+        JScrollPane detailsScroller = new JScrollPane(pogDetailsPanel);
+        detailsScroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        detailsScroller.setPreferredSize(new Dimension(DIALOG_WIDTH / 2 - 10, DIALOG_HEIGHT - 100));
+        return detailsScroller;
+    }
+
+    private void initialisePogList()
+    {
+        pogList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        pogList.setLayoutOrientation(JList.VERTICAL);
+        pogList.setVisibleRowCount(-1);
+        pogList.addListSelectionListener(this);
+    }
+
     private void initialiseOkButton()
     {
-        m_ok.setText("Load Pog");
-        m_ok.addActionListener(new ActionListener()
+        okButton.setText("Load Pog");
+        final JDialog dialog = this;
+        okButton.addActionListener(new ActionListener()
         {
             /*
              * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
              */
             public void actionPerformed(final ActionEvent e)
             {
-                selectedPog = ((PogListModel)pogList.getModel()).getPogAt(pogList.getSelectedIndex());
+                int index = pogList.getSelectedIndex();
+                if (index < 0)
+                {
+                    removePogDetails();
+                    UtilityFunctions.msgBox(dialog, "No pog selected.", "Load Pog Failure");
+                    return;
+                }
+
+                selectedPog = getSelectedPog();
                 dispose();
             }
         });
@@ -171,8 +219,8 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
 
     private void initialiseCancelButton()
     {
-        m_cancel.setText("Cancel");
-        m_cancel.addActionListener(new ActionListener()
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new ActionListener()
         {
             /*
              * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -186,19 +234,26 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
 
     private void initialiseDeleteButton()
     {
-        m_delete.setText("Delete Pog");
+        deleteButton.setText("Delete Pog");
         final JDialog dialog = this;
-        m_delete.addActionListener(new ActionListener()
+        deleteButton.addActionListener(new ActionListener()
         {
             /*
              * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
              */
             public void actionPerformed(final ActionEvent e)
             {
-                PogListModel model = (PogListModel)pogList.getModel();
                 int index = pogList.getSelectedIndex();
+                if (index < 0)
+                {
+                    removePogDetails();
+                    UtilityFunctions.msgBox(dialog, "No pog selected.", "Delete Pog Failure");
+                    return;
+                }
 
-                Pog pog = model.getPogAt(index);
+                PogListModel pogListModel = (PogListModel)pogList.getModel();
+
+                Pog pog = pogListModel.getPogAt(index);
 
                 final int result = UtilityFunctions.yesNoDialog(
                     dialog,
@@ -207,30 +262,45 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
                 );
                 if (result == UtilityFunctions.YES)
                 {
-                    model.deletePog(index);
+                    pogListModel.deletePog(index);
                 }
 
             }
         });
-        m_delete.setEnabled(false);
+        disableDeleteButton();
     }
 
-    public Pog getPog()
+    private void enableDeleteButton()
     {
-        return selectedPog;
+        deleteButton.setEnabled(true);
     }
-    
-    public void valueChanged(ListSelectionEvent e)
+
+    private void disableDeleteButton()
     {
-        int index = pogList.getSelectedIndex();
-        if (index < 0)
+        deleteButton.setEnabled(false);
+    }
+
+    private Pog getSelectedPog()
+    {
+        PogFile pogFile = pogList.getSelectedValue();
+
+        if (null == pogFile)
         {
-            pogDetails.removePog();
-            m_delete.setEnabled(false);
-            return;
+            return null;
         }
 
-        pogDetails.setPog(((PogListModel)pogList.getModel()).getPogAt(index));
-        m_delete.setEnabled(true);
+        return pogFile.getPog();
+    }
+
+    private void removePogDetails()
+    {
+        pogDetailsPanel.removePog();
+        disableDeleteButton();
+    }
+
+    private void setPogDetails(Pog pog)
+    {
+        pogDetailsPanel.setPog(pog);
+        enableDeleteButton();
     }
 }

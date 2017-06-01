@@ -23,7 +23,7 @@ import com.galactanet.gametable.ui.PogLibrary;
  * 
  * @author tkjn
  */
-public class PogListModel extends AbstractListModel<String>
+public class PogListModel extends AbstractListModel<PogFile>
 {
     
     private File pogDir;
@@ -39,15 +39,9 @@ public class PogListModel extends AbstractListModel<String>
     /*
      * @see javax.swing.ListModel#getElementAt(int)
      */
-    public String getElementAt(int arg0)
+    public PogFile getElementAt(int arg0)
     {
-        Pog pog = getPogAt(arg0);
-        String pogText = pog.getText();
-        if (pogText.equals(""))
-        {
-            pogText = "--Unknown Pog--";
-        }
-        return pogText;
+        return pogs.get(arg0);
     }
     
     public Pog getPogAt(int arg0)

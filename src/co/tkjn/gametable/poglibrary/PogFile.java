@@ -35,4 +35,13 @@ public class PogFile
         return pog;
     }
 
+    public String toString()
+    {
+        String pogText = pog.getText();
+        if (pogText.equals(""))
+        {
+            pogText = "--Unknown Pog--";
+        }
+        return pogText;
+    }
 }
