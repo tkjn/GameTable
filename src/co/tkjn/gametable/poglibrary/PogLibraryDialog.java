@@ -34,11 +34,11 @@ public class PogLibraryDialog extends JDialog implements ListSelectionListener
     private final JButton cancelButton = new JButton();
     private final JButton okButton     = new JButton();
     private final JButton deleteButton = new JButton();
-    
+
     private Pog selectedPog;
-    
+
     private final JList<PogFile> pogList = new JList<PogFile>(new PogListModel("poginstances"));
-    
+
     private final PogDetailsPanel pogDetailsPanel = new PogDetailsPanel();
 
     private final int DIALOG_WIDTH = 400;

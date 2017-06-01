@@ -1,5 +1,5 @@
 /*
- * PogFile.java: GameTable is in the Public Domain.
+ * PogFilenameFilter.java: GameTable is in the Public Domain.
  */
 
 
@@ -9,8 +9,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 /**
- * TODO: comment
- * 
  * @author tkjn
  */
 public class PogFilenameFilter implements FilenameFilter

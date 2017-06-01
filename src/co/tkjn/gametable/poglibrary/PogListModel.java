@@ -19,17 +19,15 @@ import com.galactanet.gametable.net.PacketManager;
 import com.galactanet.gametable.ui.PogLibrary;
 
 /**
- * TODO: comment
- * 
  * @author tkjn
  */
 public class PogListModel extends AbstractListModel<PogFile>
 {
-    
+
     private File pogDir;
-    
+
     private Vector<PogFile> pogs = new Vector<PogFile>();
-    
+
     public PogListModel(String libName)
     {
         setDir(libName);
@@ -43,7 +41,7 @@ public class PogListModel extends AbstractListModel<PogFile>
     {
         return pogs.get(arg0);
     }
-    
+
     public Pog getPogAt(int arg0)
     {
         return pogs.get(arg0).getPog();
@@ -61,15 +59,14 @@ public class PogListModel extends AbstractListModel<PogFile>
      */
     public int getSize()
     {
-        // TODO Auto-generated method stub
         return pogs.size();
     }
-    
+
     public void setDir(String dirName)
     {
         pogDir = new File(dirName).getAbsoluteFile();
     }
-    
+
     public void refreshPogs()
     {
         String[] pogFiles = pogDir.list(new PogFilenameFilter());
@@ -86,9 +83,9 @@ public class PogListModel extends AbstractListModel<PogFile>
                 if (nPog.isUnknown()) { // we need this image
                     PacketManager.requestPogImage(null, nPog);
                 }
-                
+
                 pogs.add(new PogFile(openFile, nPog));
-                
+
             }
             catch (final IOException ex1) {
                 Log.log(Log.SYS, ex1);

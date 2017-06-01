@@ -10,8 +10,6 @@ import java.io.File;
 import com.galactanet.gametable.Pog;
 
 /**
- * TODO: comment
- * 
  * @author tkjn
  */
 public class PogFile
