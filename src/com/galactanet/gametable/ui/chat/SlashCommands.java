@@ -40,6 +40,7 @@ public class SlashCommands
         }
 
         final String remaining = text.substring((words[0] + " ").length());
+        final StringBuffer rollDisplay = new StringBuffer();
         final StringBuffer roll = new StringBuffer();
         int ci = 0;
         char c;
@@ -49,31 +50,46 @@ public class SlashCommands
             c = remaining.charAt(i);
             isLast = (i == (remaining.length() - 1));
             if ((c == '+') || (c == '-') || (c == ',') || isLast) {
-                if(isLast) term = remaining.substring(ci);
-                else term = remaining.substring(ci,i);
-                if(term.length() > 0) {
-                    final DiceMacro macro = GametableFrame.getGametableFrame().findMacro(term);
-                    if(macro != null) roll.append(macro.getMacro());  
-                    else roll.append(term);  // No Macro assume its a normal die term. And let the dicemacro figure it out.
+                if (isLast) {
+                    term = remaining.substring(ci);
+                } else {
+                    term = remaining.substring(ci, i);
                 }
-                if(!isLast) {
+
+                if (term.length() > 0) {
+                    final DiceMacro macro = GametableFrame.getGametableFrame().findMacro(term);
+
+                    if (macro != null) {
+                        roll.append(macro.getMacro());
+                        String macroDisplay = macro.getName();
+                        if (null == macroDisplay) {
+                            macroDisplay = macro.getMacro();
+                        }
+                        rollDisplay.append(macroDisplay);
+                    } else {
+                        roll.append(term);  // No Macro assume its a normal die term. And let the dicemacro figure it out.
+                        rollDisplay.append(term);
+                    }
+                }
+                if (!isLast) {
                     roll.append(c);
+                    rollDisplay.append(" " + c + " ");
                 }
                 ci = i + 1;
             }
         }
 
-        final DiceMacro rmacro = new DiceMacro(roll.toString(),remaining, null); 
+        final DiceMacro rmacro = new DiceMacro(roll.toString(), rollDisplay.toString(), null);
         if(rmacro.isInitialized()) {
-            if (words[0].equals("/r") || words[0].equals("/roll"))            
+            if (words[0].equals("/r") || words[0].equals("/roll"))
                 rmacro.doMacro(false);
-            else    
+            else
                 rmacro.doMacro(true);
         } else {
             logMechanics("<b><font color=\"#880000\">Error in Macro String.</font></b>");
         }
     }
-    
+
     /** *************************************************************************************************************
      * Parses /macro
      * @param words
@@ -96,7 +112,7 @@ public class SlashCommands
             final String name = words[1];
 
             // all subsequent "words" are the die roll macro
-            GametableFrame.getGametableFrame().addMacro(name, text.substring("/macro ".length() + name.length() + 1), null);  
+            GametableFrame.getGametableFrame().addMacro(name, text.substring("/macro ".length() + name.length() + 1), null);
     }
     /** *************************************************************************************************************
      * Parses /macrodelete
@@ -112,8 +128,8 @@ public class SlashCommands
 
         // find and kill this macro
         GametableFrame.getGametableFrame().removeMacro(words[1]);
-    } 
-    
+    }
+
     /** *************************************************************************************************************
      * Parses /who
      */
@@ -134,7 +150,7 @@ public class SlashCommands
         buffer.append("</b>");
         logSystemMessage(buffer.toString());
     }
-    
+
     /** *************************************************************************************************************
      * Parses /poglist
      * @param words
@@ -181,13 +197,13 @@ public class SlashCommands
         buffer.append("<b>" + tally + " pog" + (tally != 1 ? "s" : "") + " found.</b>");
         logSystemMessage(buffer.toString());
     }
-    
+
     /** *************************************************************************************************************
      * Parses /tell, /send
      * @param words
      * @param text
      */
-    public static  void slash_tell(final String words[], final String text) 
+    public static  void slash_tell(final String words[], final String text)
     {
         // send a private message to another player
         if (words.length < 3)
@@ -234,7 +250,7 @@ public class SlashCommands
 
         GametableFrame.getGametableFrame().tell(toPlayer, toSend);
     }
-    
+
     /** *************************************************************************************************************
      * Parses /emote, /me, /em
      * @param words
@@ -242,7 +258,7 @@ public class SlashCommands
      */
     public final static String    EMOTE_MESSAGE_FONT       = "<font color=\"#004477\">";
     public final static String    END_EMOTE_MESSAGE_FONT   = "</font>";
-    
+
     public static void slash_emote(final String words[], final String text)
     {
         if (words.length < 2)
@@ -259,18 +275,18 @@ public class SlashCommands
         final String emote = text.substring(start).trim();
 
         // simply post text that's an emote instead of a character action
-        final String toPost = EMOTE_MESSAGE_FONT + 
+        final String toPost = EMOTE_MESSAGE_FONT +
             UtilityFunctions.emitUserLink(GametableFrame.getGametableFrame().getMyPlayer().getCharacterName())
             + " " + emote + END_EMOTE_MESSAGE_FONT;
         postMessage(toPost);
     }
-    
+
     /** *************************************************************************************************************
      * Parses /as
      * @param words
      * @param text
      */
-   
+
     public static void slash_as(final String words[], final String text, final boolean emoteas) {
         if (words.length < 3)
         {
@@ -303,7 +319,7 @@ public class SlashCommands
         toPost.append(" " + END_EMOTE_MESSAGE_FONT + toSay);
         postMessage(toPost.toString());
     }
-  
+
     /** *************************************************************************************************************
      * PArses /goto
      * @param words
@@ -324,9 +340,9 @@ public class SlashCommands
             return;
         }
         GametableFrame.getGametableFrame().getGametableCanvas().scrollToPog(pog);
-    }  
-    
-    
+    }
+
+
     /** *************************************************************************************************************
      * Parses / commands
      * @param text
@@ -337,8 +353,8 @@ public class SlashCommands
         final String[] words = UtilityFunctions.breakIntoWords(text, true, true);
         if (words == null)
             return;
-        
-        if (words[0].equals("/macro"))     
+
+        if (words[0].equals("/macro"))
             slash_macro(words,text);
         else if (words[0].equals("/macrodelete") || words[0].equals("/del"))
             slash_macrodelete(words);
@@ -346,8 +362,8 @@ public class SlashCommands
             slash_who();
         else if (words[0].equals("/r") || words[0].equals("/pr") || words[0].equals("/rp") || words[0].equals("/roll") || words[0].equals("/proll"))
             slash_roll(words,text);
-        else if (words[0].equals("/poglist")) 
-            slash_poglist(words);            
+        else if (words[0].equals("/poglist"))
+            slash_poglist(words);
         else if (words[0].equals("/tell") || words[0].equals("/send") || words[0].equals("/t"))
             slash_tell(words,text);
         else if (words[0].equals("/em") || words[0].equals("/me") || words[0].equals("/emote"))
@@ -361,7 +377,7 @@ public class SlashCommands
         else if (words[0].equals("/cl") || words[0].equals("/clearlog"))
             GametableFrame.getGametableFrame().getChatPanel().clearText();
         else if (words[0].equals("/deck"))
-            GametableFrame.getGametableFrame().deckCommand(words); // deck commands. there are many 
+            GametableFrame.getGametableFrame().deckCommand(words); // deck commands. there are many
         else if (words[0].equals("/?") || words[0].equals("//") || words[0].equals("/help")) {
             // list macro commands
             logSystemMessage("<b><u>Slash Commands</u></b><br>"
