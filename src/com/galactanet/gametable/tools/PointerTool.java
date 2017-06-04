@@ -20,7 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import co.tkjn.gametable.PogLibraryDialog;
+import co.tkjn.gametable.poglibrary.PogLibraryDialog;
 
 import com.galactanet.gametable.GametableCanvas;
 import com.galactanet.gametable.GametableFrame;

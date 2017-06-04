@@ -3,7 +3,7 @@
  */
 
 
-package co.tkjn.gametable;
+package co.tkjn.gametable.poglibrary;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,18 +18,18 @@ import com.galactanet.gametable.Pog;
 
 /**
  * Represents Pog Details in a Panel
- * 
+ *
  * @author tkjn
  */
 public class PogDetailsPanel extends JPanel
 {
 
     private final JLabel nameLabel = new JLabel();
-    
+
     public PogDetailsPanel()
     {
         super(new BorderLayout());
-        
+
         try
         {
             initialize();
@@ -39,14 +39,13 @@ public class PogDetailsPanel extends JPanel
             Log.log(Log.SYS, e);
         }
     }
-    
+
     private void initialize()
     {
         nameLabel.setText("");
         add(nameLabel, BorderLayout.CENTER);
-        
     }
-    
+
     public void setPog(Pog pog)
     {
         Set attributes = pog.getAttributeNames();
@@ -56,7 +55,12 @@ public class PogDetailsPanel extends JPanel
             String attribute = (String)iterator.next();
             attributeString += attribute + ": " + pog.getAttribute(attribute) +"<br>";
         }
-        
+
         nameLabel.setText("<html>"+pog.getText()+"<br>" + attributeString+"</html>");
+    }
+
+    public void removePog()
+    {
+        nameLabel.setText("");
     }
 }
