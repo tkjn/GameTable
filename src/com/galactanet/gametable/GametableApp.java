@@ -9,7 +9,7 @@ import java.awt.Toolkit;
 
 import javax.swing.UIManager;
 
-import co.tkjn.gametable.GametableVersion;
+import com.tkjngine.gametable.GametableVersion;
 
 
 /**

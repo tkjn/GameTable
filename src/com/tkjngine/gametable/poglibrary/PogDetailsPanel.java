@@ -3,7 +3,7 @@
  */
 
 
-package co.tkjn.gametable.poglibrary;
+package com.tkjngine.gametable.poglibrary;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
