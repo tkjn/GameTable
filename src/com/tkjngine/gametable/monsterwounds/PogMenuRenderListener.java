@@ -53,8 +53,9 @@ public class PogMenuRenderListener implements IPogMenuRenderEventListener
             menu.addSeparator();
             menu.add(item);
         } else {
+            JMenuItem item = null;
             // TODO
-            /*JMenuItem item = new JMenuItem("Set Max Wounds");
+            /*item = new JMenuItem("Set Max Wounds");
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
                     // max wounds dialog
