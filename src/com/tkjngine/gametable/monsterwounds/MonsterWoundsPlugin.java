@@ -14,7 +14,7 @@ public class MonsterWoundsPlugin implements IGametablePlugin, ILeftPanelProvider
 
     @Override
     public void initialise(GametableFrame gametable) {
-        //panel = getCharacterSheetPanel();
+        // TODO
         //gametable.registerLeftPanelProvider(this);
         //gametable.registerAutoSaveListener(new AutoSaveListener(panel.getStorage()));
         gametable.getEventDispatcher().listenForPogMenuRender(new PogMenuRenderListener());
@@ -27,7 +27,7 @@ public class MonsterWoundsPlugin implements IGametablePlugin, ILeftPanelProvider
 
     @Override
     public JPanel getLeftPanel() {
-        //return getCharacterSheetPanel();
+        // TODO
         return new JPanel();
     }
 
@@ -35,11 +35,4 @@ public class MonsterWoundsPlugin implements IGametablePlugin, ILeftPanelProvider
     public String getPanelTitle() {
         return PANEL_TITLE;
     }
-
-    /*private CharacterSheetPanel getCharacterSheetPanel() {
-        if (panel == null) {
-            panel = new CharacterSheetPanel();
-        }
-        return panel;
-    }*/
 }

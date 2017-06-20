@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class PogMenuRenderListener implements IPogMenuRenderEventListener
 {
-    private HashMap<Pog, PogAdapter> pogRegistry; // Pull this out of this class and contain separately
+    private HashMap<Pog, PogAdapter> pogRegistry; // TODO: Pull this out of this class and contain separately
 
     PogMenuRenderListener()
     {
