@@ -29,7 +29,7 @@ public class GoldDialogue extends JDialog {
         setContentPane(getContentPanel());
         pack();
 	}
-	
+
 	private JButton getApplyButton() {
 		if (applyButton == null) {
             applyButton = new JButton();
@@ -47,7 +47,7 @@ public class GoldDialogue extends JDialog {
                     dispose();
                 }
                 else {
-                    JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Massage", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Error: Please enter an integer for gold", "Error Message", JOptionPane.ERROR_MESSAGE);
                 }
             }
         };
@@ -60,7 +60,7 @@ public class GoldDialogue extends JDialog {
         }
         return goldField;
 	}
-	
+
 	private JPanel getContentPanel() {
         if (contentPanel == null) {
             contentPanel = new JPanel();
@@ -72,11 +72,11 @@ public class GoldDialogue extends JDialog {
         }
         return contentPanel;
     }
-    
+
     public int getValue() {
     	return value;
     }
-    
+
     private boolean validateGold() {
     	String entered_value = getField().getText();
 		try {
@@ -86,5 +86,5 @@ public class GoldDialogue extends JDialog {
 		catch (NumberFormatException e) {
 			return false;
 		}
-	}    
+	}
 }
