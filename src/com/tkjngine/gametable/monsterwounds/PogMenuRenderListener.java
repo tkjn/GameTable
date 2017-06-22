@@ -3,6 +3,7 @@ package com.tkjngine.gametable.monsterwounds;
 import com.galactanet.gametable.Pog;
 import com.galactanet.gametable.events.IPogMenuRenderEventListener;
 import com.galactanet.gametable.events.PogMenuRenderEvent;
+import com.galactanet.gametable.GametableFrame;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +15,7 @@ public class PogMenuRenderListener implements IPogMenuRenderEventListener
 {
     private HashMap<Pog, PogAdapter> pogRegistry; // TODO: Pull this out of this class and contain separately
 
-    PogMenuRenderListener()
+    public PogMenuRenderListener()
     {
         this.pogRegistry = new HashMap<Pog, PogAdapter>();
     }
@@ -38,7 +39,7 @@ public class PogMenuRenderListener implements IPogMenuRenderEventListener
         if (null == pogAdapter) {
             final HashMap<Pog, PogAdapter> pogRegistry = this.pogRegistry;
 
-            JMenuItem item = new JMenuItem("Enable Wounds");
+            JMenuItem item = new JMenuItem("Enable Monster Wounds");
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
                     if (null == pogRegistry.get(activePog))
@@ -53,44 +54,64 @@ public class PogMenuRenderListener implements IPogMenuRenderEventListener
             menu.addSeparator();
             menu.add(item);
         } else {
+            final MonsterData monsterData = pogAdapter.getMonsterData();
+            final JMenu monsterWoundsMenu = new JMenu("Monster Wounds");
+            menu.add(monsterWoundsMenu);
             JMenuItem item = null;
-            // TODO
-            /*item = new JMenuItem("Set Max Wounds");
-            item.addActionListener(new ActionListener() {
-                public void actionPerformed(final ActionEvent e) {
-                    // max wounds dialog
-                }
-            });
-            menu.addSeparator();
-            menu.add(item);*/
 
             item = new JMenuItem("-1 Wound");
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
-                    pogAdapter.getMonsterData().decWounds();
+                    monsterData.decWounds();
                 }
             });
-            menu.addSeparator();
-            menu.add(item);
+            monsterWoundsMenu.addSeparator();
+            monsterWoundsMenu.add(item);
 
             item = new JMenuItem("+1 Wound");
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
-                    pogAdapter.getMonsterData().incWounds();
+                    monsterData.incWounds();
                 }
             });
-            menu.addSeparator();
-            menu.add(item);
+            monsterWoundsMenu.addSeparator();
+            monsterWoundsMenu.add(item);
 
             item = new JMenuItem("Refill Wounds");
             item.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent e) {
-                    MonsterData monsterData = pogAdapter.getMonsterData();
                     monsterData.setWounds(monsterData.getMaxWounds());
                 }
             });
-            menu.addSeparator();
-            menu.add(item);
+            monsterWoundsMenu.addSeparator();
+            monsterWoundsMenu.add(item);
+
+            item = new JMenuItem("Set Wounds");
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(final ActionEvent e) {
+                    // max wounds dialog
+                    WoundsDialogue dialogue = new WoundsDialogue(monsterData.getWounds(), monsterData.getMaxWounds());
+                    dialogue.setLocationRelativeTo(GametableFrame.getGametableFrame().getGametableCanvas());
+                    dialogue.setVisible(true);
+                    monsterData.setWounds(dialogue.getValue());
+                }
+            });
+            monsterWoundsMenu.addSeparator();
+            monsterWoundsMenu.add(item);
+
+            item = new JMenuItem("Set Max Wounds");
+            item.addActionListener(new ActionListener() {
+                public void actionPerformed(final ActionEvent e) {
+                    // max wounds dialog
+                    MaxWoundsDialogue dialogue = new MaxWoundsDialogue(monsterData.getMaxWounds());
+                    dialogue.setLocationRelativeTo(GametableFrame.getGametableFrame().getGametableCanvas());
+                    dialogue.setVisible(true);
+                    monsterData.setMaxWounds(dialogue.getValue());
+                }
+            });
+            monsterWoundsMenu.addSeparator();
+            monsterWoundsMenu.add(item);
+
         }
     }
 }
