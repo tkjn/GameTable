@@ -65,7 +65,6 @@ public class PogMenuRenderListener implements IPogMenuRenderEventListener
                     monsterData.decWounds();
                 }
             });
-            monsterWoundsMenu.addSeparator();
             monsterWoundsMenu.add(item);
 
             item = new JMenuItem("+1 Wound");
@@ -107,6 +106,7 @@ public class PogMenuRenderListener implements IPogMenuRenderEventListener
                     dialogue.setLocationRelativeTo(GametableFrame.getGametableFrame().getGametableCanvas());
                     dialogue.setVisible(true);
                     monsterData.setMaxWounds(dialogue.getValue());
+                    monsterData.setWounds(monsterData.getMaxWounds());
                 }
             });
             monsterWoundsMenu.addSeparator();
