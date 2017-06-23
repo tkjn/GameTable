@@ -2911,6 +2911,8 @@ public class GametableFrame extends JFrame implements ActionListener
             });
         }
 
+        PluginLoader pluginLoader = new PluginLoader();
+        pluginLoader.loadPlugins();
         // TODO: Need to come up with a better way of registering plugins, but for now....
         registerPlugin(new CharacterSheetPlugin());
 

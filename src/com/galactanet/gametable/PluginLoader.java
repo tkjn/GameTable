@@ -3,9 +3,13 @@ package com.galactanet.gametable;
 import co.tkjn.gametable.GametableVersion;
 
 import java.io.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
@@ -15,12 +19,14 @@ class PluginLoader
     private static final String GAMETABLE_PLUGIN_ATTRIBUTE = "Gametable-Plugin";
     private static final String GAMETABLE_MIN_VERSION_ATTRIBUTE = "Gametable-min-version";
 
-    public void loadPlugins()
+    void loadPlugins()
     {
-        File[] jarFiles = getJarFiles(getPluginDir());
+        List<File> jarFiles = getJarFiles(getPluginDir());
         List<Manifest> manifests = getManifestsForFiles(jarFiles);
+        logError("Loaded " + manifests.size() + " manifests");
         validateManifests(manifests);
         checkPluginsAreCompatible(manifests);
+        logError("Have " + manifests.size() + " manifests after validation");
     }
 
     private String getPluginDir()
@@ -28,23 +34,24 @@ class PluginLoader
         return PLUGIN_DIR;
     }
 
-    private File[] getJarFiles(String dirName)
+    private List<File> getJarFiles(String dirName)
     {
         File dir = new File(dirName);
 
-        return dir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String filename)
+        return Arrays.asList(dir.listFiles(new FilenameFilter() {
+            public boolean accept(File dir1, String filename)
             { return filename.endsWith(".jar"); }
-        });
+        }));
     }
 
-    private List<Manifest> getManifestsForFiles(File[] files)
+    private List<Manifest> getManifestsForFiles(List<File> files)
     {
         List<Manifest> manifests = new ArrayList<>();
         for (File file : files) {
             try {
                 manifests.add(getManifestForFile(file));
             } catch (IOException e) {
+                files.remove(file);
                 logManifestFetchError(e);
             }
         }
@@ -134,5 +141,23 @@ class PluginLoader
         // the strings are equal or one string is a substring of the other
         // e.g. "1.2.3" = "1.2.3" or "1.2.3" < "1.2.3.4"
         return Integer.signum(vals1.length - vals2.length);
+    }
+
+    private void registerPlugin(File jarFile)
+    {
+        try {
+            IGametablePlugin plugin = loadPluginJar(jarFile);
+        } catch (Exception e) {
+            logError(e.getMessage());
+        }
+    }
+
+    private IGametablePlugin loadPluginJar(File file) throws ClassNotFoundException, IOException {
+        JarFile jarFile = new JarFile(file, true);
+        Manifest manifest = jarFile.getManifest();
+        String classname = manifest.getMainAttributes().getValue(GAMETABLE_PLUGIN_ATTRIBUTE);
+        URLClassLoader cl = new URLClassLoader(jarFile.toURL());
+        Class myClass = cl.loadClass(classname);
+        Object myClassObj = myClass.newInstance();
     }
 }
