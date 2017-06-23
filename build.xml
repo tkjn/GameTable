@@ -339,13 +339,22 @@ public class GametableVersion
 
     <target name="pmd" depends="install-pmd">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
-        <pmd shortFilenames="true" rulesetfiles="java-basic,java-unusedcode">
-            <!--ruleset>java-basic,unusedcode</ruleset-->
+        <pmd shortFilenames="true" rulesetfiles="java-basic,java-unusedcode,java-empty,java-braces">
             <formatter type="text" toConsole="true"/>
             <fileset dir="${src}">
                 <include name="**/*.java"/>
             </fileset>
         </pmd>
     </target>
+    <target name="pmd-extreme" depends="install-pmd">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
+        <pmd shortFilenames="true" rulesetfiles="java-basic,java-unusedcode,java-empty,java-braces,java-design">
+            <formatter type="text" toConsole="true"/>
+            <fileset dir="${src}">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+
 
 </project>
