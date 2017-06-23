@@ -34,6 +34,18 @@
     <property name="doc.dest" value="${doc}" />
     <property name="api.dest" value="${doc}/api" />
 
+    <condition property="pmd.exists">
+        <available file="ci/pmd" type="dir"/>
+    </condition>
+
+    <path id="pmd.classpath">
+        <pathelement location="${build}"/>
+        <fileset dir="ci/pmd">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+
+
     <target name="init0">
         <!-- Create the time stamp -->
         <tstamp />
@@ -293,7 +305,56 @@ public class GametableVersion
         </fixcrlf>
     </target>
 
-    <target name="test">
-        <echo message="No tests"/>
+    <target name="test" depends="pmd">
     </target>
+
+    <target name="clean-ci">
+        <delete dir="ci" />
+    </target>
+
+    <target name="ci-deps" depends="ci-deps-dir, install-pmd">
+    </target>
+
+    <target name="ci-deps-dir">
+        <mkdir dir="ci"/>
+    </target>
+
+    <target name="install-pmd" depends="ci-deps-dir" unless="pmd.exists">
+        <get src="https://github.com/pmd/pmd/releases/download/pmd_releases%2F5.7.0/pmd-bin-5.7.0.zip"
+             dest="pmd-bin.zip"/>
+        <mkdir dir="pmd-temp"/>
+        <unzip src="pmd-bin.zip"
+               dest="pmd-temp"/>
+	<delete file="pmd-bin.zip"/>
+	<mkdir dir="ci/pmd"/>
+	<copy todir="ci/pmd/" flatten="true">
+            <fileset dir=".">
+                <include name="pmd-temp/pmd-bin*/lib/*.jar" />
+            </fileset>
+        </copy>
+        <delete dir="pmd-temp"/>
+     </target>
+
+
+
+    <target name="pmd" depends="install-pmd">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
+        <pmd shortFilenames="true" rulesetfiles="java-basic,java-unusedcode,java-empty,java-braces">
+            <formatter type="text" toConsole="true"/>
+            <fileset dir="${src}">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+    <target name="pmd-extreme" depends="install-pmd">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath"/>
+        <pmd shortFilenames="true" rulesetfiles="java-basic,java-unusedcode,java-empty,java-braces,java-design">
+            <formatter type="text" toConsole="true"/>
+            <fileset dir="${src}">
+                <include name="**/*.java"/>
+            </fileset>
+        </pmd>
+    </target>
+
+
 </project>

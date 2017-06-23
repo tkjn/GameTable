@@ -68,7 +68,10 @@ import javax.xml.parsers.SAXParserFactory;
 import com.galactanet.gametable.events.EventDispatcher;
 import org.xml.sax.SAXException;
 
+// Plugins
 import uk.co.dezzanet.gametable.charactersheet.CharacterSheetPlugin;
+import com.tkjngine.gametable.monsterwounds.MonsterWoundsPlugin;
+
 import com.tkjngine.gametable.poglibrary.PogLibraryDialog;
 
 import com.galactanet.gametable.lang.Language;
@@ -2913,6 +2916,8 @@ public class GametableFrame extends JFrame implements ActionListener
 
         // TODO: Need to come up with a better way of registering plugins, but for now....
         registerPlugin(new CharacterSheetPlugin());
+
+        registerPlugin(new MonsterWoundsPlugin());
 
         // Configure macro panel
         m_macroPanel = new MacroPanel();
