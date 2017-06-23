@@ -58,12 +58,4 @@ public class MonsterData extends Observable
         setChanged();
         notifyObservers();
     }
-
-    /**
-     * Re-initialises data - e.g. when about to load from a save
-     */
-    public void resetData()
-    {
-        setMaxWounds(0); // Will also set wounds
-    }
 }
