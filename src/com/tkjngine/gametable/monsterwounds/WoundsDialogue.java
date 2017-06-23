@@ -11,7 +11,6 @@ public class WoundsDialogue extends JDialog {
     private JButton applyButton;
     private JTextField woundsField;
     private JPanel contentPanel;
-    private JPanel centerPanel;
     private int value = 0;
     private int maxValue = 0;
 

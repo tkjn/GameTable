@@ -12,7 +12,6 @@ public class GoldDialogue extends JDialog {
 	private JButton applyButton;
 	private JTextField goldField;
 	private JPanel contentPanel;
-	private JPanel centerPanel;
 	private int value = 0;
 
 	GoldDialogue(String passed_description) {

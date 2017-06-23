@@ -11,7 +11,6 @@ public class MaxWoundsDialogue extends JDialog {
     private JButton applyButton;
     private JTextField maxWoundsField;
     private JPanel contentPanel;
-    private JPanel centerPanel;
     private int value = 0;
 
     public MaxWoundsDialogue(int currentValue) {
