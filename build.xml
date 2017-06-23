@@ -320,7 +320,7 @@ public class GametableVersion
     </target>
 
     <target name="install-pmd" depends="ci-deps-dir" unless="pmd.exists">
-        <get src="https://sourceforge.net/projects/pmd/files/latest/download?source=files"
+        <get src="https://github.com/pmd/pmd/releases/download/pmd_releases%2F5.7.0/pmd-bin-5.7.0.zip"
              dest="pmd-bin.zip"/>
         <mkdir dir="pmd-temp"/>
         <unzip src="pmd-bin.zip"
