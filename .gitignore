@@ -34,6 +34,8 @@ gen/
 # Export dir
 _export/
 
+# CI dir
+ci/
 
 #################
 ## Visual Studio
@@ -240,4 +242,4 @@ prefs.prf
 ####################
 # Generated java src
 ####################
-src/co/tkjn/gametable/GametableVersion.java
+src/com/tkjngine/gametable/GametableVersion.java

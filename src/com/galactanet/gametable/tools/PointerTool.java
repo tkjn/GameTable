@@ -20,7 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
-import co.tkjn.gametable.poglibrary.PogLibraryDialog;
+import com.tkjngine.gametable.poglibrary.PogLibraryDialog;
 
 import com.galactanet.gametable.GametableCanvas;
 import com.galactanet.gametable.GametableFrame;
@@ -997,7 +997,7 @@ public class PointerTool extends NullTool
                           final int result = UtilityFunctions.yesNoDialog(GametableFrame.getGametableFrame(),
                               "Are you sure you wish to change the background to this pog's Image?", "Change Background?");
                           if (result == UtilityFunctions.YES)
-                              m_canvas.changeBackgroundCP(m_menuPog.getId(), true);                        
+                              m_canvas.changeBackgroundCP(m_menuPog.getId(), true);
                       }
                   });
                   menu.add(item);
@@ -1011,7 +1011,7 @@ public class PointerTool extends NullTool
 
     /**
      * Sets the snapping status based on the specified modifiers.
-     * 
+     *
      * @param modifierMask the set of modifiers passed into the event.
      */
     private void setSnapping(final int modifierMask)
