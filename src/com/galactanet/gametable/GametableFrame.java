@@ -2916,8 +2916,13 @@ public class GametableFrame extends JFrame implements ActionListener
 
         PluginLoader pluginLoader = new PluginLoader();
         pluginLoader.loadPlugins();
+
+        List<IGametablePlugin> loadedPlugins = pluginLoader.getPlugins();
+        for (IGametablePlugin plugin : loadedPlugins) {
+            registerPlugin(plugin);
+        }
         // TODO: Need to come up with a better way of registering plugins, but for now....
-        registerPlugin(new CharacterSheetPlugin());
+//        registerPlugin(new CharacterSheetPlugin());
 
         registerPlugin(new MonsterWoundsPlugin());
 
@@ -3226,7 +3231,11 @@ public class GametableFrame extends JFrame implements ActionListener
     }
 
     private void logPluginStartFailed(IGametablePlugin plugin, Exception ex) {
-        String userMessage = String.format(lang.PLUGIN_FAILED_TO_START, plugin.getName(), ex.getMessage());
+        String pluginName = "null plugin name";
+        if (plugin != null) {
+            pluginName = plugin.getName();
+        }
+        String userMessage = String.format(lang.PLUGIN_FAILED_TO_START, pluginName, ex.getMessage());
         m_chatPanel.logAlertMessage(userMessage);
         Log.log(Log.SYS, userMessage);
         StringWriter sw = new StringWriter();
