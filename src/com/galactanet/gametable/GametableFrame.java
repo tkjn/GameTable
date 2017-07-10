@@ -2921,8 +2921,8 @@ public class GametableFrame extends JFrame implements ActionListener
         for (IGametablePlugin plugin : loadedPlugins) {
             registerPlugin(plugin);
         }
-        // TODO: Need to come up with a better way of registering plugins, but for now....
-//        registerPlugin(new CharacterSheetPlugin());
+        // TODO: Remove these plugins from the core codebase
+        registerPlugin(new CharacterSheetPlugin());
 
         registerPlugin(new MonsterWoundsPlugin());
 
