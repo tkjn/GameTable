@@ -1,1 +1,1 @@
-start javaw -jar -Xmx1024M -Xms512M gametable.jar
+start javaw -cp 'gametable.jar:plugins/*' -Xmx1024M -Xms512M com.galactanet.gametable.GametableApp
