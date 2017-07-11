@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar -Xmx1024M -Xms512M gametable.jar
+java -cp 'gametable.jar:plugins/*' -Xmx1024M -Xms512M com.galactanet.gametable.GametableApp

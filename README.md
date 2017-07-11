@@ -65,3 +65,18 @@ This is a diversion of Gametable - http://gametableproj.sourceforge.net
 
 This project attempts to fix issues and enhance the original, seemingly dead project.
 This project also adds convenience features for gameplay similar to the original Warhammer Quest.
+
+## Plugins
+
+A rudimentary plugin system exists to allow the base functionality to be expanded.
+
+## Installing a plugin
+
+To install a plugin, simply place the plugin's `.jar` file into the `plugins` directory.
+The plugin will then be loaded the next time the application starts.
+
+## Creating a plugin
+
+To create a plugin, you need to generate a `.jar` file which has a file `/META-INF/services/com.galactanet.gametable.IGametablePlugin`.
+This file should contain a single line, which contains the full class name of a class also included in the `.jar` file which implements the interface `com.galactanet.gametable.IGametablePlugin`.
+The class which implements the interface should take no arguments to its constructor.
